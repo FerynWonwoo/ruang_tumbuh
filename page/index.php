@@ -96,7 +96,7 @@ $sudahLogin = isset($_SESSION['username']);
                     <div class="forgot-row"><button class="text-button forgot-password" id="lupa-password" type="button">Lupa Kata Sandi?</button></div>
                     <button class="submit-button" type="submit">MASUK KE AKUN <span aria-hidden="true">→</span></button>
                 </form>
-                <p class="register-prompt">Belum punya akun? <button class="text-button register-link" id="daftar-akun" type="button">Daftar sekarang!</button></p>
+                <p class="register-prompt">Belum punya akun? <a href="register.php" class="register-link">Daftar sekarang!</a></p>
             </div>
             <footer class="panel-footer">Satu langkah kecil untuk masa depan yang lebih besar.</footer>
         </section>
