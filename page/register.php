@@ -35,13 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pesanError = 'Konfirmasi kata sandi tidak cocok.';
         } else {
             // Logika simpan akun baru bisa ditambahkan di sini
-            $pesanSukses = 'Pendaftaran berhasil! Silakan masuk ke akun Anda.';
-            $namaLengkap = '';
-            $username = '';
-            $email = '';
+            header('Location: index.php');
+            exit;
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="id">
