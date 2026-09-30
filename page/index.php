@@ -1,5 +1,4 @@
 <?php
-// Contoh login sederhana tanpa database.
 session_start();
 header('Cache-Control: no-store');
 
@@ -45,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $sudahLogin = isset($_SESSION['username']);
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>

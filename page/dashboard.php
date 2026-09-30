@@ -36,7 +36,7 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-bookmark"></i> Bookmark & Tersimpan</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-clock"></i> Pengingat Tenggat</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-pen-to-square"></i> Catatan Pribadi</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-regular fa-star"></i> Ulasan & Rating</a></li>
+                    <li><a href="rating.php" class="nav-link"><i class="fa-regular fa-star"></i> Ulasan & Rating</a></li>
                 </ul>
             </div>
 
