@@ -114,7 +114,7 @@ $sudahLogin = isset($_SESSION['username']);
         <h1 id="judul-berhasil" tabindex="-1">Login berhasil!</h1>
         <p>Selamat datang, <strong id="nama-user"><?= aman($_SESSION['username']) ?></strong>.</p>
         <p>Kamu sudah masuk ke Ruang Tumbuh.</p>
-        <p><a href="profile.php" class="register-link">Buka Profil Saya →</a></p>
+        <p><a href="dashboard.php" class="register-link">Buka Profil Saya →</a></p>
         <form method="post" action="index.php">
             <input type="hidden" name="aksi" value="logout">
             <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
