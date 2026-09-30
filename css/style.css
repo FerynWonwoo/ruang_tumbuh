@@ -1,0 +1,442 @@
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding: 64px 24px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #101c32;
+    background: #263e3b;
+}
+
+.background-video{
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+.video-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: rgba(7, 24, 25, .46);
+}
+
+.login-card{
+    width: min(1060px, 100%);
+    min-height: 620px;
+    display: grid;
+    grid-template-columns: 42% 58%;
+    background: white;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 24px 70px #0003;
+}
+
+.promotion{
+    background: linear-gradient(145deg, #fff5b0, #f7c84c);
+    padding: 38px 36px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.badge{
+    align-self: flex-start;
+    background: #fffbea;
+    color: #397b70;
+    border-radius: 20px;
+    padding: 8px 12px;
+    font-size: 10px;
+}
+
+h1{
+    font-size: clamp(28px, 3vw, 36px);
+    letter-spacing: -1.3px;
+    line-height: 1.12;
+    margin: 25px 0 12px;
+}
+
+h1 span{
+    color: #478f81;
+}
+
+.promotion p{
+    font-size: 15px;
+    line-height: 1.55;
+    margin: 0;
+    max-width: 330px;
+}
+
+.illustration{
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    margin: auto 0 18px;
+}
+
+.benefits{
+    border-top: 1px solid #fff6;
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 10px;
+}
+
+.login-panel{
+    display: flex;
+    flex-direction: column;
+    padding: 44px;
+}
+
+.brand{
+    display: flex;
+    align-items: center;
+    font-weight: 750;
+    font-size: 20px;
+    letter-spacing: -.6px;
+}
+
+.brand > span:last-child{
+    color: #478f81;
+}
+
+.brand-icon{
+    margin-right: 9px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    background: #edf5f2;
+    color: #478f81;
+    border: 1px solid #d4e4df;
+    border-radius: 10px;
+    font-size: 25px;
+}
+
+.form-area{
+    margin-top: 36px;
+}
+
+h2{
+    color: #f3a015;
+    font-size: 26px;
+    letter-spacing: -.8px;
+    margin: 0 0 8px;
+}
+
+.subtitle{
+    color: #647188;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 28px;
+}
+
+label{
+    display: block;
+    margin: 18px 0 7px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+input:not([type=hidden]){
+    width: 100%;
+    min-height: 43px;
+    border: 1px solid #ced8e5;
+    border-radius: 10px;
+    padding: 11px 13px;
+    color: #101c32;
+    font: inherit;
+    font-size: 12px;
+    background: white;
+}
+
+input::placeholder{
+    color: #8d9db5;
+}
+
+:focus-visible{
+    outline: 3px solid #478f8180;
+    outline-offset: 3px;
+}
+
+.password-field{
+    position: relative;
+}
+
+.password-field input{
+    padding-right: 65px;
+}
+
+.toggle-password{
+    position: absolute;
+    right: 8px;
+    top: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: #526e80;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.submit-button{
+    width: 100%;
+    margin-top: 23px;
+    padding: 13px 16px;
+    border: 0;
+    border-radius: 10px;
+    background: #478f81;
+    color: white;
+    font-weight: 700;
+    font-size: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 9px #214d2926;
+}
+
+.submit-button:hover{
+    background: #367769;
+}
+
+.submit-button span{
+    margin-left: 8px;
+    font-size: 18px;
+}
+
+.panel-footer{
+    margin-top: auto;
+    padding-top: 22px;
+    border-top: 1px solid #f0f3f5;
+    color: #8696aa;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.copyright{
+    color: #eee;
+    font-size: 11px;
+    text-align: center;
+    margin: 18px 0 0;
+}
+
+.alert{
+    background: #fff0ed;
+    border: 1px solid #f3c8c0;
+    color: #9b3427;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+}
+
+.success-card{
+    width: min(460px, 100%);
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 24px 70px #0003;
+}
+
+.success-card p{
+    color: #647188;
+    line-height: 1.6;
+}
+
+.success-icon{
+    margin: auto;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e7f5ef;
+    color: #478f81;
+    font-size: 32px;
+}
+
+@media (max-width: 740px){
+    body{
+        padding: 62px 16px 24px;
+    }
+
+    .login-card{
+        grid-template-columns: 1fr;
+        min-height: auto;
+    }
+
+    .promotion{
+        padding: 28px;
+    }
+
+    .promotion h1{
+        font-size: 30px;
+    }
+
+    .illustration{
+        max-height: 180px;
+        margin: 20px 0 12px;
+    }
+
+    .login-panel{
+        padding: 30px 28px;
+    }
+
+    .form-area{
+        margin-top: 28px;
+    }
+
+    .panel-footer{
+        margin-top: 40px;
+    }
+
+}
+
+/* Tombol ikon mata */
+.toggle-password{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+    color: #647188;
+}
+
+.toggle-password:hover{
+    color: #478f81;
+}
+
+.illustration{
+    object-fit: contain;
+}
+
+/* Wajib agar form login dan halaman berhasil tidak bertumpuk. */
+[hidden]{
+    display: none !important;
+}
+
+/* Tautan bantuan akun */
+.text-button{
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.text-button:hover{
+    text-decoration: underline;
+}
+
+.forgot-row{
+    margin-top: 6px;
+    text-align: right;
+}
+
+.forgot-password{
+    color: #c77b00;
+    font-size: 11px;
+}
+
+#form-login .submit-button{
+    margin-top: 16px;
+}
+
+.register-prompt{
+    margin: 18px 0 26px;
+    text-align: center;
+    color: #647188;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.register-link{
+    color: #478f81;
+    font-size: inherit;
+    font-weight: 600;
+}
+
+.info-dialog{
+    width: calc(100% - 32px);
+    max-width: 420px;
+    padding: 30px;
+    border: 0;
+    border-radius: 20px;
+    color: #101c32;
+    box-shadow: 0 24px 70px #0003;
+}
+
+.info-dialog::backdrop{
+    background: rgba(7, 24, 25, 0.6);
+}
+
+.info-dialog h2{
+    color: #478f81;
+    font-size: 24px;
+}
+
+.info-dialog p{
+    color: #647188;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* Card formulir login sesuai referensi */
+.login-panel{
+    padding: 30px 28px;
+}
+
+.form-area{
+    margin-top: 22px;
+    padding: 22px 20px 18px;
+    background: #fffdf4;
+    border: 1px solid #deddd5;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22),
+    inset 0 1px 3px rgba(0, 0, 0, 0.10);
+}
+
+.form-area h2{
+    color: #f3a015;
+    line-height: 1.25;
+}
+
+.form-area .register-prompt{
+    margin-bottom: 0;
+}
+
+.panel-footer{
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+@media (max-width: 740px){
+    .login-panel{
+        padding: 26px 18px;
+    }
+
+    .form-area{
+        margin-top: 20px;
+        padding: 22px 16px 18px;
+    }
+
+    .form-area h2{
+        font-size: 24px;
+    }
+
+    .panel-footer{
+        margin-top: 28px;
+    }
+
+}
