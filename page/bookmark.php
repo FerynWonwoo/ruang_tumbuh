@@ -17,7 +17,7 @@ if (empty($_SESSION['csrf'])) {
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
 
-// Data awal bookmark tersimpan (Deadline tahun 2026)
+// Data awal bookmark tersimpan
 if (!isset($_SESSION['bookmarks'])) {
     $_SESSION['bookmarks'] = [
         [
@@ -27,7 +27,6 @@ if (!isset($_SESSION['bookmarks'])) {
             'penyelenggara' => 'Kementerian Kominfo',
             'deadline' => '2026-10-20',
             'status' => 'Aktif',
-            'pengingat' => 'Upload berkas transkrip nilai dan surat rekomendasi.',
             'deskripsi' => 'Program beasiswa penuh untuk pelatihan bidang teknologi digital dan sertifikasi internasional.'
         ],
         [
@@ -37,7 +36,6 @@ if (!isset($_SESSION['bookmarks'])) {
             'penyelenggara' => 'Tech Corp Indonesia',
             'deadline' => '2026-10-30',
             'status' => 'Aktif',
-            'pengingat' => 'Latihan live coding JavaScript dan revisi CV.',
             'deskripsi' => 'Program magang 6 bulan fokus pada pengembangan web modern menggunakan ReactJS dan pemanfaatan REST API.'
         ]
     ];
@@ -46,34 +44,17 @@ if (!isset($_SESSION['bookmarks'])) {
 $pesan = $_SESSION['pesan_bookmark'] ?? '';
 unset($_SESSION['pesan_bookmark']);
 
-// Proses Operasi CRUD (Edit & Hapus saja)
+// Proses Operasi Hapus Bookmark
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aksi = $_POST['aksi'] ?? '';
     $token = $_POST['csrf'] ?? '';
 
-    if (hash_equals($_SESSION['csrf'], $token)) {
-        if ($aksi === 'hapus') {
-            $id = $_POST['id'] ?? '';
-            $_SESSION['bookmarks'] = array_values(array_filter($_SESSION['bookmarks'], function ($item) use ($id) {
-                return $item['id'] !== $id;
-            }));
-            $_SESSION['pesan_bookmark'] = 'Bookmark berhasil dihapus.';
-        } elseif ($aksi === 'edit') {
-            $id = $_POST['id'] ?? '';
-            foreach ($_SESSION['bookmarks'] as &$item) {
-                if ($item['id'] === $id) {
-                    $item['judul'] = $_POST['judul'] ?? '';
-                    $item['kategori'] = $_POST['kategori'] ?? '';
-                    $item['penyelenggara'] = $_POST['penyelenggara'] ?? '';
-                    $item['deadline'] = $_POST['deadline'] ?? '';
-                    $item['status'] = $_POST['status'] ?? 'Aktif';
-                    $item['pengingat'] = $_POST['pengingat'] ?? '';
-                    $item['deskripsi'] = $_POST['deskripsi'] ?? '';
-                    break;
-                }
-            }
-            $_SESSION['pesan_bookmark'] = 'Data bookmark berhasil diperbarui.';
-        }
+    if (hash_equals($_SESSION['csrf'], $token) && $aksi === 'hapus') {
+        $id = $_POST['id'] ?? '';
+        $_SESSION['bookmarks'] = array_values(array_filter($_SESSION['bookmarks'], function ($item) use ($id) {
+            return $item['id'] !== $id;
+        }));
+        $_SESSION['pesan_bookmark'] = 'Bookmark berhasil dihapus dari daftar simpanan.';
     }
     header('Location: bookmark.php');
     exit;
@@ -126,13 +107,8 @@ $totalTersimpan = count($daftarBookmark);
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="pengingat.php" class="nav-link">
                             <i class="fa-regular fa-clock"></i> Pengingat Tenggat
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link">
-                            <i class="fa-regular fa-pen-to-square"></i> Catatan Pribadi
                         </a>
                     </li>
                     <li>
@@ -179,7 +155,7 @@ $totalTersimpan = count($daftarBookmark);
         </header>
 
         <main class="dashboard-container">
-            <!-- BANNER UTAMA DENGAN COUNTER TERSIMPAN DI POSISI KANAN -->
+            <!-- BANNER UTAMA -->
             <section class="welcome-banner">
                 <div class="banner-content-wrapper">
                     <div>
@@ -188,7 +164,6 @@ $totalTersimpan = count($daftarBookmark);
                         <p class="banner-subtitle">Simpan dan kelola seluruh peluang magang, beasiswa, dan bootcamp favoritmu di satu tempat.</p>
                     </div>
 
-                    <!-- MENGGANTIKAN TOMBOL TAMBAH DENGAN INFORMASI TOTAL TERSIMPAN -->
                     <div class="counter-box-main">
                         <div class="counter-icon">
                             <i class="fa-solid fa-bookmark"></i>
@@ -206,52 +181,44 @@ $totalTersimpan = count($daftarBookmark);
                 </div>
             <?php endif; ?>
 
-            <!-- GRID KARTU BOOKMARK (2 KOLOM PER BARIS) -->
+            <!-- GRID KARTU BOOKMARK (2 KOLOM) -->
             <div class="bookmark-grid" id="bookmarkGrid">
                 <?php if (empty($daftarBookmark)): ?>
                     <div class="empty-state">
                         <i class="fa-regular fa-bookmark"></i>
                         <h3>Belum ada bookmark tersimpan</h3>
                         <p>Simpan peluang favoritmu melalui katalog program.</p>
+                        <a href="dashboard.php" class="empty-state-action">
+                            <i class="fa-solid fa-magnifying-glass"></i> Cari Program Sekarang
+                        </a>
                     </div>
                 <?php else: ?>
                     <?php foreach ($daftarBookmark as $item): ?>
-                        <div class="bookmark-card" data-title="<?= strtolower(aman($item['judul'])) ?>">
+                        <!-- Seluruh Kartu Dapat Diklik -->
+                        <div class="bookmark-card clickable-card" onclick="openDetailModal(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
                             <div class="card-header-tag">
                                 <span class="kategori-tag"><?= aman($item['kategori']) ?></span>
                                 <span class="status-tag <?= $item['status'] === 'Mendekati Tenggat' ? 'warning' : 'active' ?>">
-                                    <?= aman($item['status']) ?>
+                                    <span class="badge-status-dot"></span> <?= aman($item['status']) ?>
                                 </span>
                             </div>
 
                             <h3 class="card-title"><?= aman($item['judul']) ?></h3>
                             <p class="penyelenggara"><i class="fa-regular fa-building"></i> <?= aman($item['penyelenggara']) ?></p>
 
-                            <?php if (!empty($item['pengingat'])): ?>
-                                <a href="pengingat.php?id=<?= urlencode($item['id']) ?>" class="pengingat-box-link" title="Lihat di Pengingat Tenggat">
-                                    <div class="pengingat-box">
-                                        <i class="fa-solid fa-bell"></i>
-                                        <span><?= aman($item['pengingat']) ?></span>
-                                        <i class="fa-solid fa-chevron-right arrow-icon"></i>
-                                    </div>
-                                </a>
-                            <?php endif; ?>
-
                             <div class="card-footer">
                                 <span class="deadline"><i class="fa-regular fa-calendar"></i> <?= aman($item['deadline']) ?></span>
 
                                 <div class="card-actions">
-                                    <button class="btn-action btn-detail" onclick="openDetailModal(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
+                                    <button type="button" class="btn-action btn-detail">
                                         <i class="fa-regular fa-eye"></i> Detail
                                     </button>
-                                    <button class="btn-action btn-edit" onclick="openEditModal(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
-                                        <i class="fa-regular fa-pen-to-square"></i> Edit
-                                    </button>
-                                    <form method="post" action="bookmark.php" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus bookmark ini?');">
+                                    
+                                    <form method="post" action="bookmark.php" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus program ini dari bookmark?');" onclick="event.stopPropagation();">
                                         <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
                                         <input type="hidden" name="id" value="<?= aman($item['id']) ?>">
                                         <input type="hidden" name="aksi" value="hapus">
-                                        <button class="btn-action btn-hapus" type="submit">
+                                        <button type="submit" class="btn-action btn-hapus">
                                             <i class="fa-regular fa-trash-can"></i> Hapus
                                         </button>
                                     </form>
@@ -264,106 +231,37 @@ $totalTersimpan = count($daftarBookmark);
         </main>
     </div>
 
-    <!-- MODAL EDIT -->
-    <div class="modal-overlay" id="formModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>Sunting Program Favorit</h3>
-                <button class="btn-close" onclick="closeModal('formModal')">&times;</button>
-            </div>
-            <form method="post" action="bookmark.php">
-                <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
-                <input type="hidden" name="aksi" id="formAksi" value="edit">
-                <input type="hidden" name="id" id="formId" value="">
-
-                <div class="form-group">
-                    <label for="judul">Nama Program / Judul</label>
-                    <input type="text" name="judul" id="inputJudul" required class="form-control">
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="kategori">Kategori</label>
-                        <select name="kategori" id="inputKategori" required class="form-control">
-                            <option value="Bootcamp">Bootcamp</option>
-                            <option value="Beasiswa">Beasiswa</option>
-                            <option value="Magang">Magang</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="status">Status Tenggat</label>
-                        <select name="status" id="inputStatus" required class="form-control">
-                            <option value="Aktif">Aktif</option>
-                            <option value="Mendekati Tenggat">Mendekati Tenggat</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="penyelenggara">Penyelenggara</label>
-                        <input type="text" name="penyelenggara" id="inputPenyelenggara" required class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="deadline">Batas Tenggat</label>
-                        <input type="date" name="deadline" id="inputDeadline" required class="form-control">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="deskripsi">Deskripsi Program</label>
-                    <textarea name="deskripsi" id="inputDeskripsi" rows="3" class="form-control"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="pengingat"><i class="fa-solid fa-bell"></i> Pengingat Pribadi</label>
-                    <textarea name="pengingat" id="inputPengingat" rows="2" class="form-control"></textarea>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn-batal" onclick="closeModal('formModal')">Batal</button>
-                    <button type="submit" class="btn-simpan">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL DETAIL -->
+    <!-- MODAL DETAIL (READ ONLY) -->
     <div class="modal-overlay" id="detailModal">
         <div class="modal-card">
             <div class="modal-header">
                 <h3>Detail Program Favorit</h3>
-                <button class="btn-close" onclick="closeModal('detailModal')">&times;</button>
+                <button type="button" class="btn-close" onclick="closeModal('detailModal')">&times;</button>
             </div>
             <div class="detail-body">
                 <div class="card-header-tag" style="margin-bottom: 12px;">
                     <span class="kategori-tag" id="detailKategori">-</span>
-                    <span class="status-tag active" id="detailStatus">-</span>
+                    <span class="status-tag active" id="detailStatus">
+                        <span class="badge-status-dot"></span> <span id="detailStatusText">-</span>
+                    </span>
                 </div>
-                <h2 id="detailJudul" style="font-size: 20px; color: #1e293b; margin-bottom: 8px;">-</h2>
-                <p id="detailPenyelenggara" style="color: #64748b; font-size: 14px; margin-bottom: 16px;"><i class="fa-regular fa-building"></i> -</p>
+                <h2 id="detailJudul" style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 8px;">-</h2>
+                <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">
+                    <i class="fa-regular fa-building"></i> Penyelenggara: <strong id="detailPenyelenggara" style="color: #334155;">-</strong>
+                </p>
                 
-                <div class="detail-section">
-                    <label style="font-weight: 600; font-size: 13px; color: #475569;">Deskripsi Lengkap:</label>
-                    <p id="detailDeskripsi" style="color: #334155; font-size: 14px; line-height: 1.6; margin-top: 4px;">-</p>
-                </div>
+                <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 12px 0;">
 
-                <div class="detail-section" style="margin-top: 16px;">
-                    <label style="font-weight: 600; font-size: 13px; color: #475569;"><i class="fa-solid fa-bell"></i> Pengingat Pribadi:</label>
-                    <div class="pengingat-box" id="detailPengingat" style="margin-top: 6px;">
-                        -
-                    </div>
+                <div class="detail-section">
+                    <label style="font-weight: 600; font-size: 13px; color: #475569;">Deskripsi & Persyaratan Program:</label>
+                    <p id="detailDeskripsi" style="color: #334155; font-size: 14px; line-height: 1.6; margin-top: 6px;">-</p>
                 </div>
 
                 <div class="detail-section" style="margin-top: 16px; font-size: 13px; color: #64748b;">
-                    <i class="fa-regular fa-calendar"></i> Tenggat: <strong id="detailDeadline">-</strong>
+                    <i class="fa-regular fa-calendar"></i> Batas Tenggat: <strong id="detailDeadline" style="color: #0f172a;">-</strong>
                 </div>
             </div>
             <div class="modal-footer" style="margin-top: 24px;">
-                <a href="pengingat.php" class="btn-simpan" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
-                    <i class="fa-regular fa-clock"></i> Kelola di Pengingat Tenggat
-                </a>
                 <button type="button" class="btn-batal" onclick="closeModal('detailModal')">Tutup</button>
             </div>
         </div>
