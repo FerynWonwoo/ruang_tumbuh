@@ -183,7 +183,7 @@ $statusLabel = [
                     <li><a href="dashboard.php" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
                     <li><a href="kategori.php" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-regular fa-bookmark"></i> Bookmark & Tersimpan</a></li>
+                    <li><a href="bookmark.php" class="nav-link"><i class="fa-regular fa-bookmark"></i> Bookmark</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-clock"></i> Pengingat Tenggat</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-pen-to-square"></i> Catatan Pribadi</a></li>
                     <li><a href="rating.php" class="nav-link active"><i class="fa-regular fa-star"></i> Ulasan & Rating</a></li>

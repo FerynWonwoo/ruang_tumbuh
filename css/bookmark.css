@@ -1,0 +1,620 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #F8FAF9;
+    color: #1F2937;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* =========================================================
+   SIDEBAR (IDENTIK DENGAN DASHBOARD.CSS)
+   ========================================================= */
+.sidebar {
+    width: 260px;
+    background-color: #FFFFFF;
+    border-right: 1px solid #F3F4F6;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    z-index: 20;
+}
+
+.logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1E3A2B;
+    letter-spacing: -0.5px;
+}
+
+.logo-text span {
+    color: #2D6A4F;
+}
+
+.nav-group {
+    margin-bottom: 24px;
+}
+
+.nav-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #4B5563;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: #F9FAFB;
+    color: #111827;
+}
+
+.nav-link.active {
+    background-color: #F0FDF4;
+    color: #166534;
+    font-weight: 600;
+}
+
+.nav-link i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    color: #9CA3AF;
+}
+
+.nav-link.active i {
+    color: #166534;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #dc2626;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.logout-link i {
+    width: 20px;
+    color: #ef4444;
+    font-size: 16px;
+    text-align: center;
+}
+
+.logout-link:hover {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+.logout-link:hover i {
+    color: #b91c1c;
+}
+
+/* =========================================================
+   MAIN AREA & HEADER
+   ========================================================= */
+.main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.header {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.search-box {
+    position: relative;
+    width: 50%;
+    max-width: 480px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9CA3AF;
+    font-size: 14px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px 10px 44px;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 9999px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    border-color: #10B981;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #E5E7EB;
+}
+
+.dashboard-container {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.welcome-banner {
+    background: linear-gradient(90deg, #FEF9C3 0%, #FEF08A 50%, #FFFBEB 100%);
+    padding: 32px;
+    border-radius: 24px;
+    border: 1px solid rgba(254, 240, 138, 0.8);
+}
+
+.badge-tag {
+    display: inline-block;
+    background-color: #059669;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+}
+
+.banner-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    letter-spacing: -0.5px;
+}
+
+.banner-subtitle {
+    color: #4B5563;
+    font-size: 14px;
+    margin-top: 8px;
+    max-width: 640px;
+}
+
+/* =========================================================
+   BOOKMARK CONTENT
+   ========================================================= */
+.alert-message {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alert-message.success {
+    background-color: #F0FDF4;
+    color: #166534;
+    border: 1px solid #BBF7D0;
+}
+
+/* Atur Grid agar selalu 2 Kolom dengan Lebar Sama */
+.bookmark-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Membagi 2 kolom sama rata */
+    gap: 16px; /* Jarak antar kartu */
+    margin-top: 5px;
+}
+
+/* Pastikan kartu memenuhi lebar kolom secara penuh */
+.bookmark-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.bookmark-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.card-header-tag {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.kategori-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: #2D6A4F;
+    background-color: #E8F5E9;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.status-tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.status-tag.warning {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.status-tag.active {
+    background-color: #E0E7FF;
+    color: #3730A3;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.penyelenggara {
+    font-size: 13px;
+    color: #6B7280;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.deadline {
+    white-space: nowrap;
+    font-size: 13px;
+    color: #64748b;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0; 
+}
+
+.btn-hapus {
+    background: none;
+    border: none;
+    color: #EF4444;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.btn-hapus:hover {
+    background-color: #FEF2F2;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 48px;
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    border: 1px solid #F3F4F6;
+    color: #9CA3AF;
+}
+
+.empty-state i {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+/* Badge Container & Counter */
+.badge-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.badge-count {
+    display: inline-block;
+    background-color: #10B981;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    margin-bottom: 12px;
+}
+
+/* Banner Wrapper */
+.banner-content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* Box Indikator Jumlah Tersimpan (Pengganti Tombol Tambah) */
+.counter-box-main {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid #e2e8f0;
+    padding: 10px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.counter-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #10B981;
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.counter-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.counter-number {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+.counter-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.btn-tambah-main {
+    background-color: #10B981;
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-tambah-main:hover {
+    background-color: #059669;
+}
+
+/* Tombol Aksi Kartu */
+.card-actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.btn-action {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: opacity 0.2s;
+}
+
+.btn-action:hover {
+    opacity: 0.85;
+}
+
+.btn-detail { background-color: #e0f2fe; color: #0369a1; }
+.btn-edit { background-color: #fef3c7; color: #b45309; }
+.btn-hapus { background-color: #fee2e2; color: #b91c1c; }
+
+/* Link Box Pengingat */
+.pengingat-box-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.pengingat-box {
+    background-color: #eff6ff;
+    border-left: 3px solid #3b82f6;
+    color: #1d4ed8;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pengingat-box .arrow-icon {
+    font-size: 11px;
+    color: #3b82f6;
+    margin-left: auto;
+}
+
+/* Overlay & Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+.modal-card {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 520px;
+    padding: 24px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.btn-batal {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-simpan {
+    background-color: #10B981;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
