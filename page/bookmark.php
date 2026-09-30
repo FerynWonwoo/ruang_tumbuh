@@ -17,26 +17,48 @@ if (empty($_SESSION['csrf'])) {
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
 }
 
-// Data awal bookmark tersimpan
-if (!isset($_SESSION['bookmarks'])) {
+// Data awal bookmark tersimpan (4 Item)
+if (!isset($_SESSION['bookmarks']) || count($_SESSION['bookmarks']) < 4) {
     $_SESSION['bookmarks'] = [
         [
             'id' => '1',
             'judul' => 'Beasiswa Akselerasi Talent Digital 2026',
             'kategori' => 'Beasiswa',
             'penyelenggara' => 'Kementerian Kominfo',
-            'deadline' => '2026-10-20',
+            'deadline' => '2026-Oktober-20',
             'status' => 'Aktif',
-            'deskripsi' => 'Program beasiswa penuh untuk pelatihan bidang teknologi digital dan sertifikasi internasional.'
+            'deskripsi' => 'Program beasiswa penuh untuk pelatihan bidang teknologi digital dan sertifikasi internasional.',
+            'link' => 'https://digital.kominfo.go.id'
         ],
         [
             'id' => '2',
             'judul' => 'Frontend Web Developer Internship Program',
             'kategori' => 'Magang',
             'penyelenggara' => 'Tech Corp Indonesia',
-            'deadline' => '2026-10-30',
+            'deadline' => '2026-Oktober-30',
             'status' => 'Aktif',
-            'deskripsi' => 'Program magang 6 bulan fokus pada pengembangan web modern menggunakan ReactJS dan pemanfaatan REST API.'
+            'deskripsi' => 'Program magang 6 bulan fokus pada pengembangan web modern menggunakan ReactJS dan pemanfaatan REST API.',
+            'link' => 'https://techcorp.id/careers'
+        ],
+        [
+            'id' => '3',
+            'judul' => 'UI/UX Design Intensive Bootcamp 2026',
+            'kategori' => 'Bootcamp',
+            'penyelenggara' => 'RuangTumbuh Academy',
+            'deadline' => '2026-Oktober-15',
+            'status' => 'Mendekati Tenggat',
+            'deskripsi' => 'Pelatihan intensif UI/UX design mencakup Design Thinking, Wireframing, Prototyping di Figma, hingga Usability Testing.',
+            'link' => 'https://ruangtumbuh.id/bootcamp'
+        ],
+        [
+            'id' => '4',
+            'judul' => 'National Cyber Security Hackathon',
+            'kategori' => 'Lomba',
+            'penyelenggara' => 'Badan Siber Indonesia',
+            'deadline' => '2026-November-05',
+            'status' => 'Aktif',
+            'deskripsi' => 'Kompetisi peretasan etis (Capture The Flag) tingkat nasional untuk menguji kemampuan analisis keamanan jaringan dan web.',
+            'link' => 'https://bssn.go.id/hackathon'
         ]
     ];
 }
@@ -107,15 +129,15 @@ $totalTersimpan = count($daftarBookmark);
                         </a>
                     </li>
                     <li>
+                        <a href="#" class="nav-link">
+                            <i class="fa-regular fa-clock"></i> Pengingat Tenggat
+                        </a>
+                    </li>
+                    <li>
                     <a href="#" class="nav-link">
                         <i class="fa-regular fa-pen-to-square"></i>
                         Catatan Pribadi
                     </a>
-                    </li>
-                    <li>
-                        <a href="pengingat.php" class="nav-link">
-                            <i class="fa-regular fa-clock"></i> Pengingat Tenggat
-                        </a>
                     </li>
                     <li>
                         <a href="rating.php" class="nav-link">
@@ -200,8 +222,11 @@ $totalTersimpan = count($daftarBookmark);
                     </div>
                 <?php else: ?>
                     <?php foreach ($daftarBookmark as $item): ?>
-                        <!-- Seluruh Kartu Dapat Diklik -->
-                        <div class="bookmark-card clickable-card" onclick="openDetailModal(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
+                        <div class="bookmark-card clickable-card" 
+                            data-kategori="<?= aman($item['kategori']) ?>" 
+                            data-deadline="<?= aman($item['deadline']) ?>"
+                            onclick="openDetailModal(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
+                            
                             <div class="card-header-tag">
                                 <span class="kategori-tag"><?= aman($item['kategori']) ?></span>
                                 <span class="status-tag <?= $item['status'] === 'Mendekati Tenggat' ? 'warning' : 'active' ?>">
@@ -237,7 +262,7 @@ $totalTersimpan = count($daftarBookmark);
         </main>
     </div>
 
-    <!-- MODAL DETAIL (READ ONLY) -->
+    <!-- MODAL DETAIL (READ ONLY & DIRECT ACTION) -->
     <div class="modal-overlay" id="detailModal">
         <div class="modal-card">
             <div class="modal-header">
@@ -267,8 +292,14 @@ $totalTersimpan = count($daftarBookmark);
                     <i class="fa-regular fa-calendar"></i> Batas Tenggat: <strong id="detailDeadline" style="color: #0f172a;">-</strong>
                 </div>
             </div>
-            <div class="modal-footer" style="margin-top: 24px;">
-                <button type="button" class="btn-batal" onclick="closeModal('detailModal')">Tutup</button>
+            
+            <div class="modal-footer" style="margin-top: 24px; display: flex; gap: 8px; justify-content: flex-end;">
+                <a href="pengingat.php" class="btn-action" style="padding: 8px 12px; background: #f1f5f9; color: #334155; border-radius: 6px; text-decoration: none; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fa-regular fa-bell"></i> Pasang Pengingat
+                </a>
+                <a id="detailLink" href="#" target="_blank" class="btn-action" style="padding: 8px 16px; background: #10B981; color: #fff; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Daftar Sekarang
+                </a>
             </div>
         </div>
     </div>
