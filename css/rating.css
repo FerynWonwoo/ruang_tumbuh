@@ -579,4 +579,308 @@ a:focus-visible {
         padding: 10px 13px;
     }
 }
+/* ==============================
+   ADMIN RATING
+================================ */
 
+.admin-rating {
+    background: #f8f9fd;
+}
+
+.admin-rating .main-area {
+    min-height: 100vh;
+    margin-left: 260px;
+}
+
+.admin-rating .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 82px;
+    padding: 18px 38px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.admin-rating .admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: right;
+}
+
+.admin-rating .admin-profile strong,
+.admin-rating .admin-profile span {
+    display: block;
+}
+
+.admin-rating .admin-profile span {
+    margin-top: 3px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.admin-rating .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #dff7ee;
+    color: #168264;
+    font-weight: bold;
+}
+
+.admin-rating .content {
+    width: 100%;
+    max-width: 1450px;
+    margin: auto;
+    padding: 34px 38px 60px;
+}
+
+/* statistik */
+
+.admin-rating .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.admin-rating .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+}
+
+.admin-rating .stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: #edf4ff;
+    color: #3b82f6;
+}
+
+.admin-rating .pending-icon {
+    background: #fff7df;
+    color: #d99500;
+}
+
+.admin-rating .approved-icon {
+    background: #e8f9f2;
+    color: #168264;
+}
+
+.admin-rating .rejected-icon {
+    background: #fff0f0;
+    color: #dc2626;
+}
+
+/* bagian daftar ulasan */
+
+.admin-rating .review-section {
+    padding: 25px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+}
+
+.admin-rating .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.admin-rating .filters {
+    display: flex;
+    gap: 10px;
+}
+
+.admin-rating .search-box {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 280px;
+    padding: 0 13px;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px;
+}
+
+.admin-rating .search-box input {
+    width: 100%;
+    padding: 11px 0;
+    border: none;
+    outline: none;
+    background: transparent;
+}
+
+.admin-rating .filters select {
+    padding: 11px 34px 11px 12px;
+    border: 1px solid #d9e2ec;
+    border-radius: 10px;
+    background: white;
+}
+
+/* card ulasan */
+
+.admin-rating .review-list {
+    display: grid;
+    gap: 15px;
+}
+
+.admin-rating .review-card {
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: white;
+}
+
+.admin-rating .review-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 17px;
+}
+
+.admin-rating .user {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.admin-rating .user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    background: #dff7ee;
+    color: #168264;
+    font-weight: bold;
+}
+
+.admin-rating .status {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.admin-rating .status.pending {
+    background: #fff7df;
+    color: #ba7800;
+}
+
+.admin-rating .status.approved {
+    background: #e8f9f2;
+    color: #08785b;
+}
+
+.admin-rating .status.rejected {
+    background: #fff0f0;
+    color: #c24141;
+}
+
+/* tombol */
+
+.admin-rating .review-actions {
+    display: flex;
+    gap: 9px;
+    margin-top: 19px;
+    padding-top: 17px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.admin-rating .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 13px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.admin-rating .btn.approve {
+    background: #e8f9f2;
+    color: #08785b;
+}
+
+.admin-rating .btn.reject {
+    background: #fff7df;
+    color: #b67500;
+}
+
+.admin-rating .btn.delete {
+    background: #fff0f0;
+    color: #c24141;
+}
+
+@media (max-width: 1100px) {
+    .admin-rating .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-rating .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 800px) {
+    .admin-rating .main-area {
+        margin-left: 0;
+    }
+
+    .admin-rating .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-rating .filters {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .admin-rating .search-box {
+        width: 100%;
+    }
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    color: #dc2626;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.logout-link:hover {
+    background: #fff0f0;
+}

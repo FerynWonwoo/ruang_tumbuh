@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pesanError = 'Semua kolom wajib diisi.';
         } elseif ($password !== $konfirmasiPassword) {
             $pesanError = 'Konfirmasi kata sandi tidak cocok.';
+        }   elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $pesanError = 'Format email tidak valid.';
         } else {
             // Simpan sementara ke session agar bisa dipakai login di index.php
             $_SESSION['registered_user'] = [

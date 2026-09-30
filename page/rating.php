@@ -180,9 +180,9 @@ $statusLabel = [
             <div class="nav-group" style="margin-top: 32px;">
                 <div class="nav-title">MENU UTAMA</div>
                 <ul class="nav-menu">
-                    <li><a href="dashboard.php  " class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
+                    <li><a href="dashboard.php" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
+                    <li><a href="kategori.php" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-bookmark"></i> Bookmark & Tersimpan</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-clock"></i> Pengingat Tenggat</a></li>
                     <li><a href="#" class="nav-link"><i class="fa-regular fa-pen-to-square"></i> Catatan Pribadi</a></li>
@@ -197,6 +197,10 @@ $statusLabel = [
                 </ul>
             </div>
         </div>
+         <a href="logout.php" class="logout-link">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Logout
+    </a>
     </aside>
 <main>
     <nav class="breadcrumb">

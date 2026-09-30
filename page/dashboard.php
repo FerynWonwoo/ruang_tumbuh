@@ -22,32 +22,91 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div>
-            <div class="logo-text">Ruang<span>Tumbuh</span></div>
-            
-            <div class="nav-group" style="margin-top: 32px;">
-                <div class="nav-title">MENU UTAMA</div>
-                <ul class="nav-menu">
-                    <li><a href="#" class="nav-link active"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
-                    <li><a href="kategori.php" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-regular fa-bookmark"></i> Bookmark & Tersimpan</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-regular fa-clock"></i> Pengingat Tenggat</a></li>
-                    <li><a href="#" class="nav-link"><i class="fa-regular fa-pen-to-square"></i> Catatan Pribadi</a></li>
-                    <li><a href="rating.php" class="nav-link"><i class="fa-regular fa-star"></i> Ulasan & Rating</a></li>
-                </ul>
-            </div>
+<aside class="sidebar">
 
-            <div class="nav-group">
-                <div class="nav-title">AKUN</div>
-                <ul class="nav-menu">
-                    <li><a href="profile.php" class="nav-link"><i class="fa-regular fa-user"></i> Profil Pengguna</a></li>
-                </ul>
-            </div>
+    <div>
+        <div class="logo-text">
+            Ruang<span>Tumbuh</span>
         </div>
-    </aside>
+
+        <div class="nav-group" style="margin-top: 32px;">
+            <div class="nav-title">MENU UTAMA</div>
+
+            <ul class="nav-menu">
+                <li>
+                    <a href="dashboard.php" class="nav-link">
+                        <i class="fa-solid fa-table-cells-large"></i>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-shapes"></i>
+                        Katalog Bootcamp
+                    </a>
+                </li>
+
+                <li>
+                    <a href="kategori.php" class="nav-link">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Kategori Program
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-regular fa-bookmark"></i>
+                        Bookmark & Tersimpan
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-regular fa-clock"></i>
+                        Pengingat Tenggat
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                        Catatan Pribadi
+                    </a>
+                </li>
+
+                <li>
+                    <a href="rating.php" class="nav-link">
+                        <i class="fa-regular fa-star"></i>
+                        Ulasan & Rating
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-title">AKUN</div>
+
+            <ul class="nav-menu">
+                <li>
+                    <a href="profile.php" class="nav-link">
+                        <i class="fa-regular fa-user"></i>
+                        Profil Pengguna
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="sidebar-bottom">
+        <a href="logout.php" class="logout-link">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </a>
+    </div>
+
+</aside>
 
     <!-- MAIN AREA -->
     <div class="main-area">

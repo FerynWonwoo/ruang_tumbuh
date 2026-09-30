@@ -127,3 +127,28 @@
 .btn-simpan:hover {
     background-color: #a7f3d0;
 }
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    color: #dc2626;
+
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.logout-link:hover {
+    background: #fff0f0;
+}

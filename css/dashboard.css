@@ -417,3 +417,46 @@ body {
 .event-green { background-color: #059669; color: #FFFFFF; }
 .event-yellow { background-color: #FDE047; color: #713F12; }
 .event-gray { background-color: #E5E7EB; color: #374151; }
+
+/* LOGOUT */
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    padding: 10px 16px;
+
+    border-radius: 12px;
+
+    color: #dc2626;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: all 0.2s ease;
+}
+
+.logout-link i {
+    width: 20px;
+    color: #ef4444;
+    font-size: 16px;
+    text-align: center;
+}
+
+.logout-link:hover {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+.logout-link:hover i {
+    color: #b91c1c;
+}

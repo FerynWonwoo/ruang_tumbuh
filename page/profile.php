@@ -166,6 +166,7 @@ $kelengkapan = (int) round($terisi / 8 * 100);
 </head>
 
 <body>
+    
     <header class="header">
         <div class="header-inner">
             <a class="brand" href="dashboard.php">
