@@ -1,11 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-
-header("Location: dashboard.php");
-exit();
-
->>>>>>> f871037 (up dashboard)
 // Contoh login sederhana tanpa database.
 session_start();
 header('Cache-Control: no-store');
