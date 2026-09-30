@@ -34,13 +34,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($password !== $konfirmasiPassword) {
             $pesanError = 'Konfirmasi kata sandi tidak cocok.';
         } else {
-            // Logika simpan akun baru bisa ditambahkan di sini
+            // Simpan sementara ke session agar bisa dipakai login di index.php
+            $_SESSION['registered_user'] = [
+                'nama_lengkap' => $namaLengkap,
+                'username'     => $username,
+                'email'        => $email,
+                'password'     => $password
+            ];
+            
             header('Location: index.php');
             exit;
-        }
-    }
-}
-
+        } // <-- Menutup blok else
+    } // <-- Menutup blok elseif ($aksi === 'register')
+} // <-- Menutup blok if ($_SERVER['REQUEST_METHOD'] === 'POST')
 ?>
 <!DOCTYPE html>
 <html lang="id">

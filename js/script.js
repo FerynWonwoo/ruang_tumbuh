@@ -14,7 +14,6 @@ if (lihatPassword && password) {
 }
 
 const video = document.querySelector(".background-video");
-const tombolVideo = document.querySelector(".video-control");
 const gerakanMinimal = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 const dialogInfo = document.getElementById("info-akun");

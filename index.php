@@ -1,11 +1,8 @@
 <?php
 <<<<<<< HEAD
+header('Location: page/index.php');
+exit;
 =======
-
-header("Location: dashboard.php");
-exit();
-
->>>>>>> f871037 (up dashboard)
 // Contoh login sederhana tanpa database.
 session_start();
 header('Cache-Control: no-store');
@@ -132,3 +129,4 @@ $sudahLogin = isset($_SESSION['username']);
     <p class="copyright">© <?= date('Y') ?> Ruang Tumbuh. All rights reserved.</p>
 </body>
 </html>
+>>>>>>> f871037 (up dashboard)

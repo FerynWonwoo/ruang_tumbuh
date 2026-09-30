@@ -1,0 +1,129 @@
+/* Styling Khusus Halaman Kategori Program */
+
+/* 1. Pembungkus Hero utama dengan warna KUNING PASTEL khas Dashboard */
+.kategori-hero-wrapper {
+    background-color: #fef9c3; /* Kuning pastel lembut seperti di dashboard */
+    border: 1px solid #fef08a;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+/* Header di dalam Banner Hero Kuning */
+.kategori-header {
+    margin-bottom: 20px;
+}
+
+.badge-tag {
+    display: inline-block;
+    background-color: #0d9488; /* Hijau teal/emerald badge */
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+}
+
+.kategori-header h1 {
+    font-size: 1.5rem;
+    color: #0f172a;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.kategori-header p {
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+/* 2. Grid Kategori */
+.kategori-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+/* 3. Kartu Kategori (Putih Bersih di dalam Hero Kuning) */
+.kategori-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid #fef08a; /* Border kuning sangat tipis */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.kategori-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.kategori-icon-wrapper {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.kategori-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #0f172a;
+}
+
+.kategori-desc {
+    font-size: 0.825rem;
+    color: #64748b;
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.kategori-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.775rem;
+    font-weight: 600;
+    color: #0f172a;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 10px;
+}
+
+.badge-count {
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: #475569;
+}
+
+/* 4. Tombol + Simpan Peluang (Hijau Mint Lembut seperti di Dashboard) */
+.btn-simpan {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-simpan:hover {
+    background-color: #a7f3d0;
+}
