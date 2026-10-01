@@ -96,7 +96,7 @@ $kategori_list = [
                     </li>
 
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="katalog.php" class="nav-link">
                             <i class="fa-solid fa-shapes"></i>
                             Katalog Bootcamp
                         </a>
@@ -124,7 +124,7 @@ $kategori_list = [
                     </li>
 
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="catatan.php" class="nav-link">
                             <i class="fa-regular fa-pen-to-square"></i>
                             Catatan Pribadi
                         </a>
@@ -134,19 +134,6 @@ $kategori_list = [
                         <a href="rating.php" class="nav-link">
                             <i class="fa-regular fa-star"></i>
                             Ulasan & Rating
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="nav-group">
-                <div class="nav-title">AKUN</div>
-
-                <ul class="nav-menu">
-                    <li>
-                        <a href="profile.php" class="nav-link">
-                            <i class="fa-regular fa-user"></i>
-                            Profil Pengguna
                         </a>
                     </li>
                 </ul>

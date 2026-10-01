@@ -34,7 +34,7 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
 
             <ul class="nav-menu">
                 <li>
-                    <a href="dashboard.php" class="nav-link">
+                    <a href="dashboard.php" class="nav-link active">
                         <i class="fa-solid fa-table-cells-large"></i>
                         Dashboard
                     </a>
@@ -69,7 +69,7 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="catatan.php" class="nav-link">
                         <i class="fa-regular fa-pen-to-square"></i>
                         Catatan Pribadi
                     </a>
@@ -79,19 +79,6 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                     <a href="rating.php" class="nav-link">
                         <i class="fa-regular fa-star"></i>
                         Ulasan & Rating
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-title">AKUN</div>
-
-            <ul class="nav-menu">
-                <li>
-                    <a href="profile.php" class="nav-link">
-                        <i class="fa-regular fa-user"></i>
-                        Profil Pengguna
                     </a>
                 </li>
             </ul>

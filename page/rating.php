@@ -249,19 +249,12 @@ $statusLabel = [
             <div class="nav-title">MENU UTAMA</div>
             <ul class="nav-menu">
                 <li><a href="dashboard.php" class="nav-link"><i class="fa-solid fa-table-cells-large"></i>Dashboard</a></li>
-                <li><a href="#" class="nav-link"><i class="fa-solid fa-shapes"></i>Katalog Bootcamp</a></li>
+                <li><a href="katalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i>Katalog Bootcamp</a></li>
                 <li><a href="kategori.php" class="nav-link"><i class="fa-solid fa-layer-group"></i>Kategori Program</a></li>
-                <li><a href="#" class="nav-link"><i class="fa-regular fa-bookmark"></i>Bookmark</a></li>
-                <li><a href="#" class="nav-link"><i class="fa-regular fa-clock"></i>Pengingat Tenggat</a></li>
-                <li><a href="#" class="nav-link"><i class="fa-regular fa-pen-to-square"></i>Catatan Pribadi</a></li>
+                <li><a href="bookmark.php" class="nav-link"><i class="fa-regular fa-bookmark"></i>Bookmark</a></li>
+                <li><a href="pengingat.php" class="nav-link"><i class="fa-regular fa-clock"></i>Pengingat Tenggat</a></li>
+                <li><a href="catatan.php" class="nav-link"><i class="fa-regular fa-pen-to-square"></i>Catatan Pribadi</a></li>
                 <li><a href="rating.php" class="nav-link active"><i class="fa-regular fa-star"></i>Ulasan &amp; Rating</a></li>
-            </ul>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-title">AKUN</div>
-            <ul class="nav-menu">
-                <li><a href="profile.php" class="nav-link"><i class="fa-regular fa-user"></i>Profil Pengguna</a></li>
             </ul>
         </div>
     </div>
@@ -277,15 +270,15 @@ $statusLabel = [
 <div class="main-area">
 
     <header class="header">
-        <a href="profile.php" class="profile-section" title="Lihat profil">
+`        <a href="profile.php" class="profile-section" title="Lihat profil">
             <div class="profile-info">
                 <div class="profile-name"><?= aman($username) ?></div>
                 <div class="profile-role"><?= $admin ? 'Admin' : 'Pengguna' ?></div>
             </div>
-            <div class="avatar">
+            <div class="avatar"> 
                 <?= aman(strtoupper(mb_substr($username, 0, 2))) ?>
             </div>
-        </a>
+        </a>`
     </header>
 
     <main class="page">
@@ -293,7 +286,7 @@ $statusLabel = [
         <!-- BANNER -->
         <section class="banner">
             <div class="banner-text">
-                <span class="badge-tag">• Suara Peserta Bootcamp</span>
+                <span class="badge-tag">Peserta Bootcamp</span>
                 <h1>Ulasan &amp; Rating</h1>
                 <p>
                     <?= $admin

@@ -12,7 +12,7 @@ $nama_user = isset($_SESSION['nama'])
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta na    me="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengingat Tenggat - RuangTumbuh</title>
 
     <link rel="stylesheet"
@@ -73,7 +73,7 @@ $nama_user = isset($_SESSION['nama'])
                     </li>
 
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="catatan.php" class="nav-link">
                             <i class="fa-regular fa-pen-to-square"></i>
                             Catatan Pribadi
                         </a>
@@ -89,28 +89,21 @@ $nama_user = isset($_SESSION['nama'])
                 </ul>
             </div>
 
-
-            <div class="nav-group">
-                <div class="nav-title">AKUN</div>
-
-                <ul class="nav-menu">
-                    <li>
-                        <a href="profile.php" class="nav-link">
-                            <i class="fa-regular fa-user"></i>
-                            Profil Pengguna
-                        </a>
-                    </li>
-                </ul>
             </div>
 
         </div>
+    </div>
+        <div class="sidebar-bottom">
+        <a href="logout.php" class="logout-link">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </a>
     </div>
 
 </aside>
 
 
 <main class="main-area">
-
     <div class="pengingat-container">
 
         <!-- BANNER -->
