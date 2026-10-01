@@ -1,0 +1,29 @@
+{
+    "ab71fcb0c4759ab1": {
+        "id": "ab71fcb0c4759ab1",
+        "username": "ruangtumbuh",
+        "bootcamp": "uiux",
+        "rating": 5,
+        "komentar": "seru banget",
+        "status": "approved",
+        "tanggal": "01\/10\/2026"
+    },
+    "d75592a078a4546b": {
+        "id": "d75592a078a4546b",
+        "username": "ruangtumbuh",
+        "bootcamp": "coding",
+        "rating": 5,
+        "komentar": "asik cara ajarnya",
+        "status": "approved",
+        "tanggal": "01\/10\/2026"
+    },
+    "d171c9e283d45cc7": {
+        "id": "d171c9e283d45cc7",
+        "username": "ruangtumbuh",
+        "bootcamp": "coding camp",
+        "rating": 3,
+        "komentar": "terlalu cepat",
+        "status": "approved",
+        "tanggal": "01\/10\/2026"
+    }
+}

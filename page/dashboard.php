@@ -62,7 +62,7 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="pengingat.php" class="nav-link">
                         <i class="fa-regular fa-clock"></i>
                         Pengingat Tenggat
                     </a>
