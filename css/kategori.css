@@ -152,3 +152,19 @@
 .logout-link:hover {
     background: #fff0f0;
 }
+
+/* Menu sidebar aktif (hijau) */
+.sidebar .nav-link.active {
+    background-color: #d1fae5;
+    color: #065f46;
+    font-weight: 700;
+}
+
+.sidebar .nav-link.active i {
+    color: #065f46;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #ecfdf5;
+    color: #065f46;
+}

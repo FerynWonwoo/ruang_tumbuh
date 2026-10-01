@@ -5,6 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Fallback session username jika belum didefinisikan
 $nama_user = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Pengguna';
+$halamanAktif = basename($_SERVER['PHP_SELF']);
 
 // Data Kategori Program
 $kategori_list = [
@@ -60,109 +61,111 @@ $kategori_list = [
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Kategori Program</title>
-    
+
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- CSS File External -->
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/kategori.css">
 </head>
+
 <body>
 
-<aside class="sidebar">
+    <aside class="sidebar">
 
-    <div>
-        <div class="logo-text">
-            Ruang<span>Tumbuh</span>
+        <div>
+            <div class="logo-text">
+                Ruang<span>Tumbuh</span>
+            </div>
+
+            <div class="nav-group" style="margin-top: 32px;">
+                <div class="nav-title">MENU UTAMA</div>
+
+                <ul class="nav-menu">
+                    <li>
+                        <a href="dashboard.php" class="nav-link">
+                            <i class="fa-solid fa-table-cells-large"></i>
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="nav-link">
+                            <i class="fa-solid fa-shapes"></i>
+                            Katalog Bootcamp
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="kategori.php" class="nav-link <?= $halamanAktif === 'kategori.php' ? 'active' : '' ?>">
+                            <i class="fa-solid fa-layer-group"></i>
+                            Kategori Program
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="bookmark.php" class="nav-link">
+                            <i class="fa-regular fa-bookmark"></i>
+                            Bookmark
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="pengingat.php" class="nav-link">
+                            <i class="fa-regular fa-clock"></i>
+                            Pengingat Tenggat
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="nav-link">
+                            <i class="fa-regular fa-pen-to-square"></i>
+                            Catatan Pribadi
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="rating.php" class="nav-link">
+                            <i class="fa-regular fa-star"></i>
+                            Ulasan & Rating
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="nav-group">
+                <div class="nav-title">AKUN</div>
+
+                <ul class="nav-menu">
+                    <li>
+                        <a href="profile.php" class="nav-link">
+                            <i class="fa-regular fa-user"></i>
+                            Profil Pengguna
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <div class="nav-group" style="margin-top: 32px;">
-            <div class="nav-title">MENU UTAMA</div>
 
-            <ul class="nav-menu">
-                <li>
-                    <a href="dashboard.php" class="nav-link">
-                        <i class="fa-solid fa-table-cells-large"></i>
-                        Dashboard
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="nav-link">
-                        <i class="fa-solid fa-shapes"></i>
-                        Katalog Bootcamp
-                    </a>
-                </li>
-
-                <li>
-                    <a href="kategori.php" class="nav-link">
-                        <i class="fa-solid fa-layer-group"></i>
-                        Kategori Program
-                    </a>
-                </li>
-
-                <li>
-                    <a href="bookmark.php" class="nav-link">
-                        <i class="fa-regular fa-bookmark"></i>
-                        Bookmark
-                    </a>
-                </li>
-
-                <li>
-                    <a href="pengingat.php" class="nav-link">
-                        <i class="fa-regular fa-clock"></i>
-                        Pengingat Tenggat
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="nav-link">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        Catatan Pribadi
-                    </a>
-                </li>
-
-                <li>
-                    <a href="rating.php" class="nav-link">
-                        <i class="fa-regular fa-star"></i>
-                        Ulasan & Rating
-                    </a>
-                </li>
-            </ul>
+        <div class="sidebar-bottom">
+            <a href="logout.php" class="logout-link">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
         </div>
 
-        <div class="nav-group">
-            <div class="nav-title">AKUN</div>
-
-            <ul class="nav-menu">
-                <li>
-                    <a href="profile.php" class="nav-link">
-                        <i class="fa-regular fa-user"></i>
-                        Profil Pengguna
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-
-    <div class="sidebar-bottom">
-        <a href="logout.php" class="logout-link">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </a>
-    </div>
-
-</aside>
+    </aside>
 
     <!-- MAIN AREA -->
     <div class="main-area">
-        
+
         <!-- HEADER -->
         <header class="header">
             <div class="search-box">
@@ -174,7 +177,7 @@ $kategori_list = [
                 <button class="btn-simpan">
                     <i class="fa-solid fa-plus"></i> Simpan Peluang
                 </button>
-                
+
                 <div class="profile-section">
                     <img src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff" alt="Avatar" class="profile-avatar">
                 </div>
@@ -183,10 +186,10 @@ $kategori_list = [
 
         <!-- DASHBOARD CONTAINER -->
         <main class="dashboard-container">
-            
+
             <!-- HERO CONTAINER KUNING UTUH (Membungkus Judul & Kartu) -->
             <div class="kategori-hero-card">
-                
+
                 <!-- HEADER JUDUL -->
                 <div class="kategori-header">
                     <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> Eksplorasi Program</span>
@@ -221,4 +224,5 @@ $kategori_list = [
     <!-- JS File External -->
     <script src="../js/kategori.js"></script>
 </body>
+
 </html>
