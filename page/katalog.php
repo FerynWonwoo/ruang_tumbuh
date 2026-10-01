@@ -130,7 +130,7 @@ $nama_user = isset($_SESSION['nama'])
                 <li>
                     <a href="#" class="nav-link">
                         <i class="fa-regular fa-bookmark"></i>
-                        Bookmark & Tersimpan
+                        Bookmark 
                     </a>
                 </li>
 
