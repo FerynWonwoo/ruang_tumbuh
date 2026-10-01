@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['bootcamp'])) {
+if (!isset($_SESSION['bootcamp']) || empty($_SESSION['bootcamp'])) {
     $_SESSION['bootcamp'] = [
         [
             'id' => 1,
@@ -128,14 +128,14 @@ $nama_user = isset($_SESSION['nama'])
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="bookmark.php" class="nav-link">
                         <i class="fa-regular fa-bookmark"></i>
                         Bookmark 
                     </a>
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="pengingat.php" class="nav-link">
                         <i class="fa-regular fa-clock"></i>
                         Pengingat Tenggat
                     </a>

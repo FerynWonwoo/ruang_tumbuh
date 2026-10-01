@@ -114,7 +114,7 @@ $totalTersimpan = count($daftarBookmark);
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="katalog.php" class="nav-link">
                             <i class="fa-solid fa-shapes"></i> Katalog Bootcamp
                         </a>
                     </li>
