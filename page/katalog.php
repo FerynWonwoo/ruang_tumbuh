@@ -5,78 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if (!isset($_SESSION['bootcamp']) || empty($_SESSION['bootcamp'])) {
     $_SESSION['bootcamp'] = [
-        [
-            'id' => 1,
-            'judul' => 'UI/UX Design Bootcamp',
-            'penyelenggara' => 'Ruang Tumbuh Academy',
-            'kategori' => 'Design',
-            'mode' => 'Online',
-            'durasi' => '4 Minggu',
-            'deadline' => '2026-10-15',
-            'harga' => 'Gratis',
-            'link' => '#',
-            'deskripsi' => 'Pelatihan dasar hingga lanjutan UI/UX Design untuk mahasiswa.'
-        ],
-        [
-            'id' => 2,
-            'judul' => 'Web Development Bootcamp',
-            'penyelenggara' => 'Ruang Tumbuh Academy',
-            'kategori' => 'Teknologi',
-            'mode' => 'Online',
-            'durasi' => '6 Minggu',
-            'deadline' => '2026-10-20',
-            'harga' => 'Rp150.000',
-            'link' => '#',
-            'deskripsi' => 'Belajar membangun website modern menggunakan HTML, CSS, JavaScript, dan PHP.'
-        ],
-        [
-            'id' => 3,
-            'judul' => 'Digital Marketing Bootcamp',
-            'penyelenggara' => 'SkillUp Indonesia',
-            'kategori' => 'Marketing',
-            'mode' => 'Offline',
-            'durasi' => '3 Minggu',
-            'deadline' => '2026-10-25',
-            'harga' => 'Rp100.000',
-            'link' => '#',
-            'deskripsi' => 'Mempelajari strategi digital marketing, content planning, dan social media marketing.'
-        ],
-        [
-            'id' => 4,
-            'judul' => 'Data Analytics Bootcamp',
-            'penyelenggara' => 'DataCamp Indonesia',
-            'kategori' => 'Data',
-            'mode' => 'Online',
-            'durasi' => '5 Minggu',
-            'deadline' => '2026-11-01',
-            'harga' => 'Rp200.000',
-            'link' => '#',
-            'deskripsi' => 'Pelatihan analisis data menggunakan spreadsheet dan tools data analytics.'
-        ],
-        [
-            'id' => 5,
-            'judul' => 'Graphic Design Bootcamp',
-            'penyelenggara' => 'Creative Academy',
-            'kategori' => 'Design',
-            'mode' => 'Offline',
-            'durasi' => '4 Minggu',
-            'deadline' => '2026-11-05',
-            'harga' => 'Rp175.000',
-            'link' => '#',
-            'deskripsi' => 'Belajar prinsip desain grafis, layout, warna, dan pembuatan visual digital.'
-        ],
-        [
-            'id' => 6,
-            'judul' => 'Python Programming Bootcamp',
-            'penyelenggara' => 'TechSkill Academy',
-            'kategori' => 'Teknologi',
-            'mode' => 'Online',
-            'durasi' => '8 Minggu',
-            'deadline' => '2026-11-10',
-            'harga' => 'Rp250.000',
-            'link' => '#',
-            'deskripsi' => 'Belajar pemrograman Python dari dasar hingga pembuatan project sederhana.'
-        ]
+        
     ];
 }
 

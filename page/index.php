@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // LOGIN ADMIN
         if ($username === 'admin' && $password === 'admin123') {
             $_SESSION['username'] = 'admin';
-            $_SESSION['role'] = 'admin';
+            $_SESSION['role'] = 'adminkategori.php';
             header('Location: adminrating.php');
             exit;
         }
