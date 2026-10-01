@@ -2,7 +2,8 @@
 session_start();
 header('Cache-Control: no-store');
 
-function aman($teks) {
+function aman($teks)
+{
     return htmlspecialchars($teks, ENT_QUOTES, 'UTF-8');
 }
 
@@ -33,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pesanError = 'Semua kolom wajib diisi.';
         } elseif ($password !== $konfirmasiPassword) {
             $pesanError = 'Konfirmasi kata sandi tidak cocok.';
-        }   elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $pesanError = 'Format email tidak valid.';
         } else {
             // Simpan sementara ke session agar bisa dipakai login di index.php
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'email'        => $email,
                 'password'     => $password
             ];
-            
+
             header('Location: index.php');
             exit;
         } // <-- Menutup blok else
@@ -52,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -59,6 +61,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/style.css">
     <script src="../js/script.js" defer></script>
 </head>
+
+<script>
+    document.addEventListener('click', function(e) {
+        const tombol = e.target.closest('.toggle-password');
+        if (!tombol) return;
+
+        e.stopPropagation(); // cegah script.js ikut menangani klik ini
+
+        const input = document.getElementById(tombol.getAttribute('aria-controls'));
+        const garis = tombol.querySelector('.garis-mata');
+        const tampil = input.type === 'password';
+
+        input.type = tampil ? 'text' : 'password';
+        garis.hidden = !tampil; // password terlihat → garis muncul
+        tombol.setAttribute('aria-pressed', tampil);
+    }, true);
+</script>
+
 <body>
 
     <video class="background-video" autoplay muted loop playsinline aria-hidden="true" tabindex="-1">
@@ -104,22 +124,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label for="email">Email</label>
                     <input id="email" name="email" type="email" value="<?= aman($email) ?>" placeholder="contoh@email.com" autocomplete="email" required>
 
+                    <!-- KATA SANDI -->
                     <label for="password">Kata Sandi</label>
                     <div class="password-field">
                         <input id="password" name="password" type="password" placeholder="Buat kata sandi..." autocomplete="new-password" required>
                         <button class="toggle-password" id="lihat-password" type="button" aria-controls="password" aria-label="Tampilkan kata sandi" aria-pressed="false">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7Z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                                <path id="garis-mata" d="M3 3 21 21" hidden/>
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                                <circle cx="12" cy="12" r="3" />
+                                <path class="garis-mata" d="M3 3 21 21" hidden />
                             </svg>
                         </button>
                     </div>
 
+                    <!-- KONFIRMASI KATA SANDI -->
                     <label for="konfirmasi_password">Konfirmasi Kata Sandi</label>
-                    <input id="konfirmasi_password" name="konfirmasi_password" type="password" placeholder="Ulangi kata sandi..." autocomplete="new-password" required>
+                    <div class="password-field">
+                        <input id="konfirmasi_password" name="konfirmasi_password" type="password" placeholder="Ulangi kata sandi..." autocomplete="new-password" required>
+                        <button class="toggle-password" id="lihat-konfirmasi-password" type="button" aria-controls="konfirmasi_password" aria-label="Tampilkan konfirmasi kata sandi" aria-pressed="false">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                                <circle cx="12" cy="12" r="3" />
+                                <path class="garis-mata" d="M3 3 21 21" hidden />
+                            </svg>
+                        </button>
+                    </div>
 
-                    <button class="submit-button" type="submit">DAFTAR AKUN SEKARANG <span aria-hidden="true">→</span></button>
+                    <button class="submit-button" type="submit">DAFTAR SEKARANG <span>→</span></button>
                 </form>
 
                 <p class="register-prompt">Sudah punya akun? <a href="index.php" class="register-link">Masuk di sini</a></p>
@@ -130,4 +161,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <p class="copyright">© <?= date('Y') ?> Ruang Tumbuh. All rights reserved.</p>
 </body>
+
 </html>

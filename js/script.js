@@ -1,17 +1,26 @@
-const password = document.getElementById("password");
-const lihatPassword = document.getElementById("lihat-password");
-const garisMata = document.getElementById("garis-mata");
+// Toggle Password Universal (Mendukung Kata Sandi & Konfirmasi Kata Sandi)
+const toggleButtons = document.querySelectorAll(".toggle-password");
 
-if (lihatPassword && password) {
-    lihatPassword.addEventListener("click", function () {
-        const tampilkan = password.type === "password";
-        password.type = tampilkan ? "text" : "password";
-        garisMata.toggleAttribute("hidden", !tampilkan);
-        lihatPassword.setAttribute("aria-pressed", String(tampilkan));
-        lihatPassword.setAttribute("aria-label",
-            tampilkan ? "Sembunyikan kata sandi" : "Tampilkan kata sandi");
+toggleButtons.forEach((btn) => {
+    btn.addEventListener("click", function () {
+        const inputContainer = this.closest(".password-field");
+        const passwordInput = inputContainer ? inputContainer.querySelector("input") : null;
+        const garisMata = this.querySelector(".garis-mata");
+
+        if (passwordInput) {
+            const tampilkan = passwordInput.type === "password";
+            passwordInput.type = tampilkan ? "text" : "password";
+            if (garisMata) {
+                garisMata.toggleAttribute("hidden", !tampilkan);
+            }
+            this.setAttribute("aria-pressed", String(tampilkan));
+            this.setAttribute(
+                "aria-label",
+                tampilkan ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"
+            );
+        }
     });
-}
+});
 
 const video = document.querySelector(".background-video");
 const gerakanMinimal = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -29,14 +38,12 @@ const daftarAkun = document.getElementById("daftar-akun");
 
 if (lupaPassword) {
     lupaPassword.addEventListener("click", function () {
-        tampilkanInfo("Lupa kata sandi?",
-            "Pemulihan kata sandi belum tersedia.");
+        tampilkanInfo("Lupa kata sandi?", "Pemulihan kata sandi belum tersedia.");
     });
 }
 
 if (daftarAkun) {
     daftarAkun.addEventListener("click", function () {
-        tampilkanInfo("Daftar akun",
-            "Pendaftaran belum tersedia.");
+        tampilkanInfo("Daftar akun", "Pendaftaran belum tersedia.");
     });
 }
