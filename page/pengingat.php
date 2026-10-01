@@ -59,9 +59,9 @@ $nama_user = isset($_SESSION['nama'])
                     </li>
 
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="bookmark.php" class="nav-link">
                             <i class="fa-regular fa-bookmark"></i>
-                            Bookmark &amp;<br>Tersimpan
+                            Bookmark 
                         </a>
                     </li>
 

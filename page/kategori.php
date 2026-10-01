@@ -114,7 +114,7 @@ $kategori_list = [
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="pengingat.php" class="nav-link">
                         <i class="fa-regular fa-clock"></i>
                         Pengingat Tenggat
                     </a>
