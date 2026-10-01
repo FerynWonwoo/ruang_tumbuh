@@ -123,68 +123,7 @@ $username = $_SESSION['username'] ?? 'Talenta Muda';
 <body>
 
 <div class="app">
-    <aside class="sidebar">
-        <a href="dashboard.php" class="logo">
-            <span class="logo-dark">Ruang</span><span class="logo-green">Tumbuh</span>
-        </a>
-
-        <div class="sidebar-section">
-            <p class="sidebar-title">MENU UTAMA</p>
-
-            <nav class="sidebar-menu">
-                <a href="dashboard.php" class="menu-item">
-                    <span class="menu-icon">▦</span>
-                    <span>Dashboard</span>
-                </a>
-
-                <a href="katalog.php" class="menu-item">
-                    <span class="menu-icon">◇</span>
-                    <span>Katalog Bootcamp</span>
-                </a>
-
-                <a href="kategori.php" class="menu-item">
-                    <span class="menu-icon">▦</span>
-                    <span>Kategori Program</span>
-                </a>
-
-                <a href="bookmark.php" class="menu-item">
-                    <span class="menu-icon">♧</span>
-                    <span>Bookmark & Tersimpan</span>
-                </a>
-
-                <a href="pengingat.php" class="menu-item">
-                    <span class="menu-icon">◷</span>
-                    <span>Pengingat Tenggat</span>
-                </a>
-
-                <a href="catatan.php" class="menu-item active">
-                    <span class="menu-icon">≡</span>
-                    <span>Catatan Pribadi</span>
-                </a>
-
-                <a href="rating.php" class="menu-item">
-                    <span class="menu-icon">☆</span>
-                    <span>Ulasan & Rating</span>
-                </a>
-            </nav>
-        </div>
-
-        <div class="sidebar-section account-section">
-            <p class="sidebar-title">AKUN</p>
-
-            <nav class="sidebar-menu">
-                <a href="profile.php" class="menu-item">
-                    <span class="menu-icon">♙</span>
-                    <span>Profil Pengguna</span>
-                </a>
-
-                <a href="pengaturan.php" class="menu-item">
-                    <span class="menu-icon">⚙</span>
-                    <span>Pengaturan</span>
-                </a>
-            </nav>
-        </div>
-    </aside>
+    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
     <div class="main-area">
         <header class="navbar">
