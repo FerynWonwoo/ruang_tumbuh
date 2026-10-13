@@ -119,42 +119,30 @@ $username = $_SESSION['username'] ?? 'Talenta Muda';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catatan Pribadi | RuangTumbuh</title>
     <link rel="stylesheet" href="../css/catatan.css">
+    <style>
+    .avatar, .profile-navbar .avatar, .navbar .avatar {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
 <div class="app">
+    <!-- SIDEBAR -->
     <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
-    ```html
-<!-- HEADER -->
-<header class="header">
-    <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input
-            type="text"
-            class="search-input"
-            placeholder="Cari catatan..."
-            name="search"
-        >
-    </div>
-
-    <div class="header-actions">
-        <button type="button" class="btn-simpan" onclick="document.getElementById('judul').focus()">
-            <i class="fa-solid fa-plus"></i> Tambah Catatan
-        </button>
-
-        <div class="profile-section">
-            <img
-                src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff"
-                alt="Avatar"
-                class="profile-avatar"
-            >
-        </div>
-    </div>
-</header>
+    <!-- MAIN AREA -->
+    <div class="main-area">
+        
+        <!-- HEADER GLOBAL UTAMA (DISAMAKAN DENGAN HALAMAN LAIN) -->
+        <?php include __DIR__ . '/../includes/header.php'; ?>
 
         <main class="content">
-            <section class="page-header">
+            <!-- BANNER UTAMA DENGAN TOMBOL BUAT CATATAN DI DALAMNYA -->
+            <section class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <div class="header-label">
                         <span class="label-dot"></span>
@@ -168,10 +156,22 @@ $username = $_SESSION['username'] ?? 'Talenta Muda';
                     </p>
                 </div>
 
-                <div class="header-decoration">
-                    <div class="note-icon">✎</div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <a href="#form-catatan" class="save-button" style="text-decoration: none; white-space: nowrap;">
+                        <span>+</span> Buat Catatan
+                    </a>
+                    <div class="header-decoration" style="padding: 0;">
+                        <div class="note-icon">✎</div>
+                    </div>
                 </div>
             </section>
+
+            <!-- KOTAK PENCARIAN KHUSUS CATATAN DI BAWAH BANNER -->
+            <div style="width: 100%; margin: 20px 0;">
+                <form method="GET" action="catatan.php" style="width: 100%;">
+                    <input type="text" name="cari" placeholder="Cari catatan pribadi..." value="<?= aman($keyword); ?>" style="width: 100%; height: 46px; padding: 0 20px; background-color: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 12px; font-size: 14px; color: #1F2937; outline: none; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                </form>
+            </div>
 
             <section class="statistics">
                 <div class="stat-card">
