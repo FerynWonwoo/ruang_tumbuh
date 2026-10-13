@@ -1,0 +1,44 @@
+/* css/header.css */
+.header {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 8px 6px 14px;
+    border-radius: 9999px;
+    transition: background-color 0.2s ease;
+}
+.profile-section:hover { background-color: #F0FDF4; }
+.profile-info { text-align: right; }
+.profile-name { font-size: 14px; font-weight: 600; color: #111827; line-height: 1.2; }
+.profile-role { font-size: 12px; color: #6B7280; margin-top: 2px; }
+
+.avatar {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #10B981;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+@media (max-width: 700px) {
+    .header { padding: 12px 16px; }
+}

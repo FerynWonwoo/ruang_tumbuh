@@ -82,23 +82,7 @@ $kategori_list = [
     <!-- MAIN AREA -->
     <div class="main-area">
 
-        <!-- HEADER -->
-        <header class="header">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchKategori" class="search-input" placeholder="Cari kategori program...">
-            </div>
-
-            <div class="header-actions">
-                <button class="btn-simpan">
-                    <i class="fa-solid fa-plus"></i> Simpan Peluang
-                </button>
-
-                <div class="profile-section">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff" alt="Avatar" class="profile-avatar">
-                </div>
-            </div>
-        </header>
+          <?php include __DIR__ . '/../includes/header.php'; ?>
 
         <!-- DASHBOARD CONTAINER -->
         <main class="dashboard-container">

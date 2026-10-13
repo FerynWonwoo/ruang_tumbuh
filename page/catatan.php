@@ -125,33 +125,9 @@ $username = $_SESSION['username'] ?? 'Talenta Muda';
 <div class="app">
     <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
-    ```html
+    
 <!-- HEADER -->
-<header class="header">
-    <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input
-            type="text"
-            class="search-input"
-            placeholder="Cari catatan..."
-            name="search"
-        >
-    </div>
-
-    <div class="header-actions">
-        <button type="button" class="btn-simpan" onclick="document.getElementById('judul').focus()">
-            <i class="fa-solid fa-plus"></i> Tambah Catatan
-        </button>
-
-        <div class="profile-section">
-            <img
-                src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff"
-                alt="Avatar"
-                class="profile-avatar"
-            >
-        </div>
-    </div>
-</header>
+  <?php include __DIR__ . '/../includes/header.php'; ?>
 
         <main class="content">
             <section class="page-header">

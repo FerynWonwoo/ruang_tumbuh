@@ -93,28 +93,19 @@ $totalTersimpan = count($daftarBookmark);
     <title>RuangTumbuh - Bookmark & Tersimpan</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Hubungkan CSS Sidebar eksternal dan CSS Bookmark -->
+    <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/bookmark.css">
 </head>
 <body>
 
-    <!-- SIDEBAR -->
- <?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <!-- SIDEBAR (Dimuat dari file eksternal) -->
+    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
     <!-- MAIN AREA -->
     <div class="main-area">
         
-        <header class="header">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="search-input" id="searchBookmark" placeholder="Cari dalam bookmark tersimpan...">
-            </div>
-
-            <div class="header-actions">
-                <div class="profile-section">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($username); ?>&background=10B981&color=fff" alt="Avatar" class="profile-avatar">
-                </div>
-            </div>
-        </header>
+          <?php include __DIR__ . '/../includes/header.php'; ?>
 
         <main class="dashboard-container">
             <!-- BANNER UTAMA -->

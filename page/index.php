@@ -24,12 +24,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
 
         // LOGIN ADMIN
-if ($username === 'admin' && $password === 'admin123') {
-    $_SESSION['username'] = 'admin';
-    $_SESSION['role'] = 'admin';
-    header('Location: admindashboard.php');
-    exit;
-}
+        if ($username === 'admin' && $password === 'admin123') {
+            $_SESSION['username'] = 'admin';
+            $_SESSION['role'] = 'admin';
+            header('Location: admindashboard.php');
+            exit;
+        }
         // LOGIN USER BAWAAN
         elseif ($username === 'ruangtumbuh' && $password === 'semogajaya') {
             $_SESSION['username'] = 'ruangtumbuh';
@@ -120,25 +120,27 @@ if ($username === 'admin' && $password === 'admin123') {
 
                     <!-- USERNAME -->
                     <label for="username">Username</label>
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        value="<?= aman($username) ?>"
-                        placeholder="Masukkan username Anda..."
-                        autocomplete="username"
-                        required>
+                    <input 
+                        id="username" 
+                        name="username" 
+                        type="text" 
+                        value="<?= aman($username) ?>" 
+                        placeholder="Masukkan username Anda..." 
+                        autocomplete="username" 
+                        required
+                    >
 
                     <!-- PASSWORD -->
                     <label for="password">Kata Sandi</label>
                     <div class="password-field">
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            placeholder="Masukkan kata sandi Anda..."
-                            autocomplete="current-password"
-                            required>
+                        <input 
+                            id="password" 
+                            name="password" 
+                            type="password" 
+                            placeholder="Masukkan kata sandi Anda..." 
+                            autocomplete="current-password" 
+                            required
+                        >
                         <button class="toggle-password" id="lihat-password" type="button" aria-label="Tampilkan kata sandi">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
