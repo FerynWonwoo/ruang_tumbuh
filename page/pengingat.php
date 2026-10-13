@@ -4,24 +4,17 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$nama_session = $_SESSION['nama']
+$namaAsli = $_SESSION['nama']
     ?? $_SESSION['user']['nama']
     ?? 'ruangtumbuh';
 
-$nama = htmlspecialchars($nama_session, ENT_QUOTES, 'UTF-8');
+$nama = htmlspecialchars($namaAsli, ENT_QUOTES, 'UTF-8');
 
-$kata = preg_split('/\s+/', trim($nama_session));
-$inisial = '';
+$inisialAsli = function_exists('mb_substr')
+    ? mb_strtoupper(mb_substr(trim($namaAsli), 0, 1, 'UTF-8'), 'UTF-8')
+    : strtoupper(substr(trim($namaAsli), 0, 1));
 
-foreach ($kata as $k) {
-    if ($k !== '') {
-        $inisial .= function_exists('mb_substr')
-            ? mb_strtoupper(mb_substr($k, 0, 1, 'UTF-8'), 'UTF-8')
-            : strtoupper(substr($k, 0, 1));
-    }
-}
-
-$inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
+$inisial = htmlspecialchars($inisialAsli ?: 'P', ENT_QUOTES, 'UTF-8');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -29,6 +22,7 @@ $inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengingat Tenggat - RuangTumbuh</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/pengingat.css">
@@ -39,21 +33,25 @@ $inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
 
 <main class="main-area">
     <header class="header">
-        <a href="profile.php" class="header-profile" aria-label="Buka profil">
-            <div class="header-user-info">
-                <strong><?= $nama ?></strong>
-                <small>Pengguna</small>
+        <a href="profile.php" class="profile-section" aria-label="Buka profil">
+            <div class="profile-info">
+                <div class="profile-name"><?= $nama ?></div>
+                <div class="profile-role">Pengguna</div>
             </div>
-            <div class="header-avatar"><?= $inisial ?></div>
+            <div class="avatar"><?= $inisial ?></div>
         </a>
     </header>
 
     <div class="pengingat-container">
+
         <section class="welcome-banner">
             <div class="badge-tag">
-                <i class="fa-regular fa-clock"></i> PENGINGAT TENGGAT
+                <i class="fa-regular fa-clock"></i>
+                PENGINGAT TENGGAT
             </div>
+
             <h1 class="banner-title">Jangan lewatkan tenggat pentingmu.</h1>
+
             <p class="banner-subtitle">
                 Catat aktivitas dan tanggal tenggat agar tugas dan peluangmu tetap terpantau.
             </p>
@@ -65,7 +63,9 @@ $inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
                     <i class="fa-regular fa-calendar-plus"></i>
                     <div>
                         <h2 class="card-title">Tambah Pengingat</h2>
-                        <p class="card-description">Tambahkan aktivitas yang memiliki tenggat waktu.</p>
+                        <p class="card-description">
+                            Tambahkan aktivitas yang memiliki tenggat waktu.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -75,7 +75,8 @@ $inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
                     <label for="judul">Nama Aktivitas</label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-pen-to-square"></i>
-                        <input type="text" id="judul" placeholder="Contoh: Pengumpulan tugas" required>
+                        <input type="text" id="judul"
+                               placeholder="Nama aktivitas" required>
                     </div>
                 </div>
 
@@ -83,7 +84,10 @@ $inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
                     <label for="tanggal">Tanggal Tenggat</label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-calendar"></i>
-                        <input type="text" id="tanggal" placeholder="dd/mm/yyyy" maxlength="10" required>
+                        <input type="text" id="tanggal"
+                               placeholder="dd/mm/yyyy"
+                               maxlength="10"
+                               autocomplete="off" required>
                     </div>
                 </div>
 
@@ -99,15 +103,20 @@ $inisial = htmlspecialchars($inisial ?: 'P', ENT_QUOTES, 'UTF-8');
                     <i class="fa-regular fa-calendar-check"></i>
                     <div>
                         <h2 class="card-title">Daftar Tenggat</h2>
-                        <p class="card-description">Aktivitas yang sudah kamu simpan.</p>
+                        <p class="card-description">
+                            Aktivitas yang sudah kamu simpan.
+                        </p>
                     </div>
                 </div>
+
                 <div class="total-reminder">
                     <span id="jumlah">0</span> Pengingat
                 </div>
             </div>
+
             <div id="daftarPengingat" class="reminder-list"></div>
         </section>
+
     </div>
 </main>
 

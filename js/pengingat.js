@@ -76,14 +76,17 @@ function tampilkanPengingat() {
                 </div>
             </div>
             <div class="reminder-actions">
-                <button type="button" class="btn-edit" onclick="editPengingat(${index})">
+                <button type="button" class="btn-edit"
+                        onclick="editPengingat(${index})">
                     <i class="fa-solid fa-pen"></i> Edit
                 </button>
-                <button type="button" class="btn-selesai" onclick="selesai(${index})">
+                <button type="button" class="btn-selesai"
+                        onclick="selesai(${index})">
                     <i class="fa-solid fa-check"></i>
                     ${item.selesai ? "Batalkan" : "Selesai"}
                 </button>
-                <button type="button" class="btn-hapus" onclick="hapus(${index})">
+                <button type="button" class="btn-hapus"
+                        onclick="hapus(${index})">
                     <i class="fa-solid fa-trash"></i> Hapus
                 </button>
             </div>
@@ -127,6 +130,8 @@ function editPengingat(index) {
     const tombol = document.querySelector(".btn-tambah");
     tombol.innerHTML = '<i class="fa-solid fa-check"></i> Simpan Perubahan';
     tombol.classList.add("mode-edit");
+
+    document.getElementById("judul").focus();
 }
 
 function simpanPerubahan() {
