@@ -142,67 +142,10 @@ body {
     overflow-y: auto;
 }
 
-.header {
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(8px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    padding: 16px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid #F3F4F6;
-}
-
-.search-box {
-    position: relative;
-    width: 50%;
-    max-width: 480px;
-}
-
-.search-box i {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9CA3AF;
-    font-size: 14px;
-}
-
-.search-input {
-    width: 100%;
-    padding: 10px 16px 10px 44px;
-    background-color: #F9FAFB;
-    border: 1px solid #E5E7EB;
-    border-radius: 9999px;
-    font-size: 14px;
-    outline: none;
-    transition: all 0.2s ease;
-}
-
-.search-input:focus {
-    border-color: #10B981;
-    background-color: #FFFFFF;
-    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
 .header-actions {
     display: flex;
     align-items: center;
     gap: 16px;
-}
-
-.profile-section {
-    display: flex;
-    align-items: center;
-}
-
-.profile-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #E5E7EB;
 }
 
 .dashboard-container {
@@ -242,6 +185,39 @@ body {
     font-size: 14px;
     margin-top: 8px;
     max-width: 640px;
+}
+
+/* =========================================================
+   SEARCH BAR 
+   ========================================================= */
+
+.search-box-direct .search-box {
+    position: relative;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.search-box-direct {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 0px;    
+    margin-bottom: 0px;
+    box-sizing: border-box;
+}
+
+.search-box-direct input {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 46px;
+    padding: 0 20px;
+    background-color: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #1F2937;
+    outline: none;
+    box-sizing: border-box;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 /* =========================================================
