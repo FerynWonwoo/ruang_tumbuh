@@ -1,13 +1,9 @@
 <?php
 session_start();
-
-if (empty($_SESSION['username'])) {
-    header('Location: index.php');
-    exit;
-}
-
 // =========================
-// HELPER
+// KONFIGURASI & HELPER DATA
+// (blok ini identik di rating.php dan adminrating.php,
+//  kalau diubah di satu file, samakan di file satunya)
 // =========================
 const DATA_FILE = __DIR__ . '/../data/ulasan.json';
 const MAX_KOMENTAR = 2000;
@@ -31,6 +27,11 @@ function input($nama)
     return is_string($nilai) ? trim($nilai) : '';
 }
 
+function idValid(string $id): bool
+{
+    return (bool) preg_match('/^[a-f0-9]{16}$/', $id);
+}
+
 // Baca semua ulasan (data bersama, bukan per-session)
 function bacaUlasan(): array
 {
@@ -41,16 +42,34 @@ function bacaUlasan(): array
     return is_array($data) ? $data : [];
 }
 
-// Baca-ubah-tulis dengan file lock supaya aman dari tabrakan
-function ubahUlasan(callable $fn): void
+// Baca-ubah-tulis dengan file lock supaya aman dari tabrakan.
+// Mengembalikan false kalau file/folder tidak bisa diakses.
+function ubahUlasan(callable $fn): bool
 {
     $dir = dirname(DATA_FILE);
-    if (!is_dir($dir)) {
-        mkdir($dir, 0775, true);
+
+    if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
+        return false;
+    }
+
+    // Blokir akses langsung ke folder data lewat browser (Apache)
+    $htaccess = $dir . '/.htaccess';
+    if (!is_file($htaccess)) {
+        @file_put_contents(
+            $htaccess,
+            "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n" .
+            "<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n"
+        );
     }
 
     $fp = fopen(DATA_FILE, 'c+');
-    flock($fp, LOCK_EX);
+    if (!$fp) {
+        return false;
+    }
+    if (!flock($fp, LOCK_EX)) {
+        fclose($fp);
+        return false;
+    }
 
     $data = json_decode((string) stream_get_contents($fp), true);
     $data = $fn(is_array($data) ? $data : []);
@@ -61,12 +80,30 @@ function ubahUlasan(callable $fn): void
     fflush($fp);
     flock($fp, LOCK_UN);
     fclose($fp);
+
+    return true;
 }
 
-function idValid(string $id): bool
-{
-    return (bool) preg_match('/^[a-f0-9]{16}$/', $id);
+if (empty($_SESSION['username'])) {
+    header('Location: index.php');
+    exit;
 }
+
+$username = $_SESSION['username'];
+
+// Admin memoderasi lewat halaman sendiri
+if (($_SESSION['role'] ?? 'user') === 'admin') {
+    header('Location: adminrating.php');
+    exit;
+}
+
+if (empty($_SESSION['csrf'])) {
+    $_SESSION['csrf'] = bin2hex(random_bytes(32));
+}
+
+// =========================
+// HELPER TAMPILAN
+// =========================
 
 // Dropdown bootcamp (pilih dari daftar, tanpa ketik)
 function pilihanBootcamp(string $id, string $dipilih): void
@@ -80,11 +117,9 @@ function pilihanBootcamp(string $id, string $dipilih): void
     echo '</select>';
 }
 
-$username = $_SESSION['username'];
-$admin    = ($_SESSION['role'] ?? 'user') === 'admin';
-
-if (empty($_SESSION['csrf'])) {
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
+function bintang(int $r): string
+{
+    return str_repeat('★', $r) . '<span>' . str_repeat('☆', 5 - $r) . '</span>';
 }
 
 $error = '';
@@ -106,8 +141,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Muat ulang halaman, lalu coba lagi.';
     }
 
-    // ---- Simpan / edit (user) ----
-    elseif ($aksi === 'simpan' && !$admin) {
+    // ---- Simpan / edit ----
+    elseif ($aksi === 'simpan') {
 
         $form = [
             'id'       => $id,
@@ -126,8 +161,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Pilih rating 1 sampai 5.';
         } elseif ($id !== '' && !idValid($id)) {
             $error = 'Ulasan tidak ditemukan atau bukan milikmu.';
+            $form['id'] = ''; // jangan buka modal dengan ID sampah
         } else {
-            ubahUlasan(function ($data) use (&$error, &$pesan, $form, $id, $username) {
+            $ok = ubahUlasan(function ($data) use (&$error, &$pesan, $form, $id, $username) {
                 $lama = $data[$id] ?? null;
 
                 if ($id !== '' && (!$lama || $lama['username'] !== $username)) {
@@ -135,11 +171,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     return $data;
                 }
 
+                // Satu ulasan per user per bootcamp (berlaku juga saat edit)
+                foreach ($data as $kunci => $u) {
+                    if ($kunci !== $id
+                        && ($u['username'] ?? '') === $username
+                        && ($u['bootcamp'] ?? '') === $form['bootcamp']) {
+                        $error = 'Kamu sudah mengulas bootcamp ini. Edit ulasan yang sudah ada.';
+                        return $data;
+                    }
+                }
+
                 $idBaru = $id !== '' ? $id : bin2hex(random_bytes(8));
 
-                // Langsung tayang tanpa verifikasi admin.
-                // Kalau admin sudah menyembunyikannya, tetap tersembunyi walau diedit.
-                $disembunyikan = ($lama['status'] ?? '') === 'rejected';
+                // Ulasan baru / hasil edit menunggu persetujuan admin.
+                // Kalau admin sudah menyembunyikannya, tetap tersembunyi.
+                $status = ($lama['status'] ?? '') === 'rejected' ? 'rejected' : 'pending';
 
                 $data[$idBaru] = [
                     'id'       => $idBaru,
@@ -147,21 +193,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'bootcamp' => $form['bootcamp'],
                     'rating'   => $form['rating'],
                     'komentar' => $form['komentar'],
-                    'status'   => $disembunyikan ? 'rejected' : 'approved',
+                    'status'   => $status,
                     'tanggal'  => $lama['tanggal'] ?? date('d/m/Y'),
                 ];
 
-                $pesan = $disembunyikan
+                $pesan = $status === 'rejected'
                     ? 'Ulasan diperbarui, tetapi sedang disembunyikan admin.'
-                    : ($id !== '' ? 'Ulasan berhasil diperbarui.' : 'Ulasan berhasil dipublikasikan.');
+                    : ($id !== ''
+                        ? 'Ulasan diperbarui dan menunggu persetujuan admin.'
+                        : 'Ulasan terkirim dan menunggu persetujuan admin.');
                 return $data;
             });
+
+            if (!$ok) {
+                $error = 'Data tidak bisa disimpan. Hubungi admin.';
+            }
         }
     }
 
-    // ---- Tarik ulasan (user) ----
-    elseif ($aksi === 'tarik' && !$admin && idValid($id)) {
-        ubahUlasan(function ($data) use (&$error, &$pesan, $id, $username) {
+    // ---- Tarik ulasan ----
+    elseif ($aksi === 'tarik' && idValid($id)) {
+        $ok = ubahUlasan(function ($data) use (&$error, &$pesan, $id, $username) {
             if (!isset($data[$id]) || $data[$id]['username'] !== $username) {
                 $error = 'Ulasan tidak ditemukan atau bukan milikmu.';
                 return $data;
@@ -170,24 +222,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pesan = 'Ulasan berhasil ditarik.';
             return $data;
         });
-    }
 
-    // ---- Moderasi (admin) ----
-    elseif ($admin && idValid($id) && in_array($aksi, ['approved', 'rejected', 'hapus'], true)) {
-        ubahUlasan(function ($data) use (&$error, &$pesan, $id, $aksi) {
-            if (!isset($data[$id])) {
-                $error = 'Ulasan tidak ditemukan.';
-                return $data;
-            }
-            if ($aksi === 'hapus') {
-                unset($data[$id]);
-                $pesan = 'Ulasan berhasil dihapus.';
-            } else {
-                $data[$id]['status'] = $aksi;
-                $pesan = 'Status ulasan berhasil diperbarui.';
-            }
-            return $data;
-        });
+        if (!$ok) {
+            $error = 'Data tidak bisa disimpan. Hubungi admin.';
+        }
     }
 
     else {
@@ -206,10 +244,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // =========================
 $editId = $_GET['edit'] ?? '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($editId) && $editId !== '' && !$admin) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($editId) && $editId !== '') {
     $data = bacaUlasan()[$editId] ?? null;
 
-    if ($data && $data['username'] === $username) {
+    if ($data && ($data['username'] ?? '') === $username) {
         $form = $data;
     } else {
         $error = 'Ulasan tidak ditemukan atau bukan milikmu.';
@@ -217,27 +255,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && is_string($editId) && $editId !== ''
 }
 
 // Form atas = ulasan baru, modal = edit
-$modalBuka = !$admin && $form['id'] !== '';
+$modalBuka = $form['id'] !== '';
 $formBaru  = $modalBuka ? $formKosong : $form;
 $formEdit  = $modalBuka ? $form : $formKosong;
 
 // =========================
 // DAFTAR & RATING
 // =========================
-$semua         = array_reverse(bacaUlasan(), true);
-$daftarUlasan  = [];
-$totalRating   = 0;
-$totalPublik   = 0;
-$sebaran       = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
+$daftarUlasan = [];
+$totalRating  = 0;
+$totalPublik  = 0;
 
-foreach ($semua as $u) {
+foreach (array_reverse(bacaUlasan(), true) as $u) {
+    $u['status'] = $u['status'] ?? 'approved'; // data lama tanpa status dianggap tayang
+
     if ($u['status'] === 'approved') {
-        $totalRating += $u['rating'];
+        $totalRating += (int) $u['rating'];
         $totalPublik++;
-        $r = max(1, min(5, (int) $u['rating']));
-        $sebaran[$r]++;
     }
-    if ($admin || $u['status'] === 'approved' || $u['username'] === $username) {
+    if ($u['status'] === 'approved' || $u['username'] === $username) {
         $daftarUlasan[] = $u;
     }
 }
@@ -245,15 +281,10 @@ foreach ($semua as $u) {
 $rataRating = $totalPublik > 0 ? number_format($totalRating / $totalPublik, 1) : '—';
 
 $statusLabel = [
-    'pending'  => 'Menunggu moderasi',
+    'pending'  => 'Menunggu persetujuan',
     'approved' => 'Dipublikasikan',
     'rejected' => 'Disembunyikan',
 ];
-
-function bintang(int $r): string
-{
-    return str_repeat('★', $r) . '<span>' . str_repeat('☆', 5 - $r) . '</span>';
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -273,8 +304,7 @@ function bintang(int $r): string
 
 <div class="main-area">
 
-     <?php include __DIR__ . '/../includes/header.php'; ?>
-
+    <?php include __DIR__ . '/../includes/header.php'; ?>
 
     <main class="page">
 
@@ -283,11 +313,7 @@ function bintang(int $r): string
             <div class="banner-text">
                 <span class="badge-tag">Peserta Bootcamp</span>
                 <h1>Ulasan &amp; Rating</h1>
-                <p>
-                    <?= $admin
-                        ? 'Pantau ulasan peserta. Ulasan yang tidak pantas bisa disembunyikan atau dihapus.'
-                        : 'Bagikan pengalamanmu mengikuti bootcamp dan bantu peserta lain memilih program terbaik.' ?>
-                </p>
+                <p>Bagikan pengalamanmu mengikuti bootcamp dan bantu peserta lain memilih program terbaik.</p>
             </div>
 
             <div class="banner-stats">
@@ -301,58 +327,56 @@ function bintang(int $r): string
         <?php if ($pesan): ?>
             <p class="notice success" role="status"><?= aman($pesan) ?></p>
         <?php endif; ?>
-        <?php if ($error): ?>
+        <?php if ($error && !$modalBuka): ?>
             <p class="notice error" role="alert"><?= aman($error) ?></p>
         <?php endif; ?>
 
-        <!-- FORM ULASAN BARU (user) -->
-        <?php if (!$admin): ?>
-            <section class="card form-card" id="form-ulasan">
-                <div class="form-head">
-                    <h2>Tulis Ulasanmu</h2>
-                    <p class="muted">Bagaimana pengalaman belajarmu? Ulasanmu langsung tampil setelah dikirim.</p>
-                </div>
+        <!-- FORM ULASAN BARU -->
+        <section class="card form-card" id="form-ulasan">
+            <div class="form-head">
+                <h2>Tulis Ulasanmu</h2>
+                <p class="muted">Bagaimana pengalaman belajarmu? Ulasanmu akan tampil setelah disetujui admin.</p>
+            </div>
 
-                <form method="post" action="rating.php">
-                    <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
-                    <input type="hidden" name="aksi" value="simpan">
-                    <input type="hidden" name="id" value="">
+            <form method="post" action="rating.php">
+                <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
+                <input type="hidden" name="aksi" value="simpan">
+                <input type="hidden" name="id" value="">
 
-                    <label for="bootcamp">Nama bootcamp</label>
-                    <?php pilihanBootcamp('bootcamp', $formBaru['bootcamp']); ?>
+                <label for="bootcamp">Nama bootcamp</label>
+                <?php pilihanBootcamp('bootcamp', $formBaru['bootcamp']); ?>
 
-                    <fieldset class="rating-field">
-                        <legend>Penilaianmu</legend>
-                        <div class="rating-options">
-                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                <label class="rating-option">
-                                    <input type="radio" name="rating" value="<?= $i ?>"
-                                           <?= (int) $formBaru['rating'] === $i ? 'checked' : '' ?> required>
-                                    <span><?= $i ?> ★</span>
-                                </label>
-                            <?php endfor; ?>
-                        </div>
-                    </fieldset>
-
-                    <label for="komentar">Ceritakan pengalamanmu</label>
-                    <textarea id="komentar" name="komentar" rows="4"
-                              maxlength="<?= MAX_KOMENTAR ?>"
-                              placeholder="Ceritakan materi, mentor, dan pengalaman belajarmu."
-                              required><?= aman($formBaru['komentar']) ?></textarea>
-
-                    <p class="hint">Tips: bahas materi, mentor, dan proses belajar. Gunakan bahasa sopan dan jangan bagikan data pribadi.</p>
-
-                    <div class="actions">
-                        <button type="submit" class="button">Kirim Ulasan</button>
+                <fieldset class="rating-field">
+                    <legend>Penilaianmu</legend>
+                    <div class="rating-options">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <label class="rating-option">
+                                <input type="radio" name="rating" value="<?= $i ?>"
+                                       <?= (int) $formBaru['rating'] === $i ? 'checked' : '' ?> required>
+                                <span><?= $i ?> ★</span>
+                            </label>
+                        <?php endfor; ?>
                     </div>
-                </form>
-            </section>
-        <?php endif; ?>
+                </fieldset>
+
+                <label for="komentar">Ceritakan pengalamanmu</label>
+                <textarea id="komentar" name="komentar" rows="4"
+                          maxlength="<?= MAX_KOMENTAR ?>"
+                          placeholder="Ceritakan materi, mentor, dan pengalaman belajarmu."
+                          required><?= aman($formBaru['komentar']) ?></textarea>
+
+                <p class="hint">Tips: bahas materi, mentor, dan proses belajar. Gunakan bahasa sopan dan jangan bagikan data pribadi.</p>
+
+                <div class="actions">
+                    <button type="submit" class="button">Kirim Ulasan</button>
+                </div>
+            </form>
+        </section>
 
         <!-- PENGALAMAN PESERTA -->
         <div class="list-heading">
             <div>
-                <h2><?= $admin ? 'Moderasi Ulasan' : 'Pengalaman Peserta' ?></h2>
+                <h2>Pengalaman Peserta</h2>
                 <p class="muted sub">Cerita nyata dari peserta yang sudah belajar bersama kami.</p>
             </div>
             <span class="count-pill"><i class="fa-regular fa-comments"></i> <b id="jumlahUlasan"><?= count($daftarUlasan) ?></b> ulasan</span>
@@ -369,11 +393,7 @@ function bintang(int $r): string
             <section class="card empty">
                 <div class="empty-icon"><i class="fa-regular fa-star"></i></div>
                 <h3>Belum ada ulasan</h3>
-                <p class="muted">
-                    <?= $admin
-                        ? 'Ulasan peserta akan muncul di sini.'
-                        : 'Yuk, bagikan pengalaman bootcamp pertamamu!' ?>
-                </p>
+                <p class="muted">Yuk, bagikan pengalaman bootcamp pertamamu!</p>
             </section>
         <?php endif; ?>
 
@@ -398,7 +418,7 @@ function bintang(int $r): string
                                 <?= aman($u['username']) ?>
                                 <?php if ($milikku): ?><span class="me-tag">Kamu</span><?php endif; ?>
                             </strong>
-                            <span class="rc-date"><i class="fa-regular fa-calendar"></i> <?= aman($u['tanggal']) ?></span>
+                            <span class="rc-date"><i class="fa-regular fa-calendar"></i> <?= aman($u['tanggal'] ?? '') ?></span>
                         </div>
                         <span class="chip-rating"><i class="fa-solid fa-star"></i> <?= $r ?>.0</span>
                     </div>
@@ -413,52 +433,30 @@ function bintang(int $r): string
                     <p class="review-text"><?= aman($u['komentar']) ?></p>
                     <button type="button" class="read-more" hidden>Baca selengkapnya</button>
 
-                    <?php if ($admin || $milikku || $u['status'] !== 'approved'): ?>
+                    <?php if ($milikku): ?>
                         <div class="rc-footer">
                             <span class="badge <?= aman($u['status']) ?>">
                                 <?= aman($statusLabel[$u['status']] ?? $u['status']) ?>
                             </span>
 
-                            <?php if ($admin || $milikku): ?>
-                                <div class="rc-actions">
-                                    <?php if (!$admin): ?>
-                                        <button type="button" class="mini blue" data-edit
-                                                data-id="<?= aman($u['id']) ?>"
-                                                data-bootcamp="<?= aman($u['bootcamp']) ?>"
-                                                data-rating="<?= $r ?>"
-                                                data-komentar="<?= aman($u['komentar']) ?>">
-                                            <i class="fa-regular fa-pen-to-square"></i> Edit
-                                        </button>
-                                    <?php endif; ?>
+                            <div class="rc-actions">
+                                <button type="button" class="mini blue" data-edit
+                                        data-id="<?= aman($u['id']) ?>"
+                                        data-bootcamp="<?= aman($u['bootcamp']) ?>"
+                                        data-rating="<?= $r ?>"
+                                        data-komentar="<?= aman($u['komentar']) ?>">
+                                    <i class="fa-regular fa-pen-to-square"></i> Edit
+                                </button>
 
-                                    <form method="post" action="rating.php">
-                                        <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
-                                        <input type="hidden" name="id" value="<?= aman($u['id']) ?>">
-
-                                        <?php if ($admin): ?>
-                                            <?php if ($u['status'] !== 'approved'): ?>
-                                                <button type="submit" class="mini green" name="aksi" value="approved">
-                                                    <i class="fa-regular fa-eye"></i> Tampilkan
-                                                </button>
-                                            <?php endif; ?>
-                                            <?php if ($u['status'] !== 'rejected'): ?>
-                                                <button type="submit" class="mini amber" name="aksi" value="rejected">
-                                                    <i class="fa-regular fa-eye-slash"></i> Sembunyikan
-                                                </button>
-                                            <?php endif; ?>
-                                            <button type="submit" class="mini red" name="aksi" value="hapus"
-                                                    data-confirm="Hapus ulasan ini?">
-                                                <i class="fa-regular fa-trash-can"></i> Hapus
-                                            </button>
-                                        <?php else: ?>
-                                            <button type="submit" class="mini red" name="aksi" value="tarik"
-                                                    data-confirm="Tarik ulasan ini? Ulasan akan dihapus.">
-                                                <i class="fa-regular fa-trash-can"></i> Tarik
-                                            </button>
-                                        <?php endif; ?>
-                                    </form>
-                                </div>
-                            <?php endif; ?>
+                                <form method="post" action="rating.php">
+                                    <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
+                                    <input type="hidden" name="id" value="<?= aman($u['id']) ?>">
+                                    <button type="submit" class="mini red" name="aksi" value="tarik"
+                                            data-confirm="Tarik ulasan ini? Ulasan akan dihapus.">
+                                        <i class="fa-regular fa-trash-can"></i> Tarik
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     <?php endif; ?>
                 </article>
@@ -468,152 +466,58 @@ function bintang(int $r): string
     </main>
 </div>
 
-<!-- MODAL EDIT (user) -->
-<?php if (!$admin): ?>
-    <div class="modal-overlay<?= $modalBuka ? ' open' : '' ?>" id="modalEdit" aria-hidden="<?= $modalBuka ? 'false' : 'true' ?>">
-        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalJudul">
+<!-- MODAL EDIT -->
+<div class="modal-overlay<?= $modalBuka ? ' open' : '' ?>" id="modalEdit" aria-hidden="<?= $modalBuka ? 'false' : 'true' ?>">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalJudul">
 
-            <div class="modal-head">
-                <span class="modal-icon"><i class="fa-regular fa-pen-to-square"></i></span>
-                <div>
-                    <h2 id="modalJudul">Edit Ulasan</h2>
-                    <p class="muted">Perbarui pengalamanmu, perubahan langsung tampil.</p>
-                </div>
-                <button type="button" class="modal-close" data-tutup aria-label="Tutup">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+        <div class="modal-head">
+            <span class="modal-icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            <div>
+                <h2 id="modalJudul">Edit Ulasan</h2>
+                <p class="muted">Perubahan akan ditinjau ulang admin sebelum tampil kembali.</p>
             </div>
-
-            <?php if ($modalBuka && $error): ?>
-                <p class="notice error" role="alert"><?= aman($error) ?></p>
-            <?php endif; ?>
-
-            <form method="post" action="rating.php">
-                <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
-                <input type="hidden" name="aksi" value="simpan">
-                <input type="hidden" name="id" id="editId" value="<?= aman($formEdit['id']) ?>">
-
-                <label for="editBootcamp">Nama bootcamp</label>
-                <?php pilihanBootcamp('editBootcamp', $formEdit['bootcamp']); ?>
-
-                <fieldset class="rating-field">
-                    <legend>Penilaianmu</legend>
-                    <div class="rating-options">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <label class="rating-option">
-                                <input type="radio" name="rating" value="<?= $i ?>"
-                                       <?= (int) $formEdit['rating'] === $i ? 'checked' : '' ?> required>
-                                <span><?= $i ?> ★</span>
-                            </label>
-                        <?php endfor; ?>
-                    </div>
-                </fieldset>
-
-                <label for="editKomentar">Ceritakan pengalamanmu</label>
-                <textarea id="editKomentar" name="komentar" rows="5"
-                          maxlength="<?= MAX_KOMENTAR ?>" required><?= aman($formEdit['komentar']) ?></textarea>
-
-                <div class="actions">
-                    <button type="button" class="button secondary" data-tutup>Batal</button>
-                    <button type="submit" class="button">Simpan Perubahan</button>
-                </div>
-            </form>
+            <button type="button" class="modal-close" data-tutup aria-label="Tutup">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
+
+        <?php if ($modalBuka && $error): ?>
+            <p class="notice error" role="alert"><?= aman($error) ?></p>
+        <?php endif; ?>
+
+        <form method="post" action="rating.php">
+            <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
+            <input type="hidden" name="aksi" value="simpan">
+            <input type="hidden" name="id" id="editId" value="<?= aman($formEdit['id']) ?>">
+
+            <label for="editBootcamp">Nama bootcamp</label>
+            <?php pilihanBootcamp('editBootcamp', $formEdit['bootcamp']); ?>
+
+            <fieldset class="rating-field">
+                <legend>Penilaianmu</legend>
+                <div class="rating-options">
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <label class="rating-option">
+                            <input type="radio" name="rating" value="<?= $i ?>"
+                                   <?= (int) $formEdit['rating'] === $i ? 'checked' : '' ?> required>
+                            <span><?= $i ?> ★</span>
+                        </label>
+                    <?php endfor; ?>
+                </div>
+            </fieldset>
+
+            <label for="editKomentar">Ceritakan pengalamanmu</label>
+            <textarea id="editKomentar" name="komentar" rows="5"
+                      maxlength="<?= MAX_KOMENTAR ?>" required><?= aman($formEdit['komentar']) ?></textarea>
+
+            <div class="actions">
+                <button type="button" class="button secondary" data-tutup>Batal</button>
+                <button type="submit" class="button">Simpan Perubahan</button>
+            </div>
+        </form>
     </div>
-<?php endif; ?>
+</div>
 
-<script>
-(function () {
-    var modal = document.getElementById('modalEdit');
-
-    function bukaModal(d) {
-        if (!modal) return;
-        document.getElementById('editId').value = d.id || '';
-        document.getElementById('editKomentar').value = d.komentar || '';
-
-        var pilih = document.getElementById('editBootcamp');
-        pilih.value = d.bootcamp || '';
-        if (pilih.selectedIndex === -1) pilih.value = ''; // kategori lama tidak ada di daftar
-
-        modal.querySelectorAll('input[name="rating"]').forEach(function (r) {
-            r.checked = r.value === String(d.rating);
-        });
-
-        modal.classList.add('open');
-        modal.setAttribute('aria-hidden', 'false');
-        pilih.focus();
-    }
-
-    function tutupModal() {
-        if (!modal) return;
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden', 'true');
-        if (location.search) history.replaceState(null, '', 'rating.php');
-    }
-
-    // Filter rating
-    function terapkanFilter(nilai) {
-        var tampil = 0;
-        document.querySelectorAll('.review-card').forEach(function (kartu) {
-            var cocok = nilai === 'all' || kartu.dataset.rating === nilai;
-            kartu.style.display = cocok ? '' : 'none';
-            if (cocok) tampil++;
-        });
-        var jumlah = document.getElementById('jumlahUlasan');
-        if (jumlah) jumlah.textContent = tampil;
-        var kosong = document.getElementById('emptyFilter');
-        if (kosong) kosong.hidden = tampil !== 0;
-    }
-
-    document.addEventListener('click', function (e) {
-        // Konfirmasi hapus/tarik
-        var tombol = e.target.closest('[data-confirm]');
-        if (tombol && !confirm(tombol.dataset.confirm)) {
-            e.preventDefault();
-            return;
-        }
-
-        // Buka modal edit
-        var edit = e.target.closest('[data-edit]');
-        if (edit) {
-            bukaModal(edit.dataset);
-            return;
-        }
-
-        // Tutup modal
-        if (e.target.closest('[data-tutup]') || e.target === modal) {
-            tutupModal();
-            return;
-        }
-
-        // Baca selengkapnya
-        var more = e.target.closest('.read-more');
-        if (more) {
-            var teks = more.previousElementSibling;
-            var terbuka = teks.classList.toggle('open');
-            more.textContent = terbuka ? 'Tutup' : 'Baca selengkapnya';
-            return;
-        }
-
-        // Filter bintang
-        var chip = e.target.closest('.chip');
-        if (chip) {
-            document.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('active'); });
-            chip.classList.add('active');
-            terapkanFilter(chip.dataset.filter);
-        }
-    });
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal && modal.classList.contains('open')) tutupModal();
-    });
-
-    // Tampilkan tombol "Baca selengkapnya" hanya jika teks terpotong
-    document.querySelectorAll('.review-text').forEach(function (p) {
-        if (p.scrollHeight > p.clientHeight + 1) p.nextElementSibling.hidden = false;
-    });
-})();
-</script>
-
+<script src="../js/rating.js"></script>
 </body>
 </html>
