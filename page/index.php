@@ -26,8 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // LOGIN ADMIN
         if ($username === 'admin' && $password === 'admin123') {
             $_SESSION['username'] = 'admin';
-            $_SESSION['role'] = 'adminkategori.php';
-            header('Location: adminrating.php');
+            $_SESSION['role'] = 'admin';
+            header('Location: admindashboard.php');
             exit;
         }
         // LOGIN USER BAWAAN
