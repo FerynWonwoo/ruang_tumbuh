@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 if (!isset($_SESSION['bootcamp']) || empty($_SESSION['bootcamp'])) {
     $_SESSION['bootcamp'] = [
         
-    ];
+    ]; 
 }
 
 $bootcamp = $_SESSION['bootcamp'];
