@@ -125,29 +125,33 @@ $username = $_SESSION['username'] ?? 'Talenta Muda';
 <div class="app">
     <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
-    <div class="main-area">
-        <header class="navbar">
-            <form method="GET" class="search-box">
-                <span class="search-icon">⌕</span>
-                <input type="text" name="cari" placeholder="Cari catatan pribadi..." value="<?= aman($keyword); ?>">
-            </form>
+    ```html
+<!-- HEADER -->
+<header class="header">
+    <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+            type="text"
+            class="search-input"
+            placeholder="Cari catatan..."
+            name="search"
+        >
+    </div>
 
-            <div class="navbar-right">
-                <a href="#form-catatan" class="save-button">
-                    <span>+</span>
-                    Tambah Catatan
-                </a>
+    <div class="header-actions">
+        <button type="button" class="btn-simpan" onclick="document.getElementById('judul').focus()">
+            <i class="fa-solid fa-plus"></i> Tambah Catatan
+        </button>
 
-                <a href="profile.php" class="profile-navbar">
-                    <div class="avatar">TM</div>
-
-                    <div class="profile-text">
-                        <strong><?= aman($username); ?></strong>
-                        <span>Explorer</span>
-                    </div>
-                </a>
-            </div>
-        </header>
+        <div class="profile-section">
+            <img
+                src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff"
+                alt="Avatar"
+                class="profile-avatar"
+            >
+        </div>
+    </div>
+</header>
 
         <main class="content">
             <section class="page-header">
