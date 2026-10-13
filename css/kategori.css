@@ -1,56 +1,30 @@
-/* Styling Khusus Halaman Kategori Program */
 
-/* 1. Pembungkus Hero utama dengan warna KUNING PASTEL khas Dashboard */
-.kategori-hero-wrapper {
-    background-color: #fef9c3; /* Kuning pastel lembut seperti di dashboard */
-    border: 1px solid #fef08a;
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 24px;
+/* HALAMAN KATEGORI PROGRAM */
+
+/* MAIN AREA - mengikuti dashboard.css */
+.main-area {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
 }
 
-/* Header di dalam Banner Hero Kuning */
-.kategori-header {
-    margin-bottom: 20px;
-}
-
-.badge-tag {
-    display: inline-block;
-    background-color: #0d9488; /* Hijau teal/emerald badge */
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-}
-
-.kategori-header h1 {
-    font-size: 1.5rem;
-    color: #0f172a;
-    font-weight: 800;
-    margin-bottom: 6px;
-}
-
-.kategori-header p {
-    color: #475569;
-    font-size: 0.9rem;
-}
-
-/* 2. Grid Kategori */
+/* GRID KATEGORI */
 .kategori-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
 }
 
-/* 3. Kartu Kategori (Putih Bersih di dalam Hero Kuning) */
+/* KARTU KATEGORI */
 .kategori-card {
     background: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
-    border: 1px solid #fef08a; /* Border kuning sangat tipis */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
@@ -61,8 +35,8 @@
 }
 
 .kategori-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
 }
 
 .kategori-icon-wrapper {
@@ -77,16 +51,16 @@
 }
 
 .kategori-title {
-    font-size: 1rem;
+    font-size: 16px;
     font-weight: 700;
-    margin-bottom: 6px;
-    color: #0f172a;
+    margin-bottom: 8px;
+    color: #111827;
 }
 
 .kategori-desc {
-    font-size: 0.825rem;
-    color: #64748b;
-    line-height: 1.4;
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.5;
     margin-bottom: 16px;
 }
 
@@ -94,77 +68,36 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.775rem;
+    font-size: 12px;
     font-weight: 600;
-    color: #0f172a;
+    color: #111827;
     border-top: 1px solid #f1f5f9;
-    padding-top: 10px;
+    padding-top: 12px;
 }
 
-.badge-count {
+.kategori-footer .badge-count {
     background: #f1f5f9;
     padding: 4px 10px;
-    border-radius: 20px;
+    border-radius: 9999px;
     color: #475569;
+    font-size: 12px;
+    margin: 0;
 }
 
-/* 4. Tombol + Simpan Peluang (Hijau Mint Lembut seperti di Dashboard) */
-.btn-simpan {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-simpan:hover {
-    background-color: #a7f3d0;
-}
-.sidebar {
+/* Samakan posisi sidebar Kategori dengan Dashboard */
+body > .sidebar {
+    width: 260px;
+    flex: 0 0 260px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.logout-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 12px 14px;
-
-    border-radius: 10px;
-
-    color: #dc2626;
-
-    font-weight: 600;
-
-    transition: 0.2s;
-}
-
-.logout-link:hover {
-    background: #fff0f0;
-}
-
-/* Menu sidebar aktif (hijau) */
-.sidebar .nav-link.active {
-    background-color: #d1fae5;
-    color: #065f46;
-    font-weight: 700;
-}
-
-.sidebar .nav-link.active i {
-    color: #065f46;
-}
-
-.sidebar .nav-link:hover {
-    background-color: #ecfdf5;
-    color: #065f46;
+body > .sidebar > .sidebar-bottom {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 16px;
+    box-sizing: border-box;
+    transform: translate(-4px, 4px);
 }

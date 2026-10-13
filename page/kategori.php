@@ -96,7 +96,7 @@ $kategori_list = [
                     </li>
 
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="katalog.php" class="nav-link">
                             <i class="fa-solid fa-shapes"></i>
                             Katalog Bootcamp
                         </a>
@@ -153,14 +153,12 @@ $kategori_list = [
             </div>
         </div>
 
-
         <div class="sidebar-bottom">
             <a href="logout.php" class="logout-link">
                 <i class="fa-solid fa-right-from-bracket"></i>
                 Logout
             </a>
-        </div>
-
+         </div>
     </aside>
 
     <!-- MAIN AREA -->
@@ -187,17 +185,14 @@ $kategori_list = [
         <!-- DASHBOARD CONTAINER -->
         <main class="dashboard-container">
 
-            <!-- HERO CONTAINER KUNING UTUH (Membungkus Judul & Kartu) -->
-            <div class="kategori-hero-card">
+            <!-- BANNER (sama dengan halaman lain) -->
+            <section class="welcome-banner">
+                <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> Eksplorasi Program</span>
+                <h1 class="banner-title">Kategori Program</h1>
+                <p class="banner-subtitle">Pantau dan jelajahi berbagai jalur pengembangan potensi sesuai dengan tujuan karirmu.</p>
+            </section>
 
-                <!-- HEADER JUDUL -->
-                <div class="kategori-header">
-                    <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> Eksplorasi Program</span>
-                    <h1>Kategori Program</h1>
-                    <p>Pantau dan jelajahi berbagai jalur pengembangan potensi sesuai dengan tujuan karirmu.</p>
-                </div>
-
-                <!-- GRID KATEGORI DI DALAM BOX KUNING -->
+            <!-- GRID KATEGORI -->
                 <div class="kategori-grid">
                     <?php foreach ($kategori_list as $kat): ?>
                         <a href="katalog.php?kategori=<?= $kat['id']; ?>" class="kategori-card">
@@ -205,8 +200,8 @@ $kategori_list = [
                                 <div class="kategori-icon-wrapper" style="background-color: <?= $kat['warna']; ?>18; color: <?= $kat['warna']; ?>;">
                                     <i class="fa-solid <?= $kat['ikon']; ?>"></i>
                                 </div>
-                                <h2 class="kategori-title"><?= $kat['nama']; ?></h2>
-                                <p class="kategori-desc"><?= $kat['deskripsi']; ?></p>
+                                <h2 class="kategori-title"><?= htmlspecialchars($kat['nama']); ?></h2>
+                                <p class="kategori-desc"><?= htmlspecialchars($kat['deskripsi']); ?></p>
                             </div>
                             <div class="kategori-footer">
                                 <span class="badge-count"><?= $kat['jumlah']; ?> Program</span>
@@ -215,8 +210,6 @@ $kategori_list = [
                         </a>
                     <?php endforeach; ?>
                 </div>
-
-            </div>
 
         </main>
     </div>

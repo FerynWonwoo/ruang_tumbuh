@@ -41,7 +41,7 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                 </li>
 
                 <li>
-                    <a href="#" class="nav-link">
+                    <a href="katalog.php" class="nav-link">
                         <i class="fa-solid fa-shapes"></i>
                         Katalog Bootcamp
                     </a>
