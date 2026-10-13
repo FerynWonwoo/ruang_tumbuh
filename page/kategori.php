@@ -1,10 +1,15 @@
+
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Fallback session username jika belum didefinisikan
-$nama_user = isset($_SESSION['username']) ? htmlspecialchars($_SESSION['username']) : 'Pengguna';
+$nama_user = isset($_SESSION['nama'])
+    ? htmlspecialchars($_SESSION['nama'], ENT_QUOTES, 'UTF-8')
+    : (isset($_SESSION['user']['nama'])
+        ? htmlspecialchars($_SESSION['user']['nama'], ENT_QUOTES, 'UTF-8')
+        : 'Pengguna');
+
 $halamanAktif = basename($_SERVER['PHP_SELF']);
 
 // Data Kategori Program
@@ -59,70 +64,142 @@ $kategori_list = [
     ]
 ];
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>RuangTumbuh - Kategori Program</title>
 
-    <!-- FontAwesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
 
-    <!-- CSS File External -->
+    <!-- CSS -->
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/kategori.css">
 </head>
 
 <body>
 
-<?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <!-- SIDEBAR -->
+    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
-    <!-- MAIN AREA -->
+    <!-- AREA UTAMA: JANGAN DIBUKA DUA KALI -->
     <div class="main-area">
 
-          <?php include __DIR__ . '/../includes/header.php'; ?>
+        <!-- HEADER BERSAMA -->
+        <?php include __DIR__ . '/../includes/header.php'; ?>
 
-        <!-- DASHBOARD CONTAINER -->
+        <!-- KONTEN HALAMAN -->
         <main class="dashboard-container">
 
-            <!-- HERO CONTAINER KUNING UTUH (Membungkus Judul & Kartu) -->
-            <div class="kategori-hero-card">
+            <!-- BANNER: MENGGUNAKAN CLASS DARI DASHBOARD -->
+            <section class="welcome-banner">
 
-                <!-- HEADER JUDUL -->
-                <div class="kategori-header">
-                    <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> Eksplorasi Program</span>
-                    <h1>Kategori Program</h1>
-                    <p>Pantau dan jelajahi berbagai jalur pengembangan potensi sesuai dengan tujuan karirmu.</p>
-                </div>
+                <span class="badge-tag">
+                    <i class="fa-solid fa-layer-group"></i>
+                    Eksplorasi Program
+                </span>
 
-                <!-- GRID KATEGORI DI DALAM BOX KUNING -->
-                <div class="kategori-grid">
-                    <?php foreach ($kategori_list as $kat): ?>
-                        <a href="katalog.php?kategori=<?= $kat['id']; ?>" class="kategori-card">
-                            <div>
-                                <div class="kategori-icon-wrapper" style="background-color: <?= $kat['warna']; ?>18; color: <?= $kat['warna']; ?>;">
-                                    <i class="fa-solid <?= $kat['ikon']; ?>"></i>
-                                </div>
-                                <h2 class="kategori-title"><?= $kat['nama']; ?></h2>
-                                <p class="kategori-desc"><?= $kat['deskripsi']; ?></p>
-                            </div>
-                            <div class="kategori-footer">
-                                <span class="badge-count"><?= $kat['jumlah']; ?> Program</span>
-                                <span>Jelajahi <i class="fa-solid fa-arrow-right" style="font-size: 10px;"></i></span>
-                            </div>
-                        </a>
-                    <?php endforeach; ?>
+                <h1 class="banner-title">
+                    Kategori Program
+                </h1>
+
+                <p class="banner-subtitle">
+                    Pantau dan jelajahi berbagai jalur pengembangan
+                    potensi sesuai dengan tujuan karirmu.
+                </p>
+
+            </section>
+
+            <!-- SEARCH KATEGORI -->
+            <div class="kategori-search-section">
+                <label for="searchKategori" class="kategori-search-label">
+                    Cari kategori program
+                </label>
+
+                <div class="search-box kategori-search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        id="searchKategori"
+                        class="search-input"
+                        placeholder="Cari kategori, misalnya Bootcamp..."
+                        autocomplete="off"
+                    >
                 </div>
+            </div>
+
+            <!-- GRID KATEGORI -->
+            <div class="kategori-grid">
+
+                <?php foreach ($kategori_list as $kat): ?>
+
+                    <a
+                        href="katalog.php?kategori=<?= urlencode($kat['id']); ?>"
+                        class="kategori-card"
+                    >
+
+                        <div>
+                            <div
+                                class="kategori-icon-wrapper"
+                                style="
+                                    background-color: <?= $kat['warna']; ?>18;
+                                    color: <?= $kat['warna']; ?>;
+                                "
+                            >
+                                <i class="fa-solid <?= $kat['ikon']; ?>"></i>
+                            </div>
+
+                            <h2 class="kategori-title">
+                                <?= htmlspecialchars(
+                                    $kat['nama'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ); ?>
+                            </h2>
+
+                            <p class="kategori-desc">
+                                <?= htmlspecialchars(
+                                    $kat['deskripsi'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ); ?>
+                            </p>
+                        </div>
+
+                        <div class="kategori-footer">
+
+                            <span class="badge-count">
+                                <?= (int) $kat['jumlah']; ?> Program
+                            </span>
+
+                            <span class="kategori-link">
+                                Jelajahi
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+
+                        </div>
+
+                    </a>
+
+                <?php endforeach; ?>
 
             </div>
 
         </main>
+
     </div>
 
-    <!-- JS File External -->
+    <!-- JAVASCRIPT -->
     <script src="../js/kategori.js"></script>
-</body>
 
+</body>
 </html>
