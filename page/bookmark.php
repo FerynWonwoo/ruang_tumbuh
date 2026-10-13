@@ -105,18 +105,7 @@ $totalTersimpan = count($daftarBookmark);
     <!-- MAIN AREA -->
     <div class="main-area">
         
-        <header class="header">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" class="search-input" id="searchBookmark" placeholder="Cari dalam bookmark tersimpan...">
-            </div>
-
-            <div class="header-actions">
-                <div class="profile-section">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($username); ?>&background=10B981&color=fff" alt="Avatar" class="profile-avatar">
-                </div>
-            </div>
-        </header>
+          <?php include __DIR__ . '/../includes/header.php'; ?>
 
         <main class="dashboard-container">
             <!-- BANNER UTAMA -->

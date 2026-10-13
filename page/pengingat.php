@@ -32,15 +32,7 @@ $inisial = htmlspecialchars($inisialAsli ?: 'P', ENT_QUOTES, 'UTF-8');
 <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
 <main class="main-area">
-    <header class="header">
-        <a href="profile.php" class="profile-section" aria-label="Buka profil">
-            <div class="profile-info">
-                <div class="profile-name"><?= $nama ?></div>
-                <div class="profile-role">Pengguna</div>
-            </div>
-            <div class="avatar"><?= $inisial ?></div>
-        </a>
-    </header>
+      <?php include __DIR__ . '/../includes/header.php'; ?>
 
     <div class="pengingat-container">
 

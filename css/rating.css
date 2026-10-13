@@ -632,3 +632,10 @@ select:focus {
     background-color: #FFFFFF;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
+
+.content {
+    flex: 1;
+    min-width: 0;          /* cegah konten meluber di flex */
+    display: flex;
+    flex-direction: column;
+}

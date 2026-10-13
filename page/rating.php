@@ -273,17 +273,8 @@ function bintang(int $r): string
 
 <div class="main-area">
 
-    <header class="header">
-        <a href="profile.php" class="profile-section" title="Lihat profil">
-            <div class="profile-info">
-                <div class="profile-name"><?= aman($username) ?></div>
-                <div class="profile-role"><?= $admin ? 'Admin' : 'Pengguna' ?></div>
-            </div>
-            <div class="avatar">
-                <?= aman(strtoupper(mb_substr($username, 0, 2))) ?>
-            </div>
-        </a>
-    </header>
+     <?php include __DIR__ . '/../includes/header.php'; ?>
+
 
     <main class="page">
 
