@@ -87,7 +87,7 @@ $nama_user = isset($_SESSION['nama'])
 
             <ul class="nav-menu">
                 <li>
-                    <a href="admindashboard.php" class="nav-link">
+                    <a href="dashboard.php" class="nav-link">
                         <i class="fa-solid fa-table-cells-large"></i>
                         Dashboard
                     </a>
@@ -386,40 +386,30 @@ $nama_user = isset($_SESSION['nama'])
 </div>
 
 <div class="modal" id="modalDetail">
-
     <div class="detail-box">
-
         <button class="close-detail" onclick="tutupDetail()">
             <i class="fa-solid fa-xmark"></i>
         </button>
-
         <div class="detail-icon">
             <i class="fa-solid fa-graduation-cap"></i>
         </div>
-
         <span class="kategori" id="detailKategori"></span>
-
         <h2 id="detailJudul"></h2>
-
         <p id="detailPenyelenggara"></p>
-
         <div class="detail-info">
 
             <div>
                 <span>Mode</span>
                 <strong id="detailMode"></strong>
             </div>
-
             <div>
                 <span>Durasi</span>
                 <strong id="detailDurasi"></strong>
             </div>
-
             <div>
                 <span>Deadline</span>
                 <strong id="detailDeadline"></strong>
             </div>
-
             <div>
                 <span>Harga</span>
                 <strong id="detailHarga"></strong>
@@ -428,16 +418,12 @@ $nama_user = isset($_SESSION['nama'])
         </div>
 
         <h4>Deskripsi Program</h4>
-
         <p class="detail-deskripsi" id="detailDeskripsi"></p>
-
         <a href="#" id="detailLink" class="btn-daftar" target="_blank">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
             Daftar Program
         </a>
-
     </div>
-
 </div>
 
 <script src="../js/katalog.js"></script>

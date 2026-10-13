@@ -1,0 +1,136 @@
+/* =========================================
+   SIDEBAR (includes/sidebar.php)
+   ========================================= */
+
+.sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    background-color: #FFFFFF;
+    border-right: 1px solid #F3F4F6;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 24px;
+    z-index: 20;
+}
+
+/* Logo */
+.logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1E3A2B;
+    letter-spacing: -0.5px;
+}
+
+.logo-text span {
+    color: #2D6A4F;
+}
+
+/* Grup menu */
+.nav-group {
+    margin-bottom: 24px;
+}
+
+.nav-group-spaced {
+    margin-top: 32px;
+}
+
+.nav-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Link menu */
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #4B5563;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    background-color: #F9FAFB;
+    color: #111827;
+}
+
+.nav-link:focus-visible {
+    outline: 2px solid #10B981;
+    outline-offset: 2px;
+}
+
+.nav-link.active {
+    background-color: #F0FDF4;
+    color: #166534;
+    font-weight: 600;
+}
+
+.nav-link i {
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+    color: #9CA3AF;
+}
+
+.nav-link.active i {
+    color: #166534;
+}
+
+/* Logout */
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #F3F4F6;
+}
+
+.logout-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #DC2626;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.logout-link i {
+    width: 20px;
+    font-size: 16px;
+    text-align: center;
+    color: #EF4444;
+}
+
+.logout-link:hover {
+    background-color: #FEF2F2;
+    color: #B91C1C;
+}
+
+.logout-link:hover i {
+    color: #B91C1C;
+}
+
+.logout-link:focus-visible {
+    outline: 2px solid #EF4444;
+    outline-offset: 2px;
+}

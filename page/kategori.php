@@ -77,89 +77,7 @@ $kategori_list = [
 
 <body>
 
-    <aside class="sidebar">
-
-        <div>
-            <div class="logo-text">
-                Ruang<span>Tumbuh</span>
-            </div>
-
-            <div class="nav-group" style="margin-top: 32px;">
-                <div class="nav-title">MENU UTAMA</div>
-
-                <ul class="nav-menu">
-                    <li>
-                        <a href="dashboard.php" class="nav-link">
-                            <i class="fa-solid fa-table-cells-large"></i>
-                            Dashboard
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="katalog.php" class="nav-link">
-                            <i class="fa-solid fa-shapes"></i>
-                            Katalog Bootcamp
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="kategori.php" class="nav-link <?= $halamanAktif === 'kategori.php' ? 'active' : '' ?>">
-                            <i class="fa-solid fa-layer-group"></i>
-                            Kategori Program
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="bookmark.php" class="nav-link">
-                            <i class="fa-regular fa-bookmark"></i>
-                            Bookmark
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="pengingat.php" class="nav-link">
-                            <i class="fa-regular fa-clock"></i>
-                            Pengingat Tenggat
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#" class="nav-link">
-                            <i class="fa-regular fa-pen-to-square"></i>
-                            Catatan Pribadi
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="rating.php" class="nav-link">
-                            <i class="fa-regular fa-star"></i>
-                            Ulasan & Rating
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="nav-group">
-                <div class="nav-title">AKUN</div>
-
-                <ul class="nav-menu">
-                    <li>
-                        <a href="profile.php" class="nav-link">
-                            <i class="fa-regular fa-user"></i>
-                            Profil Pengguna
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="sidebar-bottom">
-            <a href="logout.php" class="logout-link">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Logout
-            </a>
-         </div>
-    </aside>
+<?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
     <!-- MAIN AREA -->
     <div class="main-area">
@@ -185,14 +103,17 @@ $kategori_list = [
         <!-- DASHBOARD CONTAINER -->
         <main class="dashboard-container">
 
-            <!-- BANNER (sama dengan halaman lain) -->
-            <section class="welcome-banner">
-                <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> Eksplorasi Program</span>
-                <h1 class="banner-title">Kategori Program</h1>
-                <p class="banner-subtitle">Pantau dan jelajahi berbagai jalur pengembangan potensi sesuai dengan tujuan karirmu.</p>
-            </section>
+            <!-- HERO CONTAINER KUNING UTUH (Membungkus Judul & Kartu) -->
+            <div class="kategori-hero-card">
 
-            <!-- GRID KATEGORI -->
+                <!-- HEADER JUDUL -->
+                <div class="kategori-header">
+                    <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> Eksplorasi Program</span>
+                    <h1>Kategori Program</h1>
+                    <p>Pantau dan jelajahi berbagai jalur pengembangan potensi sesuai dengan tujuan karirmu.</p>
+                </div>
+
+                <!-- GRID KATEGORI DI DALAM BOX KUNING -->
                 <div class="kategori-grid">
                     <?php foreach ($kategori_list as $kat): ?>
                         <a href="katalog.php?kategori=<?= $kat['id']; ?>" class="kategori-card">
@@ -200,8 +121,8 @@ $kategori_list = [
                                 <div class="kategori-icon-wrapper" style="background-color: <?= $kat['warna']; ?>18; color: <?= $kat['warna']; ?>;">
                                     <i class="fa-solid <?= $kat['ikon']; ?>"></i>
                                 </div>
-                                <h2 class="kategori-title"><?= htmlspecialchars($kat['nama']); ?></h2>
-                                <p class="kategori-desc"><?= htmlspecialchars($kat['deskripsi']); ?></p>
+                                <h2 class="kategori-title"><?= $kat['nama']; ?></h2>
+                                <p class="kategori-desc"><?= $kat['deskripsi']; ?></p>
                             </div>
                             <div class="kategori-footer">
                                 <span class="badge-count"><?= $kat['jumlah']; ?> Program</span>
@@ -210,6 +131,8 @@ $kategori_list = [
                         </a>
                     <?php endforeach; ?>
                 </div>
+
+            </div>
 
         </main>
     </div>

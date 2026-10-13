@@ -3,81 +3,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['bootcamp'])) {
+if (!isset($_SESSION['bootcamp']) || empty($_SESSION['bootcamp'])) {
     $_SESSION['bootcamp'] = [
-        [
-            'id' => 1,
-            'judul' => 'UI/UX Design Bootcamp',
-            'penyelenggara' => 'Ruang Tumbuh Academy',
-            'kategori' => 'Design',
-            'mode' => 'Online',
-            'durasi' => '4 Minggu',
-            'deadline' => '2026-10-15',
-            'harga' => 'Gratis',
-            'link' => '#',
-            'deskripsi' => 'Pelatihan dasar hingga lanjutan UI/UX Design untuk mahasiswa.'
-        ],
-        [
-            'id' => 2,
-            'judul' => 'Web Development Bootcamp',
-            'penyelenggara' => 'Ruang Tumbuh Academy',
-            'kategori' => 'Teknologi',
-            'mode' => 'Online',
-            'durasi' => '6 Minggu',
-            'deadline' => '2026-10-20',
-            'harga' => 'Rp150.000',
-            'link' => '#',
-            'deskripsi' => 'Belajar membangun website modern menggunakan HTML, CSS, JavaScript, dan PHP.'
-        ],
-        [
-            'id' => 3,
-            'judul' => 'Digital Marketing Bootcamp',
-            'penyelenggara' => 'SkillUp Indonesia',
-            'kategori' => 'Marketing',
-            'mode' => 'Offline',
-            'durasi' => '3 Minggu',
-            'deadline' => '2026-10-25',
-            'harga' => 'Rp100.000',
-            'link' => '#',
-            'deskripsi' => 'Mempelajari strategi digital marketing, content planning, dan social media marketing.'
-        ],
-        [
-            'id' => 4,
-            'judul' => 'Data Analytics Bootcamp',
-            'penyelenggara' => 'DataCamp Indonesia',
-            'kategori' => 'Data',
-            'mode' => 'Online',
-            'durasi' => '5 Minggu',
-            'deadline' => '2026-11-01',
-            'harga' => 'Rp200.000',
-            'link' => '#',
-            'deskripsi' => 'Pelatihan analisis data menggunakan spreadsheet dan tools data analytics.'
-        ],
-        [
-            'id' => 5,
-            'judul' => 'Graphic Design Bootcamp',
-            'penyelenggara' => 'Creative Academy',
-            'kategori' => 'Design',
-            'mode' => 'Offline',
-            'durasi' => '4 Minggu',
-            'deadline' => '2026-11-05',
-            'harga' => 'Rp175.000',
-            'link' => '#',
-            'deskripsi' => 'Belajar prinsip desain grafis, layout, warna, dan pembuatan visual digital.'
-        ],
-        [
-            'id' => 6,
-            'judul' => 'Python Programming Bootcamp',
-            'penyelenggara' => 'TechSkill Academy',
-            'kategori' => 'Teknologi',
-            'mode' => 'Online',
-            'durasi' => '8 Minggu',
-            'deadline' => '2026-11-10',
-            'harga' => 'Rp250.000',
-            'link' => '#',
-            'deskripsi' => 'Belajar pemrograman Python dari dasar hingga pembuatan project sederhana.'
-        ]
-    ];
+        
+    ]; 
 }
 
 $bootcamp = $_SESSION['bootcamp'];
@@ -98,86 +27,7 @@ $nama_user = isset($_SESSION['nama'])
 </head>
 <body>
 
-<aside class="sidebar">
-    <div>
-        <div class="logo-text">Ruang<span>Tumbuh</span></div>
-
-        <div class="nav-group" style="margin-top:32px;">
-            <div class="nav-title">MENU UTAMA</div>
-
-            <ul class="nav-menu">
-                <li>
-                    <a href="dashboard.php" class="nav-link">
-                        <i class="fa-solid fa-table-cells-large"></i>
-                        Dashboard
-                    </a>
-                </li>
-
-                <li>
-                    <a href="katalog.php" class="nav-link active">
-                        <i class="fa-solid fa-shapes"></i>
-                        Katalog Bootcamp
-                    </a>
-                </li>
-
-                <li>
-                    <a href="kategori.php" class="nav-link">
-                        <i class="fa-solid fa-layer-group"></i>
-                        Kategori Program
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="nav-link">
-                        <i class="fa-regular fa-bookmark"></i>
-                        Bookmark 
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="nav-link">
-                        <i class="fa-regular fa-clock"></i>
-                        Pengingat Tenggat
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#" class="nav-link">
-                        <i class="fa-regular fa-pen-to-square"></i>
-                        Catatan Pribadi
-                    </a>
-                </li>
-
-                <li>
-                    <a href="rating.php" class="nav-link">
-                        <i class="fa-regular fa-star"></i>
-                        Ulasan & Rating
-                    </a>
-                </li>
-            </ul>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-title">AKUN</div>
-
-            <ul class="nav-menu">
-                <li>
-                    <a href="profile.php" class="nav-link">
-                        <i class="fa-regular fa-user"></i>
-                        Profil Pengguna
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="sidebar-bottom">
-        <a href="logout.php" class="logout-link">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </a>
-    </div>
-</aside>
+<?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
 <div class="main-area">
 

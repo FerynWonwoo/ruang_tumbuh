@@ -173,27 +173,10 @@ $kelengkapan = (int) round($terisi / 8 * 100);
                 Ruang<span>Tumbuh</span>
             </a>
 
-            <div class="header-user">
-                <div class="header-user-info">
-                    <strong><?= aman($profil['nama']) ?></strong>
-                    <small>Pengguna Terverifikasi</small>
-                </div>
-
-                <div class="header-avatar" aria-hidden="true">
-    <?php if ($profil['foto'] !== ''): ?>
-        <img src="<?= aman($profil['foto']) ?>" alt="">
-    <?php else: ?>
-        <svg viewBox="0 0 64 64" fill="currentColor">
-            <circle cx="32" cy="22" r="12" />
-            <path d="M9 61v-9a23 23 0 0 1 46 0v9Z" />
-        </svg>
-    <?php endif; ?>
-</div>
-            </div>
         </div>
     </header>
     <main>
-        <div class="breadcrumb"><a href="index.php">Akun</a><span aria-hidden="true">/</span><span>Profil Saya</span>
+        <div class="breadcrumb"><a href="dashboard.php">Dashboard</a><span aria-hidden="true">/</span><span>Profil Saya</span>
         </div>
         <div class="page-heading">
             <div>
