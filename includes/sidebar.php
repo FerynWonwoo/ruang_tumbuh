@@ -37,7 +37,7 @@ $menu = [
                 <?php foreach ($menu as $file => [$ikon, $label]): ?>
                     <li>
                         <a href="<?= $file; ?>"
-                           class="nav-link <?= ($halaman_aktif === $file) ? 'active' : ''; ?>">
+                            class="nav-link <?= ($halaman_aktif === $file) ? 'active' : ''; ?>">
                             <i class="<?= $ikon; ?>"></i>
                             <?= $label; ?>
                         </a>

@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 if (!isset($_SESSION['bootcamp']) || empty($_SESSION['bootcamp'])) {
     $_SESSION['bootcamp'] = [
         
-    ];
+    ]; 
 }
 
 $bootcamp = $_SESSION['bootcamp'];
@@ -31,22 +31,7 @@ $nama_user = isset($_SESSION['nama'])
 
 <div class="main-area">
 
-    <header class="header">
-        <div class="search-box">
-           
-        </div>
-
-        <div class="header-actions">
-            <button class="btn-simpan">
-                <i class="fa-solid fa-plus"></i>
-                Simpan Peluang
-            </button>
-
-            <div class="profile-section">
-                <img src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff" class="profile-avatar">
-            </div>
-        </div>
-    </header>
+      <?php include __DIR__ . '/../includes/header.php'; ?>
 
     <main class="dashboard-container">
 

@@ -1,236 +1,141 @@
-document.addEventListener("DOMContentLoaded", function () {
+// Simpan di: js/rating.js
+// Dipakai oleh rating.php (user) dan adminrating.php (admin).
+// Tiap bagian hanya aktif kalau elemennya ada di halaman.
+(function () {
+    'use strict';
 
-    // =====================================
-    // USER: KONFIRMASI TARIK ULASAN
-    // =====================================
+    // =========================
+    // USER: modal edit & filter bintang
+    // =========================
+    var modal = document.getElementById('modalEdit');
 
-    const tombolKonfirmasi =
-        document.querySelectorAll("[data-confirm]");
+    function bukaModal(d) {
+        if (!modal) return;
 
-    tombolKonfirmasi.forEach(function (tombol) {
+        document.getElementById('editId').value = d.id || '';
+        document.getElementById('editKomentar').value = d.komentar || '';
 
-        tombol.addEventListener("click", function (event) {
+        var pilih = document.getElementById('editBootcamp');
+        pilih.value = d.bootcamp || '';
+        if (pilih.selectedIndex === -1) pilih.value = ''; // kategori lama tidak ada di daftar
 
-            const pesan =
-                tombol.dataset.confirm;
-
-            const yakin =
-                confirm(pesan);
-
-            if (!yakin) {
-                event.preventDefault();
-            }
-
+        modal.querySelectorAll('input[name="rating"]').forEach(function (r) {
+            r.checked = r.value === String(d.rating);
         });
 
-    });
-
-
-    // =====================================
-    // USER: AUTO RESIZE TEXTAREA
-    // =====================================
-
-    const textarea =
-        document.getElementById("komentar");
-
-    if (textarea) {
-
-        function aturTinggiTextarea() {
-
-            textarea.style.height = "auto";
-
-            textarea.style.height =
-                textarea.scrollHeight + "px";
-
-        }
-
-        textarea.addEventListener(
-            "input",
-            aturTinggiTextarea
-        );
-
-        if (textarea.value.trim() !== "") {
-            aturTinggiTextarea();
-        }
-
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        pilih.focus();
     }
 
+    function tutupModal() {
+        if (!modal) return;
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        if (location.search) history.replaceState(null, '', 'rating.php');
+    }
 
-    // =====================================
-    // USER: PILIHAN RATING
-    // =====================================
+    function terapkanFilter(nilai) {
+        var tampil = 0;
 
-    const ratingInputs =
-        document.querySelectorAll(
-            '.rating-option input[type="radio"]'
-        );
-
-    function updateRating() {
-
-        ratingInputs.forEach(function (radio) {
-
-            const label =
-                radio.closest(".rating-option");
-
-            if (!label) {
-                return;
-            }
-
-            if (radio.checked) {
-
-                label.classList.add("selected");
-
-            } else {
-
-                label.classList.remove("selected");
-
-            }
-
+        document.querySelectorAll('.review-card').forEach(function (kartu) {
+            var cocok = nilai === 'all' || kartu.dataset.rating === nilai;
+            kartu.style.display = cocok ? '' : 'none';
+            if (cocok) tampil++;
         });
 
+        var jumlah = document.getElementById('jumlahUlasan');
+        if (jumlah) jumlah.textContent = tampil;
+
+        var kosong = document.getElementById('emptyFilter');
+        if (kosong) kosong.hidden = tampil !== 0;
     }
 
-    ratingInputs.forEach(function (radio) {
+    // =========================
+    // ADMIN: pilih semua & aksi massal
+    // =========================
+    var semua  = document.getElementById('pilihSemua');
+    var info   = document.getElementById('jumlahDipilih');
+    var items  = Array.prototype.slice.call(document.querySelectorAll('[data-item]'));
+    var tombol = Array.prototype.slice.call(document.querySelectorAll('[data-bulk]'));
 
-        radio.addEventListener(
-            "change",
-            updateRating
-        );
+    function segarkan() {
+        var n = items.filter(function (c) { return c.checked; }).length;
 
-    });
+        if (info) info.textContent = n;
+        tombol.forEach(function (b) { b.disabled = n === 0; });
 
-    updateRating();
+        if (semua) {
+            semua.checked = n > 0 && n === items.length;
+            semua.indeterminate = n > 0 && n < items.length;
+        }
+    }
 
+    if (items.length) {
+        if (semua) {
+            semua.addEventListener('change', function () {
+                items.forEach(function (c) { c.checked = semua.checked; });
+                segarkan();
+            });
+        }
+        items.forEach(function (c) { c.addEventListener('change', segarkan); });
+        segarkan();
+    }
 
-    // =====================================
-    // ADMIN: SEARCH ULASAN
-    // =====================================
+    // =========================
+    // BERSAMA: klik (delegasi)
+    // =========================
+    document.addEventListener('click', function (e) {
 
-    const searchInput =
-        document.getElementById("searchReview");
-
-    const statusFilter =
-        document.getElementById("filterStatus");
-
-    const reviewCards =
-        document.querySelectorAll(
-            ".admin-review-card"
-        );
-
-    const emptyFilter =
-        document.getElementById("emptyFilter");
-
-
-    function filterReviews() {
-
-        const keyword =
-            searchInput
-                ? searchInput.value
-                    .toLowerCase()
-                    .trim()
-                : "";
-
-        const status =
-            statusFilter
-                ? statusFilter.value
-                : "all";
-
-        let jumlahTampil = 0;
-
-
-        reviewCards.forEach(function (card) {
-
-            const dataSearch =
-                (
-                    card.dataset.search || ""
-                ).toLowerCase();
-
-            const dataStatus =
-                card.dataset.status || "";
-
-
-            const cocokPencarian =
-                dataSearch.includes(keyword);
-
-            const cocokStatus =
-                status === "all" ||
-                dataStatus === status;
-
-
-            if (
-                cocokPencarian &&
-                cocokStatus
-            ) {
-
-                card.style.display = "";
-
-                jumlahTampil++;
-
-            } else {
-
-                card.style.display = "none";
-
-            }
-
-        });
-
-
-        if (emptyFilter) {
-
-            emptyFilter.hidden =
-                jumlahTampil !== 0;
-
+        // Konfirmasi hapus / tarik
+        var konfirmasi = e.target.closest('[data-confirm]');
+        if (konfirmasi && !confirm(konfirmasi.dataset.confirm)) {
+            e.preventDefault();
+            return;
         }
 
-    }
+        // Buka modal edit
+        var edit = e.target.closest('[data-edit]');
+        if (edit) {
+            bukaModal(edit.dataset);
+            return;
+        }
 
+        // Tutup modal (tombol Batal, X, atau klik latar)
+        if (modal && (e.target.closest('[data-tutup]') || e.target === modal)) {
+            tutupModal();
+            return;
+        }
 
-    if (searchInput) {
+        // Baca selengkapnya
+        var more = e.target.closest('.read-more');
+        if (more) {
+            var teks = more.previousElementSibling;
+            var terbuka = teks.classList.toggle('open');
+            more.textContent = terbuka ? 'Tutup' : 'Baca selengkapnya';
+            return;
+        }
 
-        searchInput.addEventListener(
-            "input",
-            filterReviews
-        );
-
-    }
-
-
-    if (statusFilter) {
-
-        statusFilter.addEventListener(
-            "change",
-            filterReviews
-        );
-
-    }
-
-
-    // =====================================
-    // ADMIN: KONFIRMASI HAPUS
-    // =====================================
-
-    const deleteForms =
-        document.querySelectorAll(
-            ".delete-form"
-        );
-
-    deleteForms.forEach(function (form) {
-
-        form.addEventListener(
-            "submit",
-            function (event) {
-
-                const yakin = confirm(
-                    "Yakin ingin menghapus ulasan ini? Ulasan yang sudah dihapus tidak dapat dikembalikan."
-                );
-
-                if (!yakin) {
-                    event.preventDefault();
-                }
-
-            }
-        );
-
+        // Filter bintang (hanya tombol filter user, bukan link tab admin)
+        var chip = e.target.closest('button.chip[data-filter]');
+        if (chip) {
+            document.querySelectorAll('button.chip[data-filter]').forEach(function (c) {
+                c.classList.remove('active');
+            });
+            chip.classList.add('active');
+            terapkanFilter(chip.dataset.filter);
+        }
     });
 
-});
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal && modal.classList.contains('open')) tutupModal();
+    });
+
+    // Tombol "Baca selengkapnya" hanya muncul jika teks terpotong
+    document.querySelectorAll('.review-text').forEach(function (p) {
+        var btn = p.nextElementSibling;
+        if (btn && btn.classList.contains('read-more') && p.scrollHeight > p.clientHeight + 1) {
+            btn.hidden = false;
+        }
+    });
+})();

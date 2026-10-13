@@ -1,171 +1,143 @@
-/* Styling Khusus Halaman Kategori Program */
+/* =========================================
+   HALAMAN KATEGORI PROGRAM
+   (komponen global ada di dashboard.css)
+========================================= */
 
-/* 1. Pembungkus Hero utama dengan warna KUNING PASTEL khas Dashboard */
-.kategori-hero-wrapper {
-    background-color: #fef9c3; /* Kuning pastel lembut seperti di dashboard */
-    border: 1px solid #fef08a;
-    border-radius: 20px;
-    padding: 24px;
-    margin-bottom: 24px;
+.main-area {
+    min-width: 0;
 }
 
-/* Header di dalam Banner Hero Kuning */
-.kategori-header {
-    margin-bottom: 20px;
-}
-
-.badge-tag {
-    display: inline-block;
-    background-color: #0d9488; /* Hijau teal/emerald badge */
-    color: #ffffff;
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-}
-
-.kategori-header h1 {
-    font-size: 1.5rem;
-    color: #0f172a;
-    font-weight: 800;
-    margin-bottom: 6px;
-}
-
-.kategori-header p {
-    color: #475569;
-    font-size: 0.9rem;
-}
-
-/* 2. Grid Kategori */
+/* GRID */
 .kategori-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: stretch;
 }
 
-/* 3. Kartu Kategori (Putih Bersih di dalam Hero Kuning) */
+/* KARTU (selaras dengan .calendar-card) */
 .kategori-card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
-    border: 1px solid #fef08a; /* Border kuning sangat tipis */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 24px;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     text-decoration: none;
     color: inherit;
-    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .kategori-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    border-color: #BBF7D0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06);
 }
 
 .kategori-icon-wrapper {
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    margin-bottom: 14px;
-}
-
-.kategori-title {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-bottom: 6px;
-    color: #0f172a;
-}
-
-.kategori-desc {
-    font-size: 0.825rem;
-    color: #64748b;
-    line-height: 1.4;
     margin-bottom: 16px;
 }
 
+
+
+
+/* Memperbaiki posisi ikon dan teks pencarian kategori */
+.kategori-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.kategori-search-box > i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.kategori-search-box > input.search-input {
+    position: relative;
+    width: 100%;
+    padding-left: 48px !important;
+    text-indent: 0;
+    box-sizing: border-box;
+}
+
+
+.kategori-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.kategori-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6B7280;
+    margin-bottom: 20px;
+}
+
+/* FOOTER KARTU */
 .kategori-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.775rem;
+    gap: 8px;
+    padding-top: 14px;
+    border-top: 1px solid #F3F4F6;
+    font-size: 12px;
     font-weight: 600;
-    color: #0f172a;
-    border-top: 1px solid #f1f5f9;
-    padding-top: 10px;
 }
 
-.badge-count {
-    background: #f1f5f9;
-    padding: 4px 10px;
-    border-radius: 20px;
-    color: #475569;
+.kategori-footer .badge-count {
+    background-color: #F3F4F6;
+    color: #4B5563;
+    margin-bottom: 0; /* timpa nilai global */
+    padding: 4px 12px;
+    white-space: nowrap;
 }
 
-/* 4. Tombol + Simpan Peluang (Hijau Mint Lembut seperti di Dashboard) */
-.btn-simpan {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    display: flex;
+.kategori-link {
+    color: #059669;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.btn-simpan:hover {
-    background-color: #a7f3d0;
-}
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.kategori-link i {
+    font-size: 10px;
+    transition: transform 0.2s ease;
 }
 
-.logout-link {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 12px 14px;
-
-    border-radius: 10px;
-
-    color: #dc2626;
-
-    font-weight: 600;
-
-    transition: 0.2s;
+.kategori-card:hover .kategori-link i {
+    transform: translateX(3px);
 }
 
-.logout-link:hover {
-    background: #fff0f0;
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+    .kategori-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-/* Menu sidebar aktif (hijau) */
-.sidebar .nav-link.active {
-    background-color: #d1fae5;
-    color: #065f46;
-    font-weight: 700;
-}
+@media (max-width: 600px) {
+    .kategori-grid {
+        grid-template-columns: 1fr;
+    }
 
-.sidebar .nav-link.active i {
-    color: #065f46;
+    .kategori-card {
+        padding: 20px;
+    }
 }
-
-.sidebar .nav-link:hover {
-    background-color: #ecfdf5;
-    color: #065f46;
-}
-
