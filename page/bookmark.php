@@ -93,12 +93,14 @@ $totalTersimpan = count($daftarBookmark);
     <title>RuangTumbuh - Bookmark & Tersimpan</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Hubungkan CSS Sidebar eksternal dan CSS Bookmark -->
+    <link rel="stylesheet" href="../css/sidebar.css">
     <link rel="stylesheet" href="../css/bookmark.css">
 </head>
 <body>
 
-    <!-- SIDEBAR -->
- <?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <!-- SIDEBAR (Dimuat dari file eksternal) -->
+    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
     <!-- MAIN AREA -->
     <div class="main-area">
