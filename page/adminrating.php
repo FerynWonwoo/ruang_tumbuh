@@ -223,6 +223,7 @@ foreach (array_reverse(bacaUlasan(), true) as $u) {
     <link rel="stylesheet" href="../css/rating.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/rating.css?v=<?= filemtime(__DIR__ . '/../css/rating.css') ?>">
 </head>
 <body>
 
