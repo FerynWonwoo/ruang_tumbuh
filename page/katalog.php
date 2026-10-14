@@ -232,25 +232,36 @@ document.querySelectorAll('.btn-bookmark').forEach(function (btn) {
         const icon = btn.querySelector('i');
         const akanSimpan = !btn.classList.contains('active');
 
-        // ubah tampilan langsung
         btn.classList.toggle('active', akanSimpan);
         icon.className = (akanSimpan ? 'fa-solid' : 'fa-regular') + ' fa-bookmark';
 
+        const card = btn.closest('.bootcamp-card');
+        
         const fd = new FormData();
         fd.append('id', btn.dataset.id);
+        
+        if (card) {
+            fd.append('judul', card.querySelector('h3') ? card.querySelector('h3').innerText : '');
+            fd.append('kategori', card.dataset.kategori || '');
+            fd.append('penyelenggara', card.querySelector('.penyelenggara') ? card.querySelector('.penyelenggara').innerText.trim() : '');
+            const deadlineEl = card.querySelector('.info span:nth-child(2)') || card.querySelector('.deadline');
+            fd.append('deadline', deadlineEl ? deadlineEl.innerText.replace('Kalender', '').trim() : '');
+            fd.append('deskripsi', card.querySelector('.deskripsi') ? card.querySelector('.deskripsi').innerText.trim() : '');
+        }
 
-        fetch('toggle_bookmark.php', { method: 'POST', body: fd })
+        // Mengarah ke file baru kita yang bersih
+        fetch('proses_bookmark.php', { method: 'POST', body: fd })
             .then(r => r.json())
             .then(res => {
-                if (!res.ok) throw new Error('ditolak server');
+                if (!res.ok) throw new Error('Gagal memproses bookmark');
                 btn.classList.toggle('active', res.saved);
                 icon.className = (res.saved ? 'fa-solid' : 'fa-regular') + ' fa-bookmark';
             })
-            .catch(() => {
-                // kembalikan ke kondisi semula
+            .catch(err => {
+                console.error(err);
                 btn.classList.toggle('active', !akanSimpan);
                 icon.className = (!akanSimpan ? 'fa-solid' : 'fa-regular') + ' fa-bookmark';
-                alert('Bookmark gagal disimpan. Coba login ulang atau cek toggle_bookmark.php.');
+                alert('Gagal menyimpan bookmark. Pastikan sudah masuk sesi.');
             });
     });
 });

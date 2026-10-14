@@ -10,5 +10,17 @@
         "harga": "Gratis",
         "link": "https:\/\/bit.ly\/3T5llad",
         "deskripsi": "Mahasiswa aktif "
+    },
+    {
+        "id": "6acf16ecb1b78",
+        "judul": "Pemrograman Dasar",
+        "penyelenggara": "Dicoding",
+        "kategori": "Teknologi",
+        "mode": "Online",
+        "durasi": "3 minggu",
+        "deadline": "2026-10-15",
+        "harga": "50.000",
+        "link": "https:\/\/www.dicoding.com\/academies\/123",
+        "deskripsi": "ayo join"
     }
 ]

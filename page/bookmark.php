@@ -25,7 +25,7 @@ if (!isset($_SESSION['bookmarks'])) {
             'judul' => 'Beasiswa Akselerasi Talent Digital 2026',
             'kategori' => 'Beasiswa',
             'penyelenggara' => 'Kementerian Kominfo',
-            'deadline' => '2026-Oktober-20',
+            'deadline' => '20 Oct 2026',
             'status' => 'Aktif',
             'deskripsi' => 'Program beasiswa penuh untuk pelatihan bidang teknologi digital dan sertifikasi internasional.',
             'link' => 'https://digital.kominfo.go.id'
@@ -35,7 +35,7 @@ if (!isset($_SESSION['bookmarks'])) {
             'judul' => 'Frontend Web Developer Internship Program',
             'kategori' => 'Magang',
             'penyelenggara' => 'Tech Corp Indonesia',
-            'deadline' => '2026-Oktober-30',
+            'deadline' => '30 Oct 2026',
             'status' => 'Aktif',
             'deskripsi' => 'Program magang 6 bulan fokus pada pengembangan web modern menggunakan ReactJS dan pemanfaatan REST API.',
             'link' => 'https://techcorp.id/careers'
@@ -45,7 +45,7 @@ if (!isset($_SESSION['bookmarks'])) {
             'judul' => 'UI/UX Design Intensive Bootcamp 2026',
             'kategori' => 'Bootcamp',
             'penyelenggara' => 'RuangTumbuh Academy',
-            'deadline' => '2026-Oktober-15',
+            'deadline' => '15 Oct 2026',
             'status' => 'Mendekati Tenggat',
             'deskripsi' => 'Pelatihan intensif UI/UX design mencakup Design Thinking, Wireframing, Prototyping di Figma, hingga Usability Testing.',
             'link' => 'https://ruangtumbuh.id/bootcamp'
@@ -55,7 +55,7 @@ if (!isset($_SESSION['bookmarks'])) {
             'judul' => 'National Cyber Security Hackathon',
             'kategori' => 'Lomba',
             'penyelenggara' => 'Badan Siber Indonesia',
-            'deadline' => '2026-November-05',
+            'deadline' => '05 Nov 2026',
             'status' => 'Aktif',
             'deskripsi' => 'Kompetisi peretasan etis (Capture The Flag) tingkat nasional untuk menguji kemampuan analisis keamanan jaringan dan web.',
             'link' => 'https://bssn.go.id/hackathon'
@@ -200,8 +200,20 @@ $totalTersimpan = count($daftarBookmark);
                             <p class="penyelenggara"><i class="fa-regular fa-building"></i> <?= aman($item['penyelenggara']) ?></p>
 
                             <div class="card-footer">
-                                <span class="deadline"><i class="fa-regular fa-calendar"></i> <?= aman($item['deadline']) ?></span>
-
+                                <span class="deadline">
+                                    <i class="fa-regular fa-calendar"></i> 
+                                    <?php 
+                                        $tgl_asli = $item['deadline'] ?? '';
+                                        // Ubah format string tanggal agar seragam dibaca
+                                        $timestamp = strtotime(str_replace(['Oktober', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'November', 'Desember'], ['October', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'], $tgl_asli));
+                                        
+                                        if ($timestamp) {
+                                            echo date('d M Y', $timestamp); // Hasilnya nanti seragam, misal: 20 Oct 2026 atau 31 Oct 2026
+                                        } else {
+                                            echo aman($tgl_asli);
+                                        }
+                                    ?>
+                                </span>
                                 <div class="card-actions">
                                     <button type="button" class="btn-action btn-detail">
                                         <i class="fa-regular fa-eye"></i> Detail
