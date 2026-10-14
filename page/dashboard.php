@@ -1,11 +1,13 @@
 <?php
-// Jalankan session jika belum dimulai
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Penanganan error 'Undefined array key "nama"' dengan nilai default fallback
-$nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (isset($_SESSION['user']['nama']) ? htmlspecialchars($_SESSION['user']['nama']) : 'Pengguna');
+$nama_user = isset($_SESSION['nama']) 
+    ? htmlspecialchars($_SESSION['nama']) 
+    : (isset($_SESSION['user']['nama']) 
+        ? htmlspecialchars($_SESSION['user']['nama']) 
+        : 'Pengguna');
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -14,31 +16,31 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Dashboard</title>
     
-    <!-- FontAwesome CDN untuk ikon sidebar & header -->
+    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS relatif dari folder page/ menuju css/dashboard.css -->
+    <!-- CSS relatif -->
     <link rel="stylesheet" href="../css/dashboard.css">
+    
 </head>
 <body>
-<?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
 
     <!-- MAIN AREA -->
     <div class="main-area">
-        
-          <?php include __DIR__ . '/../includes/header.php'; ?>
+        <?php include __DIR__ . '/../includes/header.php'; ?>
 
         <!-- DASHBOARD CONTAINER -->
         <main class="dashboard-container">
             
             <!-- WELCOME BANNER -->
             <section class="welcome-banner">
-                <span class="badge-tag">• Akselerasi Karir Mahasiswa & Fresh Graduate</span>
+                <span class="badge-tag">Karir Mahasiswa & Fresh Graduate</span>
                 <h1 class="banner-title">
                     Selamat Datang Kembali, <?= $nama_user; ?>!
                 </h1>
                 <p class="banner-subtitle">
-                    Pantau akselerasi karir, tenggat penting, jadwal bootcamp, dan jelajahi ribuan peluang pengembangan diri dalam satu dasbor terpadu.
+                    Memantau karir, tenggat penting, jadwal bootcamp, dan jelajahi ribuan peluang pengembangan diri dalam satu dasbor terpadu.
                 </p>
 
                 <!-- STATS GRID -->
@@ -97,7 +99,7 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                 </div>
             </section>
 
-            <!-- KALENDER JADWAL & TENGGAT -->
+            <!-- KALENDER JADWAL & TENGGAT REALTIME -->
             <section class="calendar-card">
                 <div class="calendar-header">
                     <div class="calendar-title-group">
@@ -106,84 +108,123 @@ $nama_user = isset($_SESSION['nama']) ? htmlspecialchars($_SESSION['nama']) : (i
                     </div>
                     <div class="calendar-controls">
                         <button class="btn-icon" id="prevMonth"><i class="fa-solid fa-chevron-left"></i></button>
-                        <span class="month-label" id="monthLabel">Okt 2025</span>
+                        <span class="month-label" id="monthLabel">Memuat...</span>
                         <button class="btn-icon" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button>
                     </div>
                 </div>
 
-                <div class="calendar-grid">
-                    <!-- Day Headers -->
-                    <div class="calendar-day-header">SEN</div>
-                    <div class="calendar-day-header">SEL</div>
-                    <div class="calendar-day-header">RAB</div>
-                    <div class="calendar-day-header">KAM</div>
-                    <div class="calendar-day-header">JUM</div>
-                    <div class="calendar-day-header">SAB</div>
-                    <div class="calendar-day-header">MIN</div>
-
-                    <!-- Row 1 -->
-                    <div class="calendar-day-cell other-month"><span>29</span></div>
-                    <div class="calendar-day-cell other-month"><span>30</span></div>
-                    <div class="calendar-day-cell"><span>1</span></div>
-                    <div class="calendar-day-cell"><span>2</span></div>
-                    <div class="calendar-day-cell"><span>3</span></div>
-                    <div class="calendar-day-cell"><span>4</span></div>
-                    <div class="calendar-day-cell"><span>5</span></div>
-
-                    <!-- Row 2 -->
-                    <div class="calendar-day-cell"><span>6</span></div>
-                    <div class="calendar-day-cell"><span>7</span></div>
-                    <div class="calendar-day-cell">
-                        <span>8</span>
-                        <div class="dot-indicator"></div>
-                    </div>
-                    <div class="calendar-day-cell"><span>9</span></div>
-                    <div class="calendar-day-cell">
-                        <span>10</span>
-                        <div class="dot-indicator"></div>
-                    </div>
-                    <div class="calendar-day-cell"><span>11</span></div>
-                    <div class="calendar-day-cell"><span>12</span></div>
-
-                    <!-- Row 3 -->
-                    <div class="calendar-day-cell"><span>13</span></div>
-                    <div class="calendar-day-cell">
-                        <span>14</span>
-                        <div class="event-tag event-red">Batas LPDP</div>
-                    </div>
-                    <div class="calendar-day-cell">
-                        <span>15</span>
-                        <div class="event-tag event-green">Kick-off Cohort</div>
-                    </div>
-                    <div class="calendar-day-cell"><span>16</span></div>
-                    <div class="calendar-day-cell">
-                        <span>17</span>
-                        <div class="event-tag event-yellow">Mentoring</div>
-                    </div>
-                    <div class="calendar-day-cell"><span>18</span></div>
-                    <div class="calendar-day-cell"><span>19</span></div>
-
-                    <!-- Row 4 -->
-                    <div class="calendar-day-cell"><span>20</span></div>
-                    <div class="calendar-day-cell"><span>21</span></div>
-                    <div class="calendar-day-cell"><span>22</span></div>
-                    <div class="calendar-day-cell">
-                        <span>23</span>
-                        <div class="dot-indicator"></div>
-                    </div>
-                    <div class="calendar-day-cell"><span>24</span></div>
-                    <div class="calendar-day-cell">
-                        <span>25</span>
-                        <div class="dot-indicator"></div>
-                    </div>
-                    <div class="calendar-day-cell"><span>26</span></div>
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Hari dan tanggal akan digenerate otomatis melalui JS secara Realtime -->
                 </div>
             </section>
 
         </main>
     </div>
 
-    <!-- JS relatif dari folder page/ menuju js/dashboard.js -->
-    <script src="../js/dashboard.js"></script>
+    <!-- JS relatif -->
+    <!-- SCRIPT KALENDER REALTIME LANGSUNG DI DALAM DASHBOARD.PHP -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const monthLabel = document.getElementById('monthLabel');
+        const prevBtn = document.getElementById('prevMonth');
+        const nextBtn = document.getElementById('nextMonth');
+        const calendarGrid = document.getElementById('calendarGrid');
+
+        if (!calendarGrid || !monthLabel) return;
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        const daysHeader = ['SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB', 'MIN'];
+
+        const today = new Date();
+        let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const sampleEvents = {
+            "14": { type: "event-red", label: "Batas LPDP" },
+            "15": { type: "event-green", label: "Kick-off Cohort" },
+            "17": { type: "event-yellow", label: "Mentoring" }
+        };
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            monthLabel.textContent = `${months[month]} ${year}`;
+            calendarGrid.innerHTML = '';
+
+            // 1. Header Hari (SEN - MIN)
+            daysHeader.forEach(day => {
+                const headerCell = document.createElement('div');
+                headerCell.className = 'calendar-day-header';
+                headerCell.textContent = day;
+                calendarGrid.appendChild(headerCell);
+            });
+
+            // 2. Hitung Sisa Hari Bulan Lalu
+            let firstDayIndex = new Date(year, month, 1).getDay();
+            firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevMonthLastDay = new Date(year, month, 0).getDate();
+
+            for (let i = firstDayIndex; i > 0; i--) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell other-month';
+                cell.innerHTML = `<span>${prevMonthLastDay - i + 1}</span>`;
+                calendarGrid.appendChild(cell);
+            }
+
+            // 3. Tanggal Bulan Ini (Realtime)
+            for (let day = 1; day <= totalDaysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell';
+
+                if (
+                    day === today.getDate() &&
+                    month === today.getMonth() &&
+                    year === today.getFullYear()
+                ) {
+                    cell.classList.add('today-cell');
+                }
+
+                let cellHTML = `<span>${day}</span>`;
+
+                if (sampleEvents[day]) {
+                    const event = sampleEvents[day];
+                    cellHTML += `<div class="event-tag ${event.type}">${event.label}</div>`;
+                }
+
+                cell.innerHTML = cellHTML;
+                calendarGrid.appendChild(cell);
+            }
+
+            // 4. Tanggal Bulan Depan
+            const totalCells = calendarGrid.children.length - 7;
+            const remainingCells = (totalCells <= 35) ? (35 - totalCells) : (42 - totalCells);
+
+            for (let day = 1; day <= remainingCells; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'calendar-day-cell other-month';
+                cell.innerHTML = `<span>${day}</span>`;
+                calendarGrid.appendChild(cell);
+            }
+        }
+
+        if (prevBtn && nextBtn) {
+            prevBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            });
+
+            nextBtn.addEventListener('click', () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            });
+        }
+
+        renderCalendar();
+    });
+    </script>
+</body>
+</html>
 </body>
 </html>
