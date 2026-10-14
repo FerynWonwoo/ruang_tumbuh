@@ -3,13 +3,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['bootcamp']) || empty($_SESSION['bootcamp'])) {
-    $_SESSION['bootcamp'] = [
-        
-    ]; 
-}
+require_once __DIR__ . '/../includes/bootcamp_store.php';
 
-$bootcamp = $_SESSION['bootcamp'];
+$bootcamp = bootcamp_load();
+
+require_once __DIR__ . '/../includes/bookmark_store.php';
+$tersimpan = bookmark_ids(bookmark_user());
 
 $nama_user = isset($_SESSION['nama'])
     ? htmlspecialchars($_SESSION['nama'])
@@ -23,7 +22,7 @@ $nama_user = isset($_SESSION['nama'])
     <title>RuangTumbuh - Katalog Bootcamp</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/katalog.css">
+    <link rel="stylesheet" href="../css/katalog.css?v=3">
 </head>
 <body>
 
@@ -64,7 +63,7 @@ $nama_user = isset($_SESSION['nama'])
 
             <div class="katalog-search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchBootcamp" placeholder="Cari bootcamp...">
+                <input type="text" id="searchBootcamp" placeholder="Cari bootcamp..." style="padding-left:44px !important;">
             </div>
 
             <select id="filterKategori">
@@ -120,6 +119,14 @@ $nama_user = isset($_SESSION['nama'])
                             </div>
 
                             <span class="mode"><?= htmlspecialchars($data['mode']); ?></span>
+
+                            <?php $saved = in_array((string) $data['id'], $tersimpan, true); ?>
+                            <button type="button"
+                                    class="btn-bookmark <?= $saved ? 'active' : ''; ?>"
+                                    data-id="<?= htmlspecialchars($data['id']); ?>"
+                                    title="Simpan ke bookmark">
+                                <i class="fa-<?= $saved ? 'solid' : 'regular'; ?> fa-bookmark"></i>
+                            </button>
                         </div>
 
                         <div class="card-content">
@@ -219,5 +226,34 @@ $nama_user = isset($_SESSION['nama'])
 </div>
 
 <script src="../js/katalog.js"></script>
+<script>
+document.querySelectorAll('.btn-bookmark').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        const icon = btn.querySelector('i');
+        const akanSimpan = !btn.classList.contains('active');
+
+        // ubah tampilan langsung
+        btn.classList.toggle('active', akanSimpan);
+        icon.className = (akanSimpan ? 'fa-solid' : 'fa-regular') + ' fa-bookmark';
+
+        const fd = new FormData();
+        fd.append('id', btn.dataset.id);
+
+        fetch('toggle_bookmark.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                if (!res.ok) throw new Error('ditolak server');
+                btn.classList.toggle('active', res.saved);
+                icon.className = (res.saved ? 'fa-solid' : 'fa-regular') + ' fa-bookmark';
+            })
+            .catch(() => {
+                // kembalikan ke kondisi semula
+                btn.classList.toggle('active', !akanSimpan);
+                icon.className = (!akanSimpan ? 'fa-solid' : 'fa-regular') + ' fa-bookmark';
+                alert('Bookmark gagal disimpan. Coba login ulang atau cek toggle_bookmark.php.');
+            });
+    });
+});
+</script>
 </body>
 </html>

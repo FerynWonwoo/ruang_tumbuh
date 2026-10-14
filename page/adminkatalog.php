@@ -3,64 +3,56 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['bootcamp'])) {
-    $_SESSION['bootcamp'] = [];
-}
+require_once __DIR__ . '/../includes/bootcamp_store.php';
+
+$bootcamp = bootcamp_load();
 
 if (isset($_POST['tambah'])) {
-    $data = [
-        'id' => time(),
-        'judul' => $_POST['judul'],
+    $bootcamp[] = [
+        'id'            => uniqid(),
+        'judul'         => $_POST['judul'],
         'penyelenggara' => $_POST['penyelenggara'],
-        'kategori' => $_POST['kategori'],
-        'mode' => $_POST['mode'],
-        'durasi' => $_POST['durasi'],
-        'deadline' => $_POST['deadline'],
-        'harga' => $_POST['harga'],
-        'link' => $_POST['link'],
-        'deskripsi' => $_POST['deskripsi']
+        'kategori'      => $_POST['kategori'],
+        'mode'          => $_POST['mode'],
+        'durasi'        => $_POST['durasi'],
+        'deadline'      => $_POST['deadline'],
+        'harga'         => $_POST['harga'],
+        'link'          => $_POST['link'],
+        'deskripsi'     => $_POST['deskripsi'],
     ];
-
-    $_SESSION['bootcamp'][] = $data;
+    bootcamp_save($bootcamp);
     header('Location: adminkatalog.php');
     exit;
 }
 
 if (isset($_POST['edit'])) {
-    foreach ($_SESSION['bootcamp'] as &$data) {
+    foreach ($bootcamp as &$data) {
         if ($data['id'] == $_POST['id']) {
-            $data['judul'] = $_POST['judul'];
+            $data['judul']         = $_POST['judul'];
             $data['penyelenggara'] = $_POST['penyelenggara'];
-            $data['kategori'] = $_POST['kategori'];
-            $data['mode'] = $_POST['mode'];
-            $data['durasi'] = $_POST['durasi'];
-            $data['deadline'] = $_POST['deadline'];
-            $data['harga'] = $_POST['harga'];
-            $data['link'] = $_POST['link'];
-            $data['deskripsi'] = $_POST['deskripsi'];
+            $data['kategori']      = $_POST['kategori'];
+            $data['mode']          = $_POST['mode'];
+            $data['durasi']        = $_POST['durasi'];
+            $data['deadline']      = $_POST['deadline'];
+            $data['harga']         = $_POST['harga'];
+            $data['link']          = $_POST['link'];
+            $data['deskripsi']     = $_POST['deskripsi'];
             break;
         }
     }
-
     unset($data);
+    bootcamp_save($bootcamp);
     header('Location: adminkatalog.php');
     exit;
 }
 
 if (isset($_GET['hapus'])) {
     $id = $_GET['hapus'];
-
-    $_SESSION['bootcamp'] = array_values(
-        array_filter($_SESSION['bootcamp'], function ($data) use ($id) {
-            return $data['id'] != $id;
-        })
-    );
-
+    $bootcamp = array_filter($bootcamp, fn($d) => $d['id'] != $id);
+    bootcamp_save($bootcamp);
     header('Location: adminkatalog.php');
     exit;
 }
-
-$bootcamp = $_SESSION['bootcamp'];
 
 $nama_user = isset($_SESSION['nama'])
     ? htmlspecialchars($_SESSION['nama'])
@@ -87,7 +79,7 @@ $nama_user = isset($_SESSION['nama'])
 
             <ul class="nav-menu">
                 <li>
-                    <a href="dashboard.php" class="nav-link">
+                    <a href="admindashboard.php" class="nav-link">
                         <i class="fa-solid fa-table-cells-large"></i>
                         Dashboard
                     </a>
