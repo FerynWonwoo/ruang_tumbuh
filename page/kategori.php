@@ -4,6 +4,12 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Proteksi halaman: pengguna harus login terlebih dahulu
+if (!isset($_SESSION['username'])) {
+    header("Location: ../index.php");
+    exit;
+}
+
 $nama_user = isset($_SESSION['nama'])
     ? htmlspecialchars($_SESSION['nama'], ENT_QUOTES, 'UTF-8')
     : (isset($_SESSION['user']['nama'])
