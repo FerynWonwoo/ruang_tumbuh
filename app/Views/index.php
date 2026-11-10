@@ -60,15 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk | Ruang Tumbuh</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <script src="../js/script.js" defer></script>
+    <link rel="stylesheet" href="../../public/css/style.css">
+    <script src="../../public/assets/js/script/js" defer></script>
 </head>
 
 <body>
 
     <!-- Background Video -->
     <video class="background-video" autoplay muted loop playsinline aria-hidden="true">
-        <source src="../assets/background.mp4" type="video/mp4">
+        <source src="../../public/assets/background.mp4" type="video/mp4">
     </video>
     <div class="video-overlay"></div>
 
