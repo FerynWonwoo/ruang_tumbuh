@@ -1,5 +1,5 @@
-// Simpan di: js/rating.js
-// Dipakai oleh rating.php (user) dan adminrating.php (admin).
+// Simpan di: assets/js/rating.js
+// Dipakai oleh view rating/index (user) dan admin/rating (admin).
 // Tiap bagian hanya aktif kalau elemennya ada di halaman.
 (function () {
     'use strict';
@@ -32,7 +32,10 @@
         if (!modal) return;
         modal.classList.remove('open');
         modal.setAttribute('aria-hidden', 'true');
-        if (location.search) history.replaceState(null, '', 'rating.php');
+        // Kembalikan URL bersih (mis. dari ?r=rating&edit=ID atau ?r=rating/simpan)
+        if (location.search !== '?r=rating') {
+            history.replaceState(null, '', location.pathname + '?r=rating');
+        }
     }
 
     function terapkanFilter(nilai) {
