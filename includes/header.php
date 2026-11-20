@@ -1,6 +1,8 @@
+<link rel="stylesheet" href="../../public/css/header.css">
+<link rel="stylesheet" href="../../public/css/rating.css">
+
 <?php
-// includes/header.php
-// Pastikan session_start() sudah dipanggil di halaman yang meng-include file ini.
+// Session harus sudah dimulai oleh halaman pemanggil.
 
 if (!function_exists('aman')) {
     function aman($teks)
@@ -10,15 +12,18 @@ if (!function_exists('aman')) {
 }
 
 $headerUsername = $_SESSION['username'] ?? '';
-$headerAdmin    = ($_SESSION['role'] ?? 'user') === 'admin';
+$headerAdmin = ($_SESSION['role'] ?? 'user') === 'admin';
 ?>
-<link rel="stylesheet" href="../../public/css/header.css">
+
 <header class="header">
     <a href="profile.php" class="profile-section" title="Lihat profil">
         <div class="profile-info">
             <div class="profile-name"><?= aman($headerUsername) ?></div>
-            <div class="profile-role"><?= $headerAdmin ? 'Admin' : 'Pengguna' ?></div>
+            <div class="profile-role">
+                <?= $headerAdmin ? 'Admin' : 'Pengguna' ?>
+            </div>
         </div>
+
         <div class="avatar">
             <?= aman(strtoupper(mb_substr($headerUsername, 0, 2))) ?>
         </div>

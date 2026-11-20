@@ -1,12 +1,13 @@
-
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Proteksi halaman: pengguna harus login terlebih dahulu
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+
 if (!isset($_SESSION['username'])) {
-    header("Location: ../index.php");
+    header("Location: ../../index.php");
     exit;
 }
 
@@ -18,57 +19,31 @@ $nama_user = isset($_SESSION['nama'])
 
 $halamanAktif = basename($_SERVER['PHP_SELF']);
 
-// Data Kategori Program
-$kategori_list = [
-    [
-        'id' => 'bootcamp',
-        'nama' => 'Bootcamp & Intensive Class',
-        'ikon' => 'fa-laptop-code',
-        'warna' => '#10B981',
-        'jumlah' => 24,
-        'deskripsi' => 'Program pelatihan terstruktur untuk menguasai keterampilan digital secara intensif dari dasar hingga siap kerja.'
-    ],
-    [
-        'id' => 'beasiswa',
-        'nama' => 'Beasiswa & Pendanaan',
-        'ikon' => 'fa-graduation-cap',
-        'warna' => '#3B82F6',
-        'jumlah' => 18,
-        'deskripsi' => 'Peluang bantuan dana pendidikan, beasiswa studi lanjut, dan program pertukaran pelajar nasional maupun internasional.'
-    ],
-    [
-        'id' => 'magang',
-        'nama' => 'Magang & Karir Pertama',
-        'ikon' => 'fa-briefcase',
-        'warna' => '#8B5CF6',
-        'jumlah' => 35,
-        'deskripsi' => 'Akses ke berbagai kesempatan internship di startup, BUMN, dan perusahaan multinasional untuk mengawali karirmu.'
-    ],
-    [
-        'id' => 'lomba',
-        'nama' => 'Kompetisi & Lomba',
-        'ikon' => 'fa-trophy',
-        'warna' => '#F59E0B',
-        'jumlah' => 12,
-        'deskripsi' => 'Asah kemampuan dan bangun portofolio melalui kompetisi UI/UX, hackathon, essay, dan ide bisnis.'
-    ],
-    [
-        'id' => 'webinar',
-        'nama' => 'Webinar & Workshop',
-        'ikon' => 'fa-chalkboard-user',
-        'warna' => '#EC4899',
-        'jumlah' => 29,
-        'deskripsi' => 'Sesi berbagi ilmu bersama praktisi industri untuk memperluas wawasan dan jaringan profesional.'
-    ],
-    [
-        'id' => 'sertifikasi',
-        'nama' => 'Sertifikasi Profesi',
-        'ikon' => 'fa-certificate',
-        'warna' => '#06B6D4',
-        'jumlah' => 9,
-        'deskripsi' => 'Program sertifikasi resmi untuk memvalidasi keahlian teknis dan non-teknis agar dilirik oleh perekrut.'
-    ]
-];
+// Koneksi database
+require_once __DIR__ . '/../../config/koneksimvc.php';
+
+// Mengambil kategori dari database
+$kategori_list = [];
+
+$query = "SELECT
+            id,
+            nama_kategori,
+            deskripsi,
+            ikon
+          FROM kategori
+          ORDER BY id DESC";
+
+$result = $conn->query($query);
+
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $kategori_list[] = $row;
+    }
+}
+
+// Warna dan ikon default untuk tampilan
+$warnaDefault = '#10B981';
+$ikonDefault = 'fa-layer-group';
 ?>
 
 <!DOCTYPE html>
@@ -83,24 +58,23 @@ $kategori_list = [
     <!-- Font Awesome -->
     <link
         rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    >
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/kategori.css">
+    <link rel="stylesheet" href="../../public/css/dashboard.css">
+    <link rel="stylesheet" href="../../public/css/kategori.css">
 </head>
 
 <body>
 
     <!-- SIDEBAR -->
-    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/../../includes/sidebar.php'; ?>
 
     <!-- AREA UTAMA: JANGAN DIBUKA DUA KALI -->
     <div class="main-area">
 
         <!-- HEADER BERSAMA -->
-        <?php include __DIR__ . '/../includes/header.php'; ?>
+        <?php include __DIR__ . '/../../includes/header.php'; ?>
 
         <!-- KONTEN HALAMAN -->
         <main class="dashboard-container">
@@ -138,74 +112,89 @@ $kategori_list = [
                         id="searchKategori"
                         class="search-input"
                         placeholder="Cari kategori, misalnya Bootcamp..."
-                        autocomplete="off"
-                    >
+                        autocomplete="off">
                 </div>
             </div>
 
             <!-- GRID KATEGORI -->
+
             <div class="kategori-grid">
 
-                <?php foreach ($kategori_list as $kat): ?>
+                <?php if (empty($kategori_list)): ?>
 
-                    <a
-                        href="katalog.php?kategori=<?= urlencode($kat['id']); ?>"
-                        class="kategori-card"
-                    >
+                    <p>Belum ada kategori program yang tersedia.</p>
 
-                        <div>
-                            <div
-                                class="kategori-icon-wrapper"
-                                style="
-                                    background-color: <?= $kat['warna']; ?>18;
-                                    color: <?= $kat['warna']; ?>;
-                                "
-                            >
-                                <i class="fa-solid <?= $kat['ikon']; ?>"></i>
+                <?php else: ?>
+
+                    <?php foreach ($kategori_list as $kat): ?>
+
+                        <?php
+                        $warna = $warnaDefault;
+                        $ikon = !empty($kat['ikon'])
+                            ? $kat['ikon']
+                            : $ikonDefault;
+                        ?>
+
+                        <a
+                            href="katalog.php?kategori=<?= (int) $kat['id']; ?>"
+                            class="kategori-card">
+
+                            <div>
+                                <div
+                                    class="kategori-icon-wrapper"
+                                    style="
+                            background-color: <?= $warna; ?>18;
+                            color: <?= $warna; ?>;
+                        ">
+                                    <i class="fa-solid <?= htmlspecialchars($ikon, ENT_QUOTES, 'UTF-8'); ?>"></i>
+                                </div>
+
+                                <h2 class="kategori-title">
+                                    <?= htmlspecialchars(
+                                        $kat['nama_kategori'],
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ); ?>
+                                </h2>
+
+                                <p class="kategori-desc">
+                                    <?= htmlspecialchars(
+                                        $kat['deskripsi'] ?? '-',
+                                        ENT_QUOTES,
+                                        'UTF-8'
+                                    ); ?>
+                                </p>
                             </div>
 
-                            <h2 class="kategori-title">
-                                <?= htmlspecialchars(
-                                    $kat['nama'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ); ?>
-                            </h2>
+                            <div class="kategori-footer">
 
-                            <p class="kategori-desc">
-                                <?= htmlspecialchars(
-                                    $kat['deskripsi'],
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ); ?>
-                            </p>
-                        </div>
+                                <span class="badge-count">
+                                    0 Program
+                                </span>
 
-                        <div class="kategori-footer">
+                                <span class="kategori-link">
+                                    Jelajahi
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </span>
 
-                            <span class="badge-count">
-                                <?= (int) $kat['jumlah']; ?> Program
-                            </span>
+                            </div>
 
-                            <span class="kategori-link">
-                                Jelajahi
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </span>
+                        </a>
 
-                        </div>
+                    <?php endforeach; ?>
 
-                    </a>
-
-                <?php endforeach; ?>
+                <?php endif; ?>
 
             </div>
+
 
         </main>
 
     </div>
 
     <!-- JAVASCRIPT -->
-    <script src="../js/kategori.js"></script>
+    <script src="../../public/js/kategori.js"></script>
 
 </body>
+
 </html>
