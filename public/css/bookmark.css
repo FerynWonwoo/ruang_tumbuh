@@ -586,7 +586,7 @@ body {
 }
 
 .fm-label select:invalid {
-    color: #9CA3AF;
+    color: #000206;
     font-weight: 400;
 }
 
@@ -600,7 +600,6 @@ body {
 .fm-label select:focus,
 .fm-label textarea:focus {
     border-color: #10B981;
-    background-color: #ECFDF5;
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.14);
 }
 
