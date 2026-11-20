@@ -28,18 +28,13 @@ $menu = [
             <ul class="nav-menu">
                 <?php foreach ($menu as $file => [$ikon, $label]): ?>
                     <?php
-                    $url = ($file === 'kategori.php')
-                        ? 'index.php?page=kategori'
-                        : $file;
-
-                    $aktif = ($file === 'kategori.php')
-                        ? (($_GET['page'] ?? '') === 'kategori')
-                        : ($halaman_aktif === $file);
+                    $url = '/ruang_tumbuh/app/Views/' . $file;
+                    $aktif = ($halaman_aktif === $file);
                     ?>
 
                     <li>
                         <a href="<?= htmlspecialchars($url, ENT_QUOTES, 'UTF-8'); ?>"
-                           class="nav-link <?= $aktif ? 'active' : ''; ?>">
+                            class="nav-link <?= $aktif ? 'active' : ''; ?>">
                             <i class="<?= htmlspecialchars($ikon, ENT_QUOTES, 'UTF-8'); ?>"></i>
                             <?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8'); ?>
                         </a>
