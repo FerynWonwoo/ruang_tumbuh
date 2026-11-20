@@ -115,7 +115,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span>Peluang Tersimpan</span>
+                            <span>Tersimpan</span>
                             <i class="fa-regular fa-bookmark"></i>
                         </div>
                         <div class="stat-value-container">
@@ -134,7 +134,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
 
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span>Bootcamp Aktif</span>
+                            <span>Program Aktif</span>
                             <i class="fa-solid fa-graduation-cap"></i>
                         </div>
                         <div class="stat-value-container">
@@ -147,7 +147,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
 
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span>Catatan Strategi</span>
+                            <span>Catatan</span>
                             <i class="fa-regular fa-note-sticky"></i>
                         </div>
                         <div class="stat-value-container">
@@ -161,7 +161,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
 
                     <div class="stat-card">
                         <div class="stat-header">
-                            <span>Rating Komunitas</span>
+                            <span>Rating</span>
                             <i class="fa-solid fa-star" style="color: #F59E0B;"></i>
                         </div>
                         <div class="stat-value-container">

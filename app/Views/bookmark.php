@@ -1,126 +1,81 @@
 <?php
-session_start();
+if (!defined('BOOKMARK_MVC_RENDER')) {
+    ob_start();
 
-if (empty($_SESSION['username'])) {
-    header('Location: ../../');
-    exit;
-}
-
-function aman($teks)
-{
-    return htmlspecialchars((string) $teks, ENT_QUOTES, 'UTF-8');
-}
-
-$username = $_SESSION['username'];
-
-if (empty($_SESSION['csrf'])) {
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
-}
-
-// Simulasi penyimpanan data bookmark di session
-if (!isset($_SESSION['bookmarks'])) {
-    $_SESSION['bookmarks'] = [
-        [
-            'id' => '1',
-            'judul' => 'Beasiswa Akselerasi Talent Digital 2026',
-            'kategori' => 'Beasiswa',
-            'penyelenggara' => 'Kementerian Kominfo',
-            'deadline' => '20 Oct 2026',
-            'status' => 'Aktif',
-            'deskripsi' => 'Program beasiswa penuh untuk pelatihan bidang teknologi digital dan sertifikasi internasional.',
-            'link' => 'https://digital.kominfo.go.id'
-        ],
-        [
-            'id' => '2',
-            'judul' => 'Frontend Web Developer Internship Program',
-            'kategori' => 'Magang',
-            'penyelenggara' => 'Tech Corp Indonesia',
-            'deadline' => '30 Oct 2026',
-            'status' => 'Aktif',
-            'deskripsi' => 'Program magang 6 bulan fokus pada pengembangan web modern menggunakan ReactJS dan pemanfaatan REST API.',
-            'link' => 'https://techcorp.id/careers'
-        ],
-        [
-            'id' => '3',
-            'judul' => 'UI/UX Design Intensive Bootcamp 2026',
-            'kategori' => 'Bootcamp',
-            'penyelenggara' => 'RuangTumbuh Academy',
-            'deadline' => '15 Oct 2026',
-            'status' => 'Mendekati Tenggat',
-            'deskripsi' => 'Pelatihan intensif UI/UX design mencakup Design Thinking, Wireframing, Prototyping di Figma, hingga Usability Testing.',
-            'link' => 'https://ruangtumbuh.id/bootcamp'
-        ],
-        [
-            'id' => '4',
-            'judul' => 'National Cyber Security Hackathon',
-            'kategori' => 'Lomba',
-            'penyelenggara' => 'Badan Siber Indonesia',
-            'deadline' => '05 Nov 2026',
-            'status' => 'Aktif',
-            'deskripsi' => 'Kompetisi peretasan etis (Capture The Flag) tingkat nasional untuk menguji kemampuan analisis keamanan jaringan dan web.',
-            'link' => 'https://bssn.go.id/hackathon'
-        ]
-    ];
-}
-
-// Contoh fungsi opsional jika nanti menerima data kiriman (tambah bookmark dari halaman lain via POST)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $aksi = $_POST['aksi'] ?? '';
-    $token = $_POST['csrf'] ?? '';
-
-    if (hash_equals($_SESSION['csrf'], $token)) {
-        if ($aksi === 'hapus') {
-            $id = $_POST['id'] ?? '';
-            $_SESSION['bookmarks'] = array_values(array_filter($_SESSION['bookmarks'], function ($item) use ($id) {
-                return $item['id'] !== $id;
-            }));
-            $_SESSION['pesan_bookmark'] = 'Bookmark berhasil dihapus dari daftar simpanan.';
-        } elseif ($aksi === 'tambah') {
-            // Logika otomatis ketika diklik dari halaman lain (Katalog/Dashboard)
-            $newItem = [
-                'id' => $_POST['id'] ?? uniqid(),
-                'judul' => $_POST['judul'] ?? 'Program Pilihan',
-                'kategori' => $_POST['kategori'] ?? 'Umum',
-                'penyelenggara' => $_POST['penyelenggara'] ?? 'Penyelenggara',
-                'deadline' => $_POST['deadline'] ?? '2026-Desember-31',
-                'status' => 'Aktif',
-                'deskripsi' => $_POST['deskripsi'] ?? 'Deskripsi program.',
-                'link' => $_POST['link'] ?? '#'
-            ];
-            // Cek agar tidak duplikat
-            $exists = false;
-            foreach ($_SESSION['bookmarks'] as $b) {
-                if ($b['judul'] === $newItem['judul']) {
-                    $exists = true;
-                    break;
-                }
-            }
-            if (!$exists) {
-                array_unshift($_SESSION['bookmarks'], $newItem);
-                $_SESSION['pesan_bookmark'] = 'Program berhasil ditambahkan ke bookmark!';
-            }
-        }
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
     }
-    header('Location: bookmark.php');
-    exit;
+
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Cache-Control: post-check=0, pre-check=0', false);
+    header('Pragma: no-cache');
+    header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+
+    require_once __DIR__ . '/../Models/Bookmark.php';
+    require_once __DIR__ . '/../Controllers/BookmarkController.php';
+
+    $paths = BookmarkController::resolvePaths();
+
+    // Proteksi halaman: tolak akses langsung lewat URL tanpa login sebelum menyentuh DB
+    if (empty($_SESSION['user_id']) && empty($_SESSION['username'])) {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Location: ' . $paths['loginUrl'], true, 302);
+        exit;
+    }
+
+    try {
+        ob_start();
+        require_once __DIR__ . '/../../config/koneksimvc.php';
+        ob_end_clean();
+    } catch (Throwable $e) {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        error_log('Bookmark DB connection error: ' . $e->getMessage());
+        http_response_code(503);
+        echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Gangguan Koneksi | RuangTumbuh</title></head><body style="margin:0;font-family:Inter,Arial,sans-serif;background:#F8FAF9;color:#1F2937;display:grid;place-items:center;min-height:100vh;padding:24px;"><div style="max-width:460px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;padding:28px;text-align:center;"><h1 style="font-size:20px;margin:0 0 10px;color:#143D35;">Koneksi Database Bermasalah</h1><p style="font-size:14px;color:#6B7280;line-height:1.6;margin:0;">Fitur Bookmark belum dapat terhubung ke database <strong>ruangtumbuh</strong>. Pastikan MySQL aktif lalu muat ulang halaman ini.</p></div></body></html>';
+        exit;
+    }
+
+    if (!isset($conn) || !($conn instanceof mysqli)) {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        http_response_code(503);
+        echo '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Gangguan Koneksi | RuangTumbuh</title></head><body style="margin:0;font-family:Inter,Arial,sans-serif;background:#F8FAF9;color:#1F2937;display:grid;place-items:center;min-height:100vh;padding:24px;"><div style="max-width:460px;background:#FFFFFF;border:1px solid #E5E7EB;border-radius:16px;padding:28px;text-align:center;"><h1 style="font-size:20px;margin:0 0 10px;color:#143D35;">Koneksi Database Tidak Tersedia</h1><p style="font-size:14px;color:#6B7280;line-height:1.6;margin:0;">Silakan periksa konfigurasi database kelompok dan muat ulang halaman.</p></div></body></html>';
+        exit;
+    }
+
+    $bookmarkModel = new Bookmark($conn);
+    $bookmarkController = new BookmarkController($bookmarkModel);
+    $bookmarkController->handle();
+    return;
 }
 
-$pesan = $_SESSION['pesan_bookmark'] ?? '';
-unset($_SESSION['pesan_bookmark']);
+if (!function_exists('aman')) {
+    function aman($teks): string
+    {
+        return BookmarkController::aman($teks);
+    }
+}
 
-$daftarBookmark = $_SESSION['bookmarks'];
-$totalTersimpan = count($daftarBookmark);
+$totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RuangTumbuh - Bookmark & Tersimpan</title>
+    <title>RuangTumbuh - Bookmark & Program Tersimpan</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../public/css/sidebar.css">
-    <link rel="stylesheet" href="../../public/css/bookmark.css">
+    <link rel="stylesheet" href="<?= aman($paths['assetUrl']) ?>/css/sidebar.css">
+    <link rel="stylesheet" href="<?= aman($paths['assetUrl']) ?>/css/bookmark.css">
 </head>
 <body>
 
@@ -137,39 +92,58 @@ $totalTersimpan = count($daftarBookmark);
             <!-- BANNER UTAMA -->
             <section class="welcome-banner">
                 <div class="banner-content-wrapper">
-                    <div>
+                    <div class="banner-text-area">
                         <span class="badge-tag">• Arsip Peluang Pengembangan Diri</span>
                         <h1 class="banner-title">Bookmark & Program Tersimpan</h1>
                         <p class="banner-subtitle">Simpan dan kelola seluruh peluang magang, beasiswa, dan bootcamp favoritmu di satu tempat.</p>
                     </div>
 
-                    <div class="counter-box-main" style="margin: 0;">
-                        <div class="counter-icon">
-                            <i class="fa-solid fa-bookmark"></i>
+                    <div class="banner-actions">
+                        <div class="banner-side-group">
+                            <div class="banner-count-pill">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <span><?= $totalTersimpan ?> Tersimpan</span>
+                            </div>
+
+                            <button type="button" class="btn-tambah-main" onclick="openForm()">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah Bookmark</span>
+                            </button>
                         </div>
-                        <div class="counter-info">
-                            <span class="counter-number"><?= $totalTersimpan ?> Tersimpan</span>
+
+                        <div class="banner-floating-badge" aria-hidden="true">
+                            <i class="fa-regular fa-bookmark"></i>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- KOTAK PENCARIAN & TOMBOL FILTER KATEGORI -->
-            <div style="width: 100%; margin: 0px 0; display: flex; flex-direction: column; gap: 12px;">
-                <input type="text" id="searchBookmark" placeholder="Cari dalam bookmark tersimpan..." style="width: 100%; height: 46px; padding: 0 20px; background-color: #FFFFFF; border: 1px solid #D1D5DB; border-radius: 12px; font-size: 14px; color: #1F2937; outline: none; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);">
+            <div class="filter-toolbar">
+                <div class="search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchBookmark" placeholder="Cari judul program atau penyelenggara..." autocomplete="off">
+                </div>
                 
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" class="filter-btn active" data-filter="Semua" style="padding: 8px 16px; border-radius: 9999px; border: 1px solid #D1D5DB; background: #10B981; color: #FFFFFF; font-size: 13px; font-weight: 500; cursor: pointer;">Semua</button>
-                    <button type="button" class="filter-btn" data-filter="Beasiswa" style="padding: 8px 16px; border-radius: 9999px; border: 1px solid #D1D5DB; background: #FFFFFF; color: #374151; font-size: 13px; font-weight: 500; cursor: pointer;">Beasiswa</button>
-                    <button type="button" class="filter-btn" data-filter="Magang" style="padding: 8px 16px; border-radius: 9999px; border: 1px solid #D1D5DB; background: #FFFFFF; color: #374151; font-size: 13px; font-weight: 500; cursor: pointer;">Magang</button>
-                    <button type="button" class="filter-btn" data-filter="Bootcamp" style="padding: 8px 16px; border-radius: 9999px; border: 1px solid #D1D5DB; background: #FFFFFF; color: #374151; font-size: 13px; font-weight: 500; cursor: pointer;">Bootcamp</button>
-                    <button type="button" class="filter-btn" data-filter="Lomba" style="padding: 8px 16px; border-radius: 9999px; border: 1px solid #D1D5DB; background: #FFFFFF; color: #374151; font-size: 13px; font-weight: 500; cursor: pointer;">Lomba</button>
+                <div class="filter-chips-wrap">
+                    <button type="button" class="filter-btn active" data-filter="Semua">Semua</button>
+                    <?php foreach ($kategoriFilter as $kf): ?>
+                        <button type="button" class="filter-btn" data-filter="<?= aman($kf) ?>"><?= aman($kf) ?></button>
+                    <?php endforeach; ?>
                 </div>
             </div>
 
-            <?php if ($pesan): ?>
-                <div class="alert-message success" style="margin-bottom: 20px; padding: 12px 16px; background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; border-radius: 8px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-circle-check"></i> <?= aman($pesan) ?>
+            <?php if ($pesan !== ''): ?>
+                <div class="alert-message success" role="status">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span><?= aman($pesan) ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($error !== ''): ?>
+                <div class="alert-message error" role="alert">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <span><?= aman($error) ?></span>
                 </div>
             <?php endif; ?>
 
@@ -179,49 +153,58 @@ $totalTersimpan = count($daftarBookmark);
                     <div class="empty-state">
                         <i class="fa-regular fa-bookmark"></i>
                         <h3>Belum ada bookmark tersimpan</h3>
-                        <p>Silakan klik ikon bookmark pada program di halaman katalog atau dashboard.</p>
+                        <p>Klik tombol <strong>Tambah Bookmark</strong> di atas atau tekan ikon bookmark pada program di Katalog.</p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($daftarBookmark as $item): ?>
-                        <div class="bookmark-card clickable-card" 
-                            data-kategori="<?= aman($item['kategori']) ?>" 
-                            data-judul="<?= strtolower(aman($item['judul'])) ?>"
-                            data-penyelenggara="<?= strtolower(aman($item['penyelenggara'])) ?>"
-                            onclick="openDetailModal(<?= htmlspecialchars(json_encode($item), ENT_QUOTES, 'UTF-8') ?>)">
+                        <?php
+                        $itemJson = htmlspecialchars(
+                            json_encode($item, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE),
+                            ENT_QUOTES,
+                            'UTF-8'
+                        );
+                        $judulLower = function_exists('mb_strtolower') ? mb_strtolower((string) $item['judul'], 'UTF-8') : strtolower((string) $item['judul']);
+                        $orgLower = function_exists('mb_strtolower') ? mb_strtolower((string) $item['penyelenggara'], 'UTF-8') : strtolower((string) $item['penyelenggara']);
+                        ?>
+                        <article class="bookmark-card clickable-card"
+                            data-kategori="<?= aman($item['kategori']) ?>"
+                            data-judul="<?= aman($judulLower) ?>"
+                            data-penyelenggara="<?= aman($orgLower) ?>"
+                            onclick="openDetailModal(<?= $itemJson ?>)">
                             
-                            <div class="card-header-tag">
-                                <span class="kategori-tag"><?= aman($item['kategori']) ?></span>
-                                <span class="status-tag <?= $item['status'] === 'Mendekati Tenggat' ? 'warning' : 'active' ?>">
-                                    <span class="badge-status-dot"></span> <?= aman($item['status']) ?>
-                                </span>
-                            </div>
+                            <div>
+                                <div class="card-header-tag">
+                                    <span class="kategori-tag"><?= aman($item['kategori']) ?></span>
+                                    <span class="status-tag <?= aman($item['status_class']) ?>">
+                                        <span class="badge-status-dot"></span> <?= aman($item['status']) ?>
+                                    </span>
+                                </div>
 
-                            <h3 class="card-title"><?= aman($item['judul']) ?></h3>
-                            <p class="penyelenggara"><i class="fa-regular fa-building"></i> <?= aman($item['penyelenggara']) ?></p>
+                                <h3 class="card-title"><?= aman($item['judul']) ?></h3>
+                                <p class="penyelenggara">
+                                    <i class="fa-regular fa-building"></i>
+                                    <?= aman($item['penyelenggara'] !== '' ? $item['penyelenggara'] : 'Penyelenggara belum dicantumkan') ?>
+                                </p>
+                            </div>
 
                             <div class="card-footer">
                                 <span class="deadline">
-                                    <i class="fa-regular fa-calendar"></i> 
-                                    <?php 
-                                        $tgl_asli = $item['deadline'] ?? '';
-                                        // Ubah format string tanggal agar seragam dibaca
-                                        $timestamp = strtotime(str_replace(['Oktober', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'November', 'Desember'], ['October', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'], $tgl_asli));
-                                        
-                                        if ($timestamp) {
-                                            echo date('d M Y', $timestamp); // Hasilnya nanti seragam, misal: 20 Oct 2026 atau 31 Oct 2026
-                                        } else {
-                                            echo aman($tgl_asli);
-                                        }
-                                    ?>
+                                    <i class="fa-regular fa-calendar"></i>
+                                    <?= aman($item['deadline']) ?>
                                 </span>
+
                                 <div class="card-actions">
-                                    <button type="button" class="btn-action btn-detail">
+                                    <button type="button" class="btn-action btn-detail" onclick="event.stopPropagation(); openDetailModal(<?= $itemJson ?>)">
                                         <i class="fa-regular fa-eye"></i> Detail
                                     </button>
                                     
-                                    <form method="post" action="bookmark.php" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus program ini dari bookmark?');" onclick="event.stopPropagation();">
+                                    <button type="button" class="btn-action btn-edit" onclick="event.stopPropagation(); openForm(<?= $itemJson ?>)">
+                                        <i class="fa-regular fa-pen-to-square"></i> Edit
+                                    </button>
+
+                                    <form method="post" action="bookmark.php" class="form-hapus-bookmark" style="display:inline;" data-judul="<?= aman($item['judul']) ?>" onclick="event.stopPropagation();">
                                         <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
-                                        <input type="hidden" name="id" value="<?= aman($item['id']) ?>">
+                                        <input type="hidden" name="id" value="<?= (int) $item['id'] ?>">
                                         <input type="hidden" name="aksi" value="hapus">
                                         <button type="submit" class="btn-action btn-hapus">
                                             <i class="fa-regular fa-trash-can"></i> Hapus
@@ -229,7 +212,7 @@ $totalTersimpan = count($daftarBookmark);
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        </article>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
@@ -237,109 +220,125 @@ $totalTersimpan = count($daftarBookmark);
     </div>
 
     <!-- MODAL DETAIL -->
-    <div class="modal-overlay" id="detailModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center;">
-        <div class="modal-card" style="background: #fff; width: 100%; max-width: 500px; padding: 24px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-                <h3 style="font-size: 18px; font-weight: 700; color: #111827;">Detail Program Favorit</h3>
-                <button type="button" onclick="closeModal('detailModal')" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #6B7280;">&times;</button>
+    <div class="modal-overlay" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailJudul">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">Detail Program Favorit</h3>
+                <button type="button" class="btn-close" onclick="closeModal('detailModal')" aria-label="Tutup">&times;</button>
             </div>
             <div class="detail-body">
                 <div class="card-header-tag" style="margin-bottom: 12px;">
                     <span class="kategori-tag" id="detailKategori">-</span>
-                    <span class="status-tag active">
+                    <span class="status-tag active" id="detailStatusBadge">
                         <span class="badge-status-dot"></span> <span id="detailStatusText">Aktif</span>
                     </span>
                 </div>
-                <h2 id="detailJudul" style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 8px;">-</h2>
-                <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">
-                    <i class="fa-regular fa-building"></i> Penyelenggara: <strong id="detailPenyelenggara" style="color: #334155;">-</strong>
+                <h2 id="detailJudul" class="detail-judul">-</h2>
+                <p class="detail-org">
+                    <i class="fa-regular fa-building"></i> Penyelenggara: <strong id="detailPenyelenggara">-</strong>
                 </p>
                 
-                <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 12px 0;">
+                <hr class="detail-divider">
 
                 <div class="detail-section">
-                    <label style="font-weight: 600; font-size: 13px; color: #475569;">Deskripsi & Persyaratan Program:</label>
-                    <p id="detailDeskripsi" style="color: #334155; font-size: 14px; line-height: 1.6; margin-top: 6px;">-</p>
+                    <label class="detail-label">Deskripsi & Persyaratan Program:</label>
+                    <p id="detailDeskripsi" class="detail-desc">-</p>
                 </div>
 
-                <div class="detail-section" style="margin-top: 16px; font-size: 13px; color: #64748b;">
-                    <i class="fa-regular fa-calendar"></i> Batas Tenggat: <strong id="detailDeadline" style="color: #0f172a;">-</strong>
+                <div class="detail-meta">
+                    <i class="fa-regular fa-calendar"></i> Batas Tenggat: <strong id="detailDeadline">-</strong>
                 </div>
             </div>
             
-            <div class="modal-footer" style="margin-top: 24px; display: flex; gap: 8px; justify-content: flex-end;">
-                <a id="detailLink" href="#" target="_blank" class="btn-action" style="padding: 8px 16px; background: #10B981; color: #fff; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+            <div class="modal-footer">
+                <button type="button" class="btn-batal" onclick="closeModal('detailModal')">Tutup</button>
+                <a id="detailLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-simpan" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Daftar Sekarang
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT (MODAL, SEARCH, & FILTER) -->
-    <script>
-        function openModal(modalId) {
-            document.getElementById(modalId).style.display = 'flex';
-        }
+    <!-- MODAL FORM TAMBAH / EDIT -->
+    <div class="modal-overlay" id="formModal" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+        <div class="modal-card fm-card">
+            <div class="modal-header fm-head">
+                <h3 id="formTitle" class="modal-title">Tambah Bookmark</h3>
+                <button type="button" class="btn-close" onclick="closeModal('formModal')" aria-label="Tutup">&times;</button>
+            </div>
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+            <div id="clientFormError" class="alert-message error" style="display:none; margin-bottom:12px; font-size:13px; padding:10px 12px;"></div>
 
-        function openDetailModal(item) {
-            document.getElementById('detailKategori').innerText = item.kategori;
-            document.getElementById('detailJudul').innerText = item.judul;
-            document.getElementById('detailPenyelenggara').innerText = item.penyelenggara;
-            document.getElementById('detailDeskripsi').innerText = item.deskripsi;
-            document.getElementById('detailDeadline').innerText = item.deadline;
-            document.getElementById('detailLink').href = item.link;
-            openModal('detailModal');
-        }
+            <form method="post" action="bookmark.php" id="formBookmark" novalidate>
+                <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
+                <input type="hidden" name="aksi" id="fAksi" value="tambah">
+                <input type="hidden" name="id" id="fId" value="">
 
-        // Live Search & Filter
-        const searchInput = document.getElementById('searchBookmark');
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const cards = document.querySelectorAll('.bookmark-card');
+                <label class="fm-label">Judul program <span class="req">*</span>
+                    <input type="text" name="judul" id="fJudul" required minlength="3" maxlength="150" placeholder="Contoh: Beasiswa Unggulan Kemendikbud">
+                </label>
 
-        let currentFilter = 'Semua';
-        let currentKeyword = '';
+                <div class="fm-row">
+                    <label class="fm-label">Kategori <span class="req">*</span>
+                        <select name="kategori" id="fKategori" required>
+                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                            <option value="Pribadi">Pribadi</option>
+                            <option value="Beasiswa">Beasiswa</option>
+                            <option value="Bootcamp">Bootcamp</option>
+                            <option value="Magang">Magang</option>
+                            <option value="Lomba">Lomba</option>
+                            <option value="Karier">Karier</option>
+                        </select>
+                    </label>
+                    <label class="fm-label">Penyelenggara
+                        <input type="text" name="penyelenggara" id="fPenyelenggara" maxlength="100" placeholder="Nama instansi / perusahaan">
+                    </label>
+                </div>
 
-        function filterCards() {
-            cards.forEach(card => {
-                const kategori = card.getAttribute('data-kategori');
-                const judul = card.getAttribute('data-judul');
-                const penyelenggara = card.getAttribute('data-penyelenggara');
+                <div class="fm-row">
+                    <label class="fm-label">Batas tenggat
+                        <input type="date" name="deadline" id="fDeadline" min="2000-01-01" max="2100-12-31">
+                    </label>
+                    <label class="fm-label">Link pendaftaran
+                        <input type="url" name="link" id="fLink" maxlength="500" placeholder="https://...">
+                    </label>
+                </div>
 
-                const matchCategory = (currentFilter === 'Semua' || kategori === currentFilter);
-                const matchKeyword = (judul.includes(currentKeyword) || penyelenggara.includes(currentKeyword));
+                <label class="fm-label">Deskripsi & Catatan Persyaratan
+                    <textarea name="deskripsi" id="fDeskripsi" maxlength="1000" placeholder="Tulis catatan persyaratan, berkas, atau info penting lainnya..."></textarea>
+                </label>
 
-                if (matchCategory && matchKeyword) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
+                <div class="fm-foot">
+                    <button type="button" class="btn-batal" onclick="closeModal('formModal')">Batal</button>
+                    <button type="submit" class="btn-simpan">Simpan Bookmark</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                currentKeyword = e.target.value.toLowerCase().trim();
-                filterCards();
-            });
-        }
+    <!-- MODAL KONFIRMASI HAPUS BOOKMARK -->
+    <div class="modal-overlay" id="modalHapusBookmark" role="alertdialog" aria-modal="true" aria-labelledby="hapusBookmarkJudul" aria-describedby="hapusBookmarkPesan">
+        <div class="modal-card modal-confirm-card">
+            <div class="modal-danger-icon" aria-hidden="true">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="modal-confirm-title" id="hapusBookmarkJudul">Hapus Bookmark?</h3>
+            <p class="modal-confirm-desc" id="hapusBookmarkPesan">
+                Apakah kamu yakin ingin menghapus bookmark "<strong id="hapusNamaBookmark"></strong>"? Data yang sudah dihapus tidak dapat dikembalikan.
+            </p>
+            <div class="modal-confirm-actions">
+                <button type="button" class="btn-confirm-cancel" onclick="closeModal('modalHapusBookmark')">Batal</button>
+                <button type="button" class="btn-confirm-danger" id="btnKonfirmasiHapusBookmark">
+                    <i class="fa-regular fa-trash-can"></i> Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
 
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => {
-                    b.style.background = '#FFFFFF';
-                    b.style.color = '#374151';
-                });
-                btn.style.background = '#10B981';
-                btn.style.color = '#FFFFFF';
+    <?php if ($old !== null): ?>
+        <script type="application/json" id="oldBookmarkData"><?= json_encode($old, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
+    <?php endif; ?>
 
-                currentFilter = btn.getAttribute('data-filter');
-                filterCards();
-            });
-        });
-    </script>
+    <script src="<?= aman($paths['assetUrl']) ?>/js/bookmark.js"></script>
 </body>
 </html>

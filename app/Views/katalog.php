@@ -63,7 +63,8 @@ $program = array_map(function ($p) use ($hariIni) {
 }, bootcamp_urut($program, $urut, $hariIni));
 
 /* ---------- Bookmark (session yang sama dengan proses_bookmark.php) ---------- */
-$tersimpan = array_map('strval', array_column($_SESSION['bookmarks'] ?? [], 'id'));
+require_once __DIR__ . '/../../includes/bookmark_store.php';
+$tersimpan = bookmark_ids();
 
 $judulHalaman = $kategoriAktif ? $kategoriAktif['nama_kategori'] : 'Katalog Program';
 $subJudul = $kategoriAktif
