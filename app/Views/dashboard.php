@@ -3,11 +3,79 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+date_default_timezone_set('Asia/Jakarta');
+
+require_once __DIR__ . '/../../includes/bookmark_store.php';
+require_once __DIR__ . '/../../includes/bootcamp_store.php';
+
 $nama_user = isset($_SESSION['nama']) 
     ? htmlspecialchars($_SESSION['nama']) 
     : (isset($_SESSION['user']['nama']) 
         ? htmlspecialchars($_SESSION['user']['nama']) 
         : 'Pengguna');
+
+// ---------- Data kartu statistik (dihitung dari halaman masing-masing) ----------
+$usernameLogin = $_SESSION['username'] ?? '';
+$userIdLogin   = (int) ($_SESSION['user_id'] ?? 0);
+
+// 1) Peluang Tersimpan -> halaman Bookmark
+$ringkasBookmark = bookmark_ringkasan($usernameLogin);
+$totalBookmark   = $ringkasBookmark['total'];
+$bookmarkMepet   = $ringkasBookmark['mendekati'];
+
+// 2) Bootcamp Aktif -> halaman Katalog (deadline belum lewat)
+$semuaKatalog = bootcamp_load();
+$katalogAktif = 0;
+foreach ($semuaKatalog as $bc) {
+    $ts = !empty($bc['deadline']) ? strtotime($bc['deadline']) : false;
+    if (!$ts || $ts >= strtotime('today')) {
+        $katalogAktif++;
+    }
+}
+$totalKatalog = count($semuaKatalog);
+
+// 3) Catatan Strategi -> halaman Catatan (database)
+$totalCatatan    = 0;
+$catatanTerakhir = null;
+if ($userIdLogin > 0) {
+    try {
+        require_once __DIR__ . '/../../config/koneksimvc.php';
+        require_once __DIR__ . '/../Models/Catatan.php';
+        $statCatatan     = (new Catatan($conn))->getStatsByUser($userIdLogin);
+        $totalCatatan    = $statCatatan['total'];
+        $catatanTerakhir = $statCatatan['terakhir'];
+    } catch (Throwable $e) {
+        error_log('Dashboard - statistik catatan: ' . $e->getMessage());
+    }
+}
+
+function waktu_lalu(?string $waktu): string
+{
+    $ts = $waktu ? strtotime($waktu) : false;
+    if (!$ts) {
+        return '-';
+    }
+    $selisih = max(0, time() - $ts);
+    if ($selisih < 60)    return 'baru saja';
+    if ($selisih < 3600)  return floor($selisih / 60) . ' menit lalu';
+    if ($selisih < 86400) return floor($selisih / 3600) . ' jam lalu';
+    return floor($selisih / 86400) . ' hari lalu';
+}
+
+// 4) Rating Komunitas -> data/ulasan.json (hanya yang disetujui)
+$totalUlasan  = 0;
+$jumlahRating = 0;
+$fileUlasan   = __DIR__ . '/../../data/ulasan.json';
+if (is_file($fileUlasan)) {
+    $dataUlasan = json_decode((string) file_get_contents($fileUlasan), true);
+    foreach (is_array($dataUlasan) ? $dataUlasan : [] as $u) {
+        if (($u['status'] ?? 'approved') === 'approved') {
+            $totalUlasan++;
+            $jumlahRating += (int) ($u['rating'] ?? 0);
+        }
+    }
+}
+$rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) : '0.0';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -51,11 +119,17 @@ $nama_user = isset($_SESSION['nama'])
                             <i class="fa-regular fa-bookmark"></i>
                         </div>
                         <div class="stat-value-container">
-                            <span class="stat-value">14</span>
+                            <span class="stat-value"><?= $totalBookmark; ?></span>
                         </div>
-                        <div class="stat-footer text-warning">
-                            <i class="fa-solid fa-triangle-exclamation"></i> 3 mendekati batas tenggat
-                        </div>
+                        <?php if ($bookmarkMepet > 0): ?>
+                            <div class="stat-footer text-warning">
+                                <i class="fa-solid fa-triangle-exclamation"></i> <?= $bookmarkMepet; ?> mendekati batas tenggat
+                            </div>
+                        <?php else: ?>
+                            <div class="stat-footer text-muted">
+                                <i class="fa-regular fa-circle-check"></i> Tidak ada yang mendekati tenggat
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="stat-card">
@@ -64,10 +138,10 @@ $nama_user = isset($_SESSION['nama'])
                             <i class="fa-solid fa-graduation-cap"></i>
                         </div>
                         <div class="stat-value-container">
-                            <span class="stat-value">2</span> <span class="stat-unit">Program</span>
+                            <span class="stat-value"><?= $katalogAktif; ?></span> <span class="stat-unit">Program</span>
                         </div>
-                        <div class="stat-footer text-success">
-                            <i class="fa-solid fa-arrow-trend-up"></i> Progress mingguan +18%
+                        <div class="stat-footer text-muted">
+                            <i class="fa-solid fa-shapes"></i> Dari <?= $totalKatalog; ?> program di katalog
                         </div>
                     </div>
 
@@ -77,10 +151,11 @@ $nama_user = isset($_SESSION['nama'])
                             <i class="fa-regular fa-note-sticky"></i>
                         </div>
                         <div class="stat-value-container">
-                            <span class="stat-value">5</span> <span class="stat-unit">Memo</span>
+                            <span class="stat-value"><?= $totalCatatan; ?></span> <span class="stat-unit">Memo</span>
                         </div>
                         <div class="stat-footer text-muted">
-                            <i class="fa-regular fa-clock"></i> Diperbarui 3 jam lalu
+                            <i class="fa-regular fa-clock"></i>
+                            <?= $totalCatatan > 0 ? 'Diperbarui ' . htmlspecialchars(waktu_lalu($catatanTerakhir)) : 'Belum ada catatan'; ?>
                         </div>
                     </div>
 
@@ -90,10 +165,10 @@ $nama_user = isset($_SESSION['nama'])
                             <i class="fa-solid fa-star" style="color: #F59E0B;"></i>
                         </div>
                         <div class="stat-value-container">
-                            <span class="stat-value">4.9</span> <span class="stat-unit">/ 5.0</span>
+                            <span class="stat-value"><?= $rataRating; ?></span> <span class="stat-unit">/ 5.0</span>
                         </div>
                         <div class="stat-footer text-muted">
-                            <i class="fa-regular fa-circle-check"></i> 1,840+ Ulasan Terverifikasi
+                            <i class="fa-regular fa-circle-check"></i> <?= $totalUlasan; ?> ulasan terverifikasi
                         </div>
                     </div>
                 </div>
@@ -224,7 +299,5 @@ $nama_user = isset($_SESSION['nama'])
         renderCalendar();
     });
     </script>
-</body>
-</html>
 </body>
 </html>
