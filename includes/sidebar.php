@@ -1,6 +1,7 @@
 <?php
 // Nama file halaman yang sedang dibuka
 $halaman_aktif = basename($_SERVER['PHP_SELF']);
+$halaman_pengajuan = $_GET['page'] ?? '';
 
 $menu = [
     'dashboard.php' => ['fa-solid fa-table-cells-large', 'Dashboard'],
@@ -14,7 +15,7 @@ $menu = [
 ?>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="../../public/css/sidebar.css">
+<link rel="stylesheet" href="/ruang_tumbuh/public/css/sidebar.css">
 
 <aside class="sidebar">
     <div>
@@ -28,8 +29,13 @@ $menu = [
             <ul class="nav-menu">
                 <?php foreach ($menu as $file => [$ikon, $label]): ?>
                     <?php
-                    $url = '/ruang_tumbuh/app/Views/' . $file;
-                    $aktif = ($halaman_aktif === $file);
+                    if ($file === 'pengingat.php') {
+                        $url = '/ruang_tumbuh/index.php?page=pengingat';
+                        $aktif = ($halaman_pengajuan === 'pengingat');
+                        } else {
+                        $url = '/ruang_tumbuh/app/Views/' . $file;
+                        $aktif = ($halaman_aktif === $file);
+                        }
                     ?>
 
                     <li>

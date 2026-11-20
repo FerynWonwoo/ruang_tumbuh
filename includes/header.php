@@ -16,7 +16,10 @@ $headerAdmin = ($_SESSION['role'] ?? 'user') === 'admin';
 ?>
 
 <header class="header">
-    <a href="profile.php" class="profile-section" title="Lihat profil">
+    <a href="/ruang_tumbuh/app/Views/profile.php"
+       class="profile-section"
+       title="Lihat profil">
+
         <div class="profile-info">
             <div class="profile-name"><?= aman($headerUsername) ?></div>
             <div class="profile-role">

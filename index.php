@@ -13,6 +13,8 @@ require_once __DIR__ . '/app/Models/User.php';
 require_once __DIR__ . '/app/Models/Kategori.php';
 require_once __DIR__ . '/app/Controllers/AuthController.php';
 require_once __DIR__ . '/app/Controllers/KategoriController.php';
+require_once __DIR__ . '/app/Models/Pengingat.php';
+require_once __DIR__ . '/app/Controllers/PengingatController.php';
 
 // 4. BASE PATH
 $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
@@ -27,11 +29,14 @@ $authController = new AuthController($userModel);
 $kategoriModel = new Kategori($conn);
 $kategoriController = new KategoriController($kategoriModel, $basePath);
 
+$pengingatModel = new Pengingat();
+$pengingatController = new PengingatController($pengingatModel, $basePath);
+
 // 6. ROUTER
 $router = new Router();
 
 // 7. GET
-$getHandler = function () use ($authController, $kategoriController) {
+$getHandler = function () use ($authController, $kategoriController, $pengingatController) {
 
     $page = $_GET['page'] ?? 'login';
 
@@ -43,9 +48,16 @@ $getHandler = function () use ($authController, $kategoriController) {
         } else {
             $kategoriController->index();
         }
+    } elseif ($page === 'pengingat') {
+    if (($_GET['aksi'] ?? '') === 'edit') {
+        $pengingatController->edit();
+    } else {
+        $pengingatController->index();
+    }
     } else {
         $authController->index();
     }
+
 };
 
 $router->get($basePath . '/', $getHandler);
@@ -53,7 +65,7 @@ $router->get($basePath, $getHandler);
 $router->get($basePath . '/index.php', $getHandler);
 
 // 8. POST
-$postHandler = function () use ($authController, $kategoriController) {
+$postHandler = function () use ($authController, $kategoriController, $pengingatController) {
 
     $page = $_GET['page'] ?? 'login';
 
@@ -71,6 +83,21 @@ $postHandler = function () use ($authController, $kategoriController) {
             http_response_code(404);
             echo "Halaman tidak ditemukan.";
         }
+    } elseif ($page === 'pengingat') {
+    $aksi = $_GET['aksi'] ?? '';
+
+    if ($aksi === 'simpan') {
+        $pengingatController->simpan();
+    } elseif ($aksi === 'ubah') {
+        $pengingatController->ubah();
+    } elseif ($aksi === 'hapus') {
+        $pengingatController->hapus();
+    } elseif ($aksi === 'selesai') {
+        $pengingatController->selesai();
+    } else {
+        http_response_code(404);
+        echo "Aksi tidak ditemukan.";
+    }
     } else {
         $authController->login();
     }
