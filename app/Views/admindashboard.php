@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
  
 // Hanya admin yang boleh masuk
 if (($_SESSION['role'] ?? '') !== 'admin') {
-    header('Location: index.php');
+    header('Location: ../../');
     exit;
 }
  
@@ -51,7 +51,7 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Dashboard Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../../public/css/dashboard.css">
     <style>
         .welcome { background: #fef9c3; border: 1px solid #fef08a; border-radius: 20px; padding: 24px; margin-bottom: 20px; }
         .welcome .tag { display: inline-block; background: #0d9488; color: #fff; font-size: .75rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; }

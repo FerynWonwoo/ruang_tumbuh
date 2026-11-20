@@ -2,7 +2,7 @@
 session_start();
 
 if (empty($_SESSION['username'])) {
-    header('Location: index.php');
+    header('Location: ../../');
     exit;
 }
 
@@ -119,19 +119,19 @@ $totalTersimpan = count($daftarBookmark);
     <title>RuangTumbuh - Bookmark & Tersimpan</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/sidebar.css">
-    <link rel="stylesheet" href="../css/bookmark.css">
+    <link rel="stylesheet" href="../../public/css/sidebar.css">
+    <link rel="stylesheet" href="../../public/css/bookmark.css">
 </head>
 <body>
 
     <!-- SIDEBAR -->
-    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/../../includes/sidebar.php'; ?>
 
     <!-- MAIN AREA -->
     <div class="main-area">
         
         <!-- HEADER GLOBAL -->
-        <?php include __DIR__ . '/../includes/header.php'; ?>
+        <?php include __DIR__ . '/../../includes/header.php'; ?>
 
         <main class="dashboard-container">
             <!-- BANNER UTAMA -->

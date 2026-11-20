@@ -20,15 +20,15 @@ $nama_user = isset($_SESSION['nama'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- CSS relatif -->
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../../public/css/dashboard.css">
     
 </head>
 <body>
-    <?php include __DIR__ . '/../includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/../../includes/sidebar.php'; ?>
 
     <!-- MAIN AREA -->
     <div class="main-area">
-        <?php include __DIR__ . '/../includes/header.php'; ?>
+        <?php include __DIR__ . '/../../includes/header.php'; ?>
 
         <!-- DASHBOARD CONTAINER -->
         <main class="dashboard-container">

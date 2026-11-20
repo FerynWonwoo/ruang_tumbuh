@@ -1,4 +1,3 @@
-
 <?php
 class Router
 {
@@ -17,7 +16,10 @@ class Router
     public function dispatch()
     {
         $method = $_SERVER['REQUEST_METHOD'];
-        $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $url = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+        // Anggap /index.php sama dengan /
+        $url = preg_replace('#/index\.php$#', '/', $url);
 
         if (isset($this->routes[$method][$url])) {
             $controller = $this->routes[$method][$url];
