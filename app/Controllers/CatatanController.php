@@ -377,7 +377,7 @@ class CatatanController
                     $this->index($user, $paths, $formInput, $errors, $fieldErrors, false);
                     return;
                 }
-                $_SESSION['catatan_sukses'] = 'Perubahan catatan berhasil disimpan.';
+                $_SESSION['catatan_sukses'] = 'Catatan berhasil disimpan.';
             } else {
                 $this->catatanModel->create($user['id'], $judul, $kategori, $isi);
                 $_SESSION['catatan_sukses'] = 'Catatan baru berhasil ditambahkan.';
