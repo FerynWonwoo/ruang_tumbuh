@@ -46,7 +46,7 @@ class CatatanController
     public static function formatTanggal(?string $datetime, bool $denganJam = true): string
     {
         if ($datetime === null || trim($datetime) === '') {
-            return 'Belum ada';
+            return 'Belum Tersedia';
         }
 
         $timestamp = strtotime($datetime);
