@@ -11,7 +11,7 @@ if (($_SESSION['role'] ?? '') !== 'admin') {
 
 function aman($teks)
 {
-    return htmlspecialchars((string)$teks, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars((string) $teks, ENT_QUOTES, 'UTF-8');
 }
 
 $nama_user = $_SESSION['username'] ?? 'Admin';
@@ -51,7 +51,7 @@ $maks = 1;
 // Belum ada data bootcamp untuk ditampilkan
 $mendatang = [];
 
-$jam = (int)date('G');
+$jam = (int) date('G');
 $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18 ? 'Selamat sore' : 'Selamat malam'));
 ?>
 <!DOCTYPE html>
@@ -277,9 +277,12 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
             <div class="nav-group" style="margin-top:32px;">
                 <div class="nav-title">MENU ADMIN</div>
                 <ul class="nav-menu">
-                    <li><a href="admindashboard.php" class="nav-link active"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
-                    <li><a href="adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Program</a></li>
-                    <li><a href="../../index.php?page=kategori" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
+                    <li><a href="admindashboard.php" class="nav-link active"><i
+                                class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
+                    <li><a href="adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog
+                            Program</a></li>
+                    <li><a href="../../index.php?page=kategori" class="nav-link"><i class="fa-solid fa-layer-group"></i>
+                            Kategori Program</a></li>
                     <li><a href="adminrating.php" class="nav-link"><i class="fa-solid fa-star"></i> Rating</a></li>
                 </ul>
             </div>
@@ -291,18 +294,10 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
     </aside>
 
     <div class="main-area">
-        <header class="header">
-            <h3>Dashboard Admin</h3>
-            <div class="header-actions">
-                <div class="profile-section">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=F59E0B&color=fff" class="profile-avatar" alt="Avatar">
-                    <div>
-                        <div class="profile-name"><?= aman($nama_user); ?></div>
-                        <div class="profile-role">Administrator</div>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <?php
+        $adminPageTitle = 'Dashboard Admin';
+        include __DIR__ . '/../../includes/admin_header.php';
+        ?>
 
         <main class="dashboard-container">
 
@@ -314,19 +309,23 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
 
             <section class="stat-grid">
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fa-solid fa-shapes"></i></div>
+                    <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fa-solid fa-shapes"></i>
+                    </div>
                     <div><span>Total Bootcamp</span><strong><?= $totalBootcamp; ?></strong></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i
+                            class="fa-solid fa-layer-group"></i></div>
                     <div><span>Total Kategori</span><strong><?= $totalKategori; ?></strong></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:#ede9fe;color:#7c3aed;"><i class="fa-solid fa-wifi"></i></div>
+                    <div class="stat-icon" style="background:#ede9fe;color:#7c3aed;"><i class="fa-solid fa-wifi"></i>
+                    </div>
                     <div><span>Program Online</span><strong><?= $totalOnline; ?></strong></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon" style="background:#fef3c7;color:#d97706;"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="stat-icon" style="background:#fef3c7;color:#d97706;"><i
+                            class="fa-solid fa-location-dot"></i></div>
                     <div><span>Program Offline</span><strong><?= $totalOffline; ?></strong></div>
                 </div>
             </section>
@@ -368,11 +367,13 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
 
             <section class="quick-grid">
                 <a href="adminkatalog.php" class="quick-card">
-                    <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fa-solid fa-plus"></i></div>
+                    <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fa-solid fa-plus"></i>
+                    </div>
                     <div><strong>Kelola Katalog Program</strong><small>Tambah, ubah, atau hapus program</small></div>
                 </a>
                 <a href="../../index.php?page=kategori" class="quick-card">
-                    <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i
+                            class="fa-solid fa-layer-group"></i></div>
                     <div><strong>Kelola Kategori Program</strong><small>Atur kategori dan ikonnya</small></div>
                 </a>
             </section>

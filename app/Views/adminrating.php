@@ -19,14 +19,17 @@ $e = 'rating_e';
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Moderasi Ulasan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?= $e($basePath) ?>/public/css/dashboard.css">
-    <link rel="stylesheet" href="<?= $e($basePath) ?>/public/css/rating.css?v=<?= @filemtime(__DIR__ . '/../../public/css/rating.css') ?>">
+    <link rel="stylesheet"
+        href="<?= $e($basePath) ?>/public/css/rating.css?v=<?= @filemtime(__DIR__ . '/../../public/css/rating.css') ?>">
 </head>
+
 <body>
 
     <aside class="sidebar">
@@ -36,32 +39,29 @@ $e = 'rating_e';
             <div class="nav-group" style="margin-top:32px;">
                 <div class="nav-title">MENU ADMIN</div>
                 <ul class="nav-menu">
-                    <li><a href="<?= $e($basePath) ?>/app/Views/admindashboard.php" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
-                    <li><a href="<?= $e($basePath) ?>/app/Views/adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Program</a></li>
-                    <li><a href="<?= $e($basePath) ?>/index.php?page=kategori" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
-                    <li><a href="<?= $e($basePath) ?>/index.php?page=admin-rating" class="nav-link active" aria-current="page"><i class="fa-solid fa-star"></i> Rating</a></li>
+                    <li><a href="<?= $e($basePath) ?>/app/Views/admindashboard.php" class="nav-link"><i
+                                class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
+                    <li><a href="<?= $e($basePath) ?>/app/Views/adminkatalog.php" class="nav-link"><i
+                                class="fa-solid fa-shapes"></i> Katalog Program</a></li>
+                    <li><a href="<?= $e($basePath) ?>/index.php?page=kategori" class="nav-link"><i
+                                class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
+                    <li><a href="<?= $e($basePath) ?>/index.php?page=admin-rating" class="nav-link active"
+                            aria-current="page"><i class="fa-solid fa-star"></i> Rating</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="sidebar-bottom">
-            <a href="<?= $e($basePath) ?>/app/Views/logout.php" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+            <a href="<?= $e($basePath) ?>/app/Views/logout.php" class="logout-link"><i
+                    class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </div>
     </aside>
 
     <div class="main-area">
-        <header class="header">
-            <h3>Dashboard Admin</h3>
-            <div class="header-actions">
-                <div class="profile-section">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user ?? 'Admin') ?>&background=F59E0B&color=fff" class="profile-avatar" alt="Avatar">
-                    <div>
-                        <div class="profile-name"><?= $e($nama_user ?? 'Admin') ?></div>
-                        <div class="profile-role">Administrator</div>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <?php
+        $adminPageTitle = 'Manajemen Rating';
+        include __DIR__ . '/../../includes/admin_header.php';
+        ?>
 
         <main class="page">
 
@@ -69,7 +69,8 @@ $e = 'rating_e';
                 <div>
                     <span class="badge-tag"><i class="fa-solid fa-user-shield"></i> Admin</span>
                     <h1>Moderasi Ulasan</h1>
-                    <p>Pilih ulasan mana yang dipublikasikan. Hanya ulasan yang dipublikasikan yang tampil di halaman peserta dan masuk hitungan rating.</p>
+                    <p>Pilih ulasan mana yang dipublikasikan. Hanya ulasan yang dipublikasikan yang tampil di halaman
+                        peserta dan masuk hitungan rating.</p>
                 </div>
 
                 <div class="banner-stats">
@@ -94,7 +95,7 @@ $e = 'rating_e';
             <nav class="chips" aria-label="Filter status">
                 <?php foreach ($tab as $kunci => $nama): ?>
                     <a class="chip<?= $filter === $kunci ? ' active' : '' ?>"
-                       href="<?= $e($basePath) ?>/index.php?page=admin-rating&amp;status=<?= $e($kunci) ?>">
+                        href="<?= $e($basePath) ?>/index.php?page=admin-rating&amp;status=<?= $e($kunci) ?>">
                         <?= $e($nama) ?> <span class="chip-count"><?= (int) $jumlah[$kunci] ?></span>
                     </a>
                 <?php endforeach; ?>
@@ -127,7 +128,7 @@ $e = 'rating_e';
                                 <i class="fa-regular fa-eye-slash"></i> Sembunyikan
                             </button>
                             <button type="submit" class="mini red" name="massa" value="hapus" data-bulk
-                                    data-confirm="Hapus semua ulasan yang dipilih? Tindakan ini tidak bisa dibatalkan.">
+                                data-confirm="Hapus semua ulasan yang dipilih? Tindakan ini tidak bisa dibatalkan.">
                                 <i class="fa-regular fa-trash-can"></i> Hapus
                             </button>
                         </div>
@@ -144,10 +145,12 @@ $e = 'rating_e';
                                     <label class="cek cek-kartu" aria-label="Pilih ulasan <?= $e($u['username']) ?>">
                                         <input type="checkbox" name="ids[]" value="<?= $e($u['id']) ?>" data-item>
                                     </label>
-                                    <div class="rc-avatar <?= $avatar ?>"><?= $e(strtoupper(mb_substr($u['username'], 0, 2))) ?></div>
+                                    <div class="rc-avatar <?= $avatar ?>"><?= $e(strtoupper(mb_substr($u['username'], 0, 2))) ?>
+                                    </div>
                                     <div class="rc-who">
                                         <strong><?= $e($u['username']) ?></strong>
-                                        <span class="rc-date"><i class="fa-regular fa-calendar"></i><?= $e(rating_tanggal($u['tanggal'] ?? '')) ?></span>
+                                        <span class="rc-date"><i
+                                                class="fa-regular fa-calendar"></i><?= $e(rating_tanggal($u['tanggal'] ?? '')) ?></span>
                                     </div>
                                     <span class="chip-rating"><i class="fa-solid fa-star"></i> <?= $r ?>.0</span>
                                 </div>
@@ -163,11 +166,13 @@ $e = 'rating_e';
                                 <button type="button" class="read-more" hidden>Baca selengkapnya</button>
 
                                 <div class="rc-footer">
-                                    <span class="badge <?= $e($u['status']) ?>"><?= $e($statusLabel[$u['status']] ?? $u['status']) ?></span>
+                                    <span
+                                        class="badge <?= $e($u['status']) ?>"><?= $e($statusLabel[$u['status']] ?? $u['status']) ?></span>
 
                                     <div class="rc-actions">
                                         <?php if ($u['status'] !== 'approved'): ?>
-                                            <button type="submit" class="mini green" name="satu" value="publish:<?= $e($u['id']) ?>">
+                                            <button type="submit" class="mini green" name="satu"
+                                                value="publish:<?= $e($u['id']) ?>">
                                                 <i class="fa-regular fa-eye"></i> Publikasikan
                                             </button>
                                         <?php endif; ?>
@@ -177,7 +182,7 @@ $e = 'rating_e';
                                             </button>
                                         <?php endif; ?>
                                         <button type="submit" class="mini red" name="satu" value="hapus:<?= $e($u['id']) ?>"
-                                                data-confirm="Hapus ulasan ini?" aria-label="Hapus ulasan">
+                                            data-confirm="Hapus ulasan ini?" aria-label="Hapus ulasan">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </div>
@@ -191,6 +196,8 @@ $e = 'rating_e';
         </main>
     </div>
 
-    <script src="<?= $e($basePath) ?>/public/js/rating.js?v=<?= @filemtime(__DIR__ . '/../../public/js/rating.js') ?>"></script>
+    <script
+        src="<?= $e($basePath) ?>/public/js/rating.js?v=<?= @filemtime(__DIR__ . '/../../public/js/rating.js') ?>"></script>
 </body>
+
 </html>
