@@ -349,10 +349,6 @@ function bootcamp_hapus_gambar(string $gambar): void
 }
 
 
-/**
- * Daftar kategori dari database. Jika database gagal / kosong,
- * dipakai nama kategori yang sudah ada di data program (id = 0).
- */
 function bootcamp_kategori_list($conn, array $program = []): array
 {
     $hasil = [];

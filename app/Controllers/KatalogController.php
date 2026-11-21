@@ -1,8 +1,5 @@
 <?php
-/**
- * Controller Katalog: menerima request, memeriksa login/role, memvalidasi input,
- * memanggil Model Katalog, lalu memilih template di app/Views/katalog/.
- */
+
 require_once __DIR__ . '/../Models/Katalog.php';
 
 class KatalogController
@@ -21,7 +18,6 @@ class KatalogController
         $this->model = $model;
     }
 
-    /* ---------------- Helper ---------------- */
 
     private function redirect(string $url): void
     {
@@ -67,7 +63,6 @@ class KatalogController
         return in_array($urut, BOOTCAMP_URUT, true) ? $urut : 'mulai-tercepat';
     }
 
-    // Ambil data; jika database bermasalah halaman tetap tampil (kosong) dan error dicatat
     private function muatData(): array
     {
         try {
@@ -78,7 +73,6 @@ class KatalogController
         }
     }
 
-    /* ---------------- Halaman pengguna ---------------- */
 
     public function index(): void
     {
@@ -135,7 +129,6 @@ class KatalogController
         ));
     }
 
-    /* ---------------- Halaman admin ---------------- */
 
     public function admin(): void
     {
@@ -182,7 +175,7 @@ class KatalogController
         $this->redirect('adminkatalog.php');
     }
 
-    // Validasi form tambah/edit. Mengembalikan [data, daftar error]
+   
     private function validasi(array $post, array $kategoriList): array
     {
         $d = [];
@@ -199,7 +192,6 @@ class KatalogController
             $err[] = 'Penyelenggara wajib diisi (maksimal 100 karakter).';
         }
 
-        // Bidang harus ada di tabel kategori; dicocokkan lewat nama
         $d['kategori_id'] = 0;
         foreach ($kategoriList as $k) {
             if ($k['nama_kategori'] === $d['kategori']) {
@@ -244,7 +236,6 @@ class KatalogController
         return [$d, $err];
     }
 
-    // Menangani POST: tambah / edit / hapus, lalu redirect (Post-Redirect-Get)
     private function proses(string $csrf): void
     {
         if (!hash_equals($csrf, (string) ($_POST['csrf'] ?? ''))) {
@@ -297,7 +288,6 @@ class KatalogController
             }
         }
 
-        // Poster (opsional)
         $gambarBaru = null;
         if (!$errors) {
             $errUpload = null;
@@ -342,7 +332,7 @@ class KatalogController
                 : 'Perubahan program berhasil disimpan.');
         } else {
             if ($gambarBaru !== null) {
-                bootcamp_hapus_gambar($gambarBaru);   // batalkan file yang sudah terunggah
+                bootcamp_hapus_gambar($gambarBaru);   
             }
             $this->pesan('error', 'Gagal menyimpan data program ke database.');
         }

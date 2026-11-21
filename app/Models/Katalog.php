@@ -1,8 +1,5 @@
 <?php
-/**
- * Model Katalog: satu-satunya tempat query ke tabel `program`.
- * Tidak ada HTML, session, atau redirect di sini.
- */
+
 require_once __DIR__ . '/../../includes/bootcamp_store.php';
 
 class Katalog
@@ -14,7 +11,6 @@ class Katalog
         $this->conn = $conn;
     }
 
-    // SELECT dasar: program + nama bidang dari tabel kategori
     private function dasarSql(): string
     {
         return "SELECT p.id, p.judul, p.penyelenggara, p.kategori_id,
@@ -24,7 +20,6 @@ class Katalog
                 LEFT JOIN kategori k ON k.id = p.kategori_id";
     }
 
-    // Semua program (sudah dinormalisasi)
     public function semua(): array
     {
         $hasil = $this->conn->query($this->dasarSql() . ' ORDER BY p.judul ASC');
@@ -39,7 +34,6 @@ class Katalog
         return $data;
     }
 
-    // Satu program berdasarkan id, atau null
     public function cari(string $id): ?array
     {
         $stmt = $this->conn->prepare($this->dasarSql() . ' WHERE p.id = ? LIMIT 1');
@@ -107,7 +101,7 @@ class Katalog
         return $ok;
     }
 
-    // Daftar bidang (tabel kategori yang dikelola admin)
+    // Daftar bidang 
     public function daftarKategori(): array
     {
         $hasil = $this->conn->query('SELECT * FROM kategori ORDER BY nama_kategori ASC');

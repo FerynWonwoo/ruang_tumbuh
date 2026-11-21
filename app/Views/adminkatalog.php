@@ -29,9 +29,6 @@ $semuaProgram = bootcamp_load();
 $kategoriList = bootcamp_kategori_list($conn ?? null, $semuaProgram);
 $namaKategori = array_column($kategoriList, 'nama_kategori');
 
-/* ---------------------------------------------------------------
- * Validasi input form tambah / edit
- * ------------------------------------------------------------- */
 function katalog_baca_input(array $post, array $namaKategori): array
 {
     $d = [];
@@ -89,9 +86,6 @@ function katalog_redirect(): void
     exit;
 }
 
-/* ---------------------------------------------------------------
- * Proses POST (tambah / edit / hapus) lalu redirect (PRG)
- * ------------------------------------------------------------- */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!hash_equals($csrf, (string) ($_POST['csrf'] ?? ''))) {
         $_SESSION['flash'] = ['tipe' => 'error', 'pesan' => ['Sesi form tidak valid. Muat ulang halaman lalu coba lagi.']];
@@ -101,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aksi = (string) ($_POST['aksi'] ?? '');
     $id = (string) ($_POST['id'] ?? '');
 
-    // Posisi program yang dituju (untuk edit / hapus)
     $posisi = null;
     foreach ($semuaProgram as $i => $p) {
         if ($p['id'] === $id) {
@@ -213,9 +206,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     katalog_redirect();
 }
 
-/* ---------------------------------------------------------------
- * Tampilan
- * ------------------------------------------------------------- */
 $flash = $_SESSION['flash'] ?? null;
 $old = $_SESSION['katalog_old'] ?? null;
 unset($_SESSION['flash'], $_SESSION['katalog_old']);
@@ -465,7 +455,7 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
     </main>
 </div>
 
-<!-- Modal tambah / edit -->
+
 <div class="modal" id="modalForm">
     <div class="modal-box">
         <div class="modal-header">

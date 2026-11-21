@@ -21,12 +21,10 @@ function aman($teks)
 
 $hariIni = strtotime('today');
 
-/* ---------- Data ---------- */
 $semuaProgram = bootcamp_load();
 $kategoriList = bootcamp_kategori_list($conn ?? null, $semuaProgram);
 $jumlahPerKategori = bootcamp_hitung_kategori($semuaProgram);
 
-/* ---------- State dari URL ---------- */
 $paramKategori = trim((string) ($_GET['kategori'] ?? ''));
 $kategoriAktif = bootcamp_kategori_cari($kategoriList, $paramKategori);
 $kategoriTidakAda = $paramKategori !== '' && $kategoriAktif === null;
@@ -38,7 +36,6 @@ if (!in_array($urut, BOOTCAMP_URUT, true)) {
 
 $q = trim((string) ($_GET['q'] ?? ''));
 
-/* ---------- Filter bidang ---------- */
 if ($kategoriAktif !== null) {
     $programBidang = array_values(array_filter($semuaProgram, function ($p) use ($kategoriAktif) {
         return strcasecmp($p['kategori'], $kategoriAktif['nama_kategori']) === 0;
@@ -51,7 +48,6 @@ if ($kategoriAktif !== null) {
 
 $paramBidangUrl = $kategoriAktif ? bootcamp_kategori_param($kategoriAktif) : '';
 
-/* ---------- Filter jenis ---------- */
 $jumlahPerJenis = bootcamp_hitung_jenis($programBidang);
 $jenisAktif = bootcamp_jenis_cocok((string) ($_GET['jenis'] ?? ''));
 
@@ -65,7 +61,6 @@ $program = array_map(function ($p) use ($hariIni) {
     return bootcamp_siapkan($p, $hariIni);
 }, bootcamp_urut($program, $urut, $hariIni));
 
-/* ---------- Bookmark ---------- */
 require_once __DIR__ . '/../../includes/bookmark_store.php';
 $tersimpan = bookmark_ids();
 
@@ -94,7 +89,6 @@ $opsiUrut = [
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="/ruang_tumbuh/public/css/dashboard.css">
     <link rel="stylesheet" href="/ruang_tumbuh/public/css/katalog.css?v=7">
 </head>
@@ -149,7 +143,6 @@ $opsiUrut = [
 
             </nav>
 
-            <!-- Pencarian dan pengurutan -->
             <section class="katalog-toolbar" aria-label="Pencarian dan pengurutan katalog">
 
                 <label class="katalog-search-box" for="searchBootcamp">
@@ -177,7 +170,6 @@ $opsiUrut = [
 
             </section>
 
-            <!-- Daftar program -->
             <section class="katalog-list-section">
 
                 <div class="section-title">
@@ -333,7 +325,6 @@ $opsiUrut = [
 
                 </div>
 
-                <!-- Tampilan ketika program kosong -->
                 <div class="katalog-empty"
                     id="katalogEmpty"
                     <?= count($program) ? 'hidden' : ''; ?>>
@@ -380,7 +371,6 @@ $opsiUrut = [
         </main>
     </div>
 
-    <!-- Modal detail program -->
     <div class="modal" id="modalDetail" aria-hidden="true">
 
         <div class="detail-box"
@@ -455,7 +445,6 @@ $opsiUrut = [
         <?= bootcamp_json($program); ?>
     </script>
 
-    <!-- JavaScript -->
     <script src="/ruang_tumbuh/public/js/katalog.js?v=6"></script>
 
 </body>
