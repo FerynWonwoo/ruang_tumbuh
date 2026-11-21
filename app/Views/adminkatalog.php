@@ -369,7 +369,7 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
         <section>
             <div class="section-title">
                 <div>
-                    <h2>Daftar Bootcamp</h2>
+                    <h2>Daftar Program</h2>
                     <p>Kelola seluruh program pelatihan yang tersedia.</p>
                 </div>
                 <span id="jumlahProgramText"><?= count($program); ?> program</span>
@@ -458,7 +458,7 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
                 <h3 id="emptyJudul"><?= count($semuaProgram) ? 'Program tidak ditemukan' : 'Belum ada program'; ?></h3>
                 <p id="emptyTeks"><?= count($semuaProgram)
                     ? 'Ubah kata kunci atau filter pencarian.'
-                    : 'Klik “Tambah Bootcamp” untuk menambahkan program pertama.'; ?></p>
+                    : 'Klik “Tambah Program” untuk menambahkan program pertama.'; ?></p>
             </div>
         </section>
 
@@ -470,8 +470,8 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
     <div class="modal-box">
         <div class="modal-header">
             <div>
-                <span>DATA BOOTCAMP</span>
-                <h2 id="judulModal">Tambah Bootcamp</h2>
+                <span>DATA PROGRAM</span>
+                <h2 id="judulModal">Tambah Program</h2>
             </div>
             <button type="button" data-aksi="tutup-form" aria-label="Tutup form">
                 <i class="fa-solid fa-xmark"></i>

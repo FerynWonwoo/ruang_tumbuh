@@ -315,7 +315,7 @@
         setPreview(gambarSaatIni);
         if (hapusWrap) hapusWrap.hidden = !gambarSaatIni;
 
-        document.getElementById('judulModal').textContent = aksi === 'edit' ? 'Edit Bootcamp' : 'Tambah Bootcamp';
+        document.getElementById('judulModal').textContent = aksi === 'edit' ? 'Edit Program' : 'Tambah Program';
         document.getElementById('btnSubmit').innerHTML = aksi === 'edit'
             ? '<i class="fa-solid fa-pen"></i> Update'
             : '<i class="fa-solid fa-floppy-disk"></i> Simpan';
