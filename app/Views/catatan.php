@@ -179,7 +179,7 @@ $buatUrlFilter = static function (string $kategoriBaru, string $keywordAktif) us
                    <div class="profile-name"><?= aman($_SESSION['username'] ?? 'Pengguna') ?></div>
                     <div class="profile-role"><?= aman($displayRole) ?></div>
                 </div>
-                <div class="avatar"><?= aman($avatarInitials) ?></div>
+                <div class="avatar"><?= aman(strtoupper(substr(trim($_SESSION['username'] ?? 'P'), 0, 2))) ?></div>
             </a>
         </header>
 
