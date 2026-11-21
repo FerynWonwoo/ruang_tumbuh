@@ -2,7 +2,9 @@
 if (!defined('CATATAN_MVC_RENDER')) {
     ob_start();
 
-    
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     header('Cache-Control: post-check=0, pre-check=0', false);
@@ -171,13 +173,14 @@ $buatUrlFilter = static function (string $kategoriBaru, string $keywordAktif) us
                     Ruang<span>Tumbuh</span>
                 </a>
             </div>
-<a href="<?= aman($profileUrl) ?>" class="profile-section" title="Lihat profil">
-    <div class="profile-info">
-        <div class="profile-name"><?= aman($_SESSION['username'] ?? 'Pengguna') ?></div>
-        <div class="profile-role"><?= aman($displayRole) ?></div>
-    </div>
-    <div class="avatar"><?= aman($avatarInitials) ?></div>
-</a>
+
+            <a href="<?= aman($profileUrl) ?>" class="profile-section" title="Lihat profil">
+                <div class="profile-info">
+                   <div class="profile-name"><?= aman($_SESSION['username'] ?? 'Pengguna') ?></div>
+                    <div class="profile-role"><?= aman($displayRole) ?></div>
+                </div>
+                <div class="avatar"><?= aman($avatarInitials) ?></div>
+            </a>
         </header>
 
         <main class="content">
