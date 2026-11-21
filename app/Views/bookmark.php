@@ -68,15 +68,17 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Bookmark & Program Tersimpan</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="<?= aman($paths['assetUrl']) ?>/css/sidebar.css">
     <link rel="stylesheet" href="<?= aman($paths['assetUrl']) ?>/css/bookmark.css">
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
@@ -84,7 +86,7 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
 
     <!-- MAIN AREA -->
     <div class="main-area">
-        
+
         <!-- HEADER GLOBAL -->
         <?php include __DIR__ . '/../../includes/header.php'; ?>
 
@@ -95,7 +97,8 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                     <div class="banner-text-area">
                         <span class="badge-tag">• Arsip Peluang Pengembangan Diri</span>
                         <h1 class="banner-title">Bookmark & Program Tersimpan</h1>
-                        <p class="banner-subtitle">Simpan dan kelola seluruh peluang magang, beasiswa, dan bootcamp favoritmu di satu tempat.</p>
+                        <p class="banner-subtitle">Simpan dan kelola seluruh peluang magang, beasiswa, dan bootcamp
+                            favoritmu di satu tempat.</p>
                     </div>
 
                     <div class="banner-actions">
@@ -122,9 +125,10 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
             <div class="filter-toolbar">
                 <div class="search-input-wrap">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="searchBookmark" placeholder="Cari judul program atau penyelenggara..." autocomplete="off">
+                    <input type="text" id="searchBookmark" placeholder="Cari judul program atau penyelenggara..."
+                        autocomplete="off">
                 </div>
-                
+
                 <div class="filter-chips-wrap">
                     <button type="button" class="filter-btn active" data-filter="Semua">Semua</button>
                     <?php foreach ($kategoriFilter as $kf): ?>
@@ -153,7 +157,8 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                     <div class="empty-state">
                         <i class="fa-regular fa-bookmark"></i>
                         <h3>Belum ada bookmark tersimpan</h3>
-                        <p>Klik tombol <strong>Tambah Bookmark</strong> di atas atau tekan ikon bookmark pada program di Katalog.</p>
+                        <p>Klik tombol <strong>Tambah Bookmark</strong> di atas atau tekan ikon bookmark pada program di
+                            Katalog.</p>
                     </div>
                 <?php else: ?>
                     <?php foreach ($daftarBookmark as $item): ?>
@@ -166,12 +171,10 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                         $judulLower = function_exists('mb_strtolower') ? mb_strtolower((string) $item['judul'], 'UTF-8') : strtolower((string) $item['judul']);
                         $orgLower = function_exists('mb_strtolower') ? mb_strtolower((string) $item['penyelenggara'], 'UTF-8') : strtolower((string) $item['penyelenggara']);
                         ?>
-                        <article class="bookmark-card clickable-card"
-                            data-kategori="<?= aman($item['kategori']) ?>"
-                            data-judul="<?= aman($judulLower) ?>"
-                            data-penyelenggara="<?= aman($orgLower) ?>"
+                        <article class="bookmark-card clickable-card" data-kategori="<?= aman($item['kategori']) ?>"
+                            data-judul="<?= aman($judulLower) ?>" data-penyelenggara="<?= aman($orgLower) ?>"
                             onclick="openDetailModal(<?= $itemJson ?>)">
-                            
+
                             <div>
                                 <div class="card-header-tag">
                                     <span class="kategori-tag"><?= aman($item['kategori']) ?></span>
@@ -194,15 +197,19 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                                 </span>
 
                                 <div class="card-actions">
-                                    <button type="button" class="btn-action btn-detail" onclick="event.stopPropagation(); openDetailModal(<?= $itemJson ?>)">
+                                    <button type="button" class="btn-action btn-detail"
+                                        onclick="event.stopPropagation(); openDetailModal(<?= $itemJson ?>)">
                                         <i class="fa-regular fa-eye"></i> Detail
                                     </button>
-                                    
-                                    <button type="button" class="btn-action btn-edit" onclick="event.stopPropagation(); openForm(<?= $itemJson ?>)">
+
+                                    <button type="button" class="btn-action btn-edit"
+                                        onclick="event.stopPropagation(); openForm(<?= $itemJson ?>)">
                                         <i class="fa-regular fa-pen-to-square"></i> Edit
                                     </button>
 
-                                    <form method="post" action="bookmark.php" class="form-hapus-bookmark" style="display:inline;" data-judul="<?= aman($item['judul']) ?>" onclick="event.stopPropagation();">
+                                    <form method="post" action="bookmark.php" class="form-hapus-bookmark"
+                                        style="display:inline;" data-judul="<?= aman($item['judul']) ?>"
+                                        onclick="event.stopPropagation();">
                                         <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
                                         <input type="hidden" name="id" value="<?= (int) $item['id'] ?>">
                                         <input type="hidden" name="aksi" value="hapus">
@@ -224,7 +231,8 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
         <div class="modal-card">
             <div class="modal-header">
                 <h3 class="modal-title">Detail Program Favorit</h3>
-                <button type="button" class="btn-close" onclick="closeModal('detailModal')" aria-label="Tutup">&times;</button>
+                <button type="button" class="btn-close" onclick="closeModal('detailModal')"
+                    aria-label="Tutup">&times;</button>
             </div>
             <div class="detail-body">
                 <div class="card-header-tag" style="margin-bottom: 12px;">
@@ -237,7 +245,7 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                 <p class="detail-org">
                     <i class="fa-regular fa-building"></i> Penyelenggara: <strong id="detailPenyelenggara">-</strong>
                 </p>
-                
+
                 <hr class="detail-divider">
 
                 <div class="detail-section">
@@ -249,10 +257,11 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                     <i class="fa-regular fa-calendar"></i> Batas Tenggat: <strong id="detailDeadline">-</strong>
                 </div>
             </div>
-            
+
             <div class="modal-footer">
                 <button type="button" class="btn-batal" onclick="closeModal('detailModal')">Tutup</button>
-                <a id="detailLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-simpan" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <a id="detailLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-simpan"
+                    style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> Daftar Sekarang
                 </a>
             </div>
@@ -264,10 +273,12 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
         <div class="modal-card fm-card">
             <div class="modal-header fm-head">
                 <h3 id="formTitle" class="modal-title">Tambah Bookmark</h3>
-                <button type="button" class="btn-close" onclick="closeModal('formModal')" aria-label="Tutup">&times;</button>
+                <button type="button" class="btn-close" onclick="closeModal('formModal')"
+                    aria-label="Tutup">&times;</button>
             </div>
 
-            <div id="clientFormError" class="alert-message error" style="display:none; margin-bottom:12px; font-size:13px; padding:10px 12px;"></div>
+            <div id="clientFormError" class="alert-message error"
+                style="display:none; margin-bottom:12px; font-size:13px; padding:10px 12px;"></div>
 
             <form method="post" action="bookmark.php" id="formBookmark" novalidate>
                 <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
@@ -275,24 +286,22 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                 <input type="hidden" name="id" id="fId" value="">
 
                 <label class="fm-label">Judul program <span class="req">*</span>
-                    <input type="text" name="judul" id="fJudul" required minlength="3" maxlength="150" placeholder="Contoh: Beasiswa Unggulan Kemendikbud">
+                    <input type="text" name="judul" id="fJudul" required minlength="3" maxlength="150"
+                        placeholder="Contoh: Beasiswa Unggulan Kemendikbud">
                 </label>
 
                 <div class="fm-row">
                     <label class="fm-label">Kategori <span class="req">*</span>
                         <select name="kategori" id="fKategori" required>
                             <option value="" disabled selected>-- Pilih Kategori --</option>
-                            <option value="Pribadi">Pribadi</option>
-                            <option value="Beasiswa">Beasiswa</option>
-                            <option value="Bootcamp">Bootcamp</option>
-                            <option value="Magang">Magang</option>
-                            <option value="Lomba">Lomba</option>
-                            <option value="Karier">Karier</option>
-                            <option value="Beasiswa">Beasiswa</option>
+                            <?php foreach ($kategoriSaran as $ks): ?>
+                                <option value="<?= aman($ks) ?>"><?= aman($ks) ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </label>
                     <label class="fm-label">Penyelenggara
-                        <input type="text" name="penyelenggara" id="fPenyelenggara" maxlength="100" placeholder="Nama instansi / perusahaan">
+                        <input type="text" name="penyelenggara" id="fPenyelenggara" maxlength="100"
+                            placeholder="Nama instansi / perusahaan">
                     </label>
                 </div>
 
@@ -306,7 +315,8 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                 </div>
 
                 <label class="fm-label">Deskripsi & Catatan Persyaratan
-                    <textarea name="deskripsi" id="fDeskripsi" maxlength="1000" placeholder="Tulis catatan persyaratan, berkas, atau info penting lainnya..."></textarea>
+                    <textarea name="deskripsi" id="fDeskripsi" maxlength="1000"
+                        placeholder="Tulis catatan persyaratan, berkas, atau info penting lainnya..."></textarea>
                 </label>
 
                 <div class="fm-foot">
@@ -318,17 +328,20 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
     </div>
 
     <!-- MODAL KONFIRMASI HAPUS BOOKMARK -->
-    <div class="modal-overlay" id="modalHapusBookmark" role="alertdialog" aria-modal="true" aria-labelledby="hapusBookmarkJudul" aria-describedby="hapusBookmarkPesan">
+    <div class="modal-overlay" id="modalHapusBookmark" role="alertdialog" aria-modal="true"
+        aria-labelledby="hapusBookmarkJudul" aria-describedby="hapusBookmarkPesan">
         <div class="modal-card modal-confirm-card">
             <div class="modal-danger-icon" aria-hidden="true">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="modal-confirm-title" id="hapusBookmarkJudul">Hapus Bookmark?</h3>
             <p class="modal-confirm-desc" id="hapusBookmarkPesan">
-                Apakah kamu yakin ingin menghapus bookmark "<strong id="hapusNamaBookmark"></strong>"? Data yang sudah dihapus tidak dapat dikembalikan.
+                Apakah kamu yakin ingin menghapus bookmark "<strong id="hapusNamaBookmark"></strong>"? Data yang sudah
+                dihapus tidak dapat dikembalikan.
             </p>
             <div class="modal-confirm-actions">
-                <button type="button" class="btn-confirm-cancel" onclick="closeModal('modalHapusBookmark')">Batal</button>
+                <button type="button" class="btn-confirm-cancel"
+                    onclick="closeModal('modalHapusBookmark')">Batal</button>
                 <button type="button" class="btn-confirm-danger" id="btnKonfirmasiHapusBookmark">
                     <i class="fa-regular fa-trash-can"></i> Ya, Hapus
                 </button>
@@ -337,9 +350,11 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
     </div>
 
     <?php if ($old !== null): ?>
-        <script type="application/json" id="oldBookmarkData"><?= json_encode($old, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
+        <script type="application/json"
+            id="oldBookmarkData"><?= json_encode($old, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
     <?php endif; ?>
 
     <script src="<?= aman($paths['assetUrl']) ?>/js/bookmark.js"></script>
 </body>
+
 </html>

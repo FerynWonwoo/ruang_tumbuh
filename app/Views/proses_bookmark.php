@@ -22,5 +22,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['id'])) {
     exit;
 }
 
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if ($origin !== '') {
+    $hostOrigin = parse_url($origin, PHP_URL_HOST);
+    $hostServer = explode(':', $_SERVER['HTTP_HOST'] ?? '')[0];
+    if ($hostOrigin !== $hostServer) {
+        http_response_code(403);
+        echo json_encode(['ok' => false, 'pesan' => 'Permintaan ditolak.']);
+        exit;
+    }
+}
+
 $saved = bookmark_toggle($user, (string) $_POST['id'], $_POST);
 echo json_encode(['ok' => true, 'saved' => $saved]);

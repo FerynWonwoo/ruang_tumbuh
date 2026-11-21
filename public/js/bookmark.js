@@ -41,7 +41,15 @@
         document.getElementById('fAksi').value = ubah ? 'ubah' : 'tambah';
         document.getElementById('fId').value = ubah ? (item.id || '') : '';
         document.getElementById('fJudul').value = ubah ? (item.judul || '') : '';
-        document.getElementById('fKategori').value = ubah ? (item.kategori || '') : '';
+        const selKat = document.getElementById('fKategori');
+        const kat = ubah ? (item.kategori || '') : '';
+        if (kat && ![...selKat.options].some(o => o.value === kat)) {
+            const opt = document.createElement('option');
+            opt.value = kat;
+            opt.textContent = kat;
+            selKat.appendChild(opt);
+        }
+        selKat.value = kat;
         document.getElementById('fPenyelenggara').value = ubah ? (item.penyelenggara || '') : '';
         document.getElementById('fDeadline').value = ubah ? (item.deadline_raw || '') : '';
         document.getElementById('fLink').value = ubah ? (item.link || '') : '';

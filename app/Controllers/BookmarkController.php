@@ -273,7 +273,7 @@ class BookmarkController
         } catch (Throwable $e) {
             // Abaikan jika katalog belum tersedia
         }
-        $kategoriSaran = array_values(array_unique(array_merge($kategoriSaran, ['Beasiswa', 'Bootcamp', 'Magang', 'Lomba', 'Karier', 'Beasiswa'])));
+        $kategoriSaran = array_values(array_unique(array_merge($kategoriSaran, ['Pribadi', 'Beasiswa', 'Bootcamp', 'Magang', 'Lomba', 'Karier'])));
 
         if (!defined('BOOKMARK_MVC_RENDER')) {
             define('BOOKMARK_MVC_RENDER', true);
