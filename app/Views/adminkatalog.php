@@ -272,17 +272,10 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
 
 <div class="main-area">
 
-    <header class="header">
-        <div class="header-actions">
-            <div class="profile-section">
-                <img src="https://ui-avatars.com/api/?name=<?= urlencode($nama_user); ?>&background=10B981&color=fff"
-                     class="profile-avatar" alt="Avatar admin">
-                <div>
-                    <div class="profile-name"><?= aman($nama_user); ?></div>
-                    <div class="profile-role">Administrator</div>
-                </div>
-            </div>
-        </div>
+    <?php
+    $adminPageTitle = 'Manajemen Katalog Program';
+    include __DIR__ . '/../../includes/admin_header.php';
+    ?>
     </header>
 
     <main class="dashboard-container">
