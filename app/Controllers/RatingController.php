@@ -1,4 +1,3 @@
-
 <?php
 
 class RatingController
@@ -10,33 +9,23 @@ class RatingController
         $this->ratingModel = $ratingModel;
     }
 
-
-    // =========================================
-    // VALIDASI PESERTA
-    // =========================================
-
     private function cekLogin(): string
-{
-    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-    header('Pragma: no-cache');
+    {
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
 
-    if (empty($_SESSION['username'])) {
-        header('Location: /ruang_tumbuh/index.php');
-        exit;
+        if (empty($_SESSION['username'])) {
+            header('Location: /ruang_tumbuh/index.php');
+            exit;
+        }
+
+        if (($_SESSION['role'] ?? '') === 'admin') {
+            header('Location: /ruang_tumbuh/app/Views/adminrating.php');
+            exit;
+        }
+
+        return $_SESSION['username'];
     }
-
-    if (($_SESSION['role'] ?? '') === 'admin') {
-        header('Location: /ruang_tumbuh/app/Views/adminrating.php');
-        exit;
-    }
-
-    return $_SESSION['username'];
-}
-
-
-    // =========================================
-    // VALIDASI CSRF
-    // =========================================
 
     private function cekCSRF(): bool
     {
@@ -47,33 +36,26 @@ class RatingController
             && hash_equals($_SESSION['csrf'], $token);
     }
 
-
-    // =========================================
-    // MENAMPILKAN RATING
-    // =========================================
-
     public function tampilkan()
     {
         $username = $this->cekLogin();
 
-        // Membuat CSRF baru jika belum tersedia
-if (empty($_SESSION['csrf'])) {
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
-}
+        if (empty($_SESSION['csrf'])) {
+            $_SESSION['csrf'] = bin2hex(random_bytes(32));
+        }
 
-// Menentukan base path untuk CSS dan JS
-$basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
-$scriptName = $_SERVER['SCRIPT_NAME'];
+        $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+        $scriptName = $_SERVER['SCRIPT_NAME'];
 
-if (basename($scriptName) === 'index.php') {
-    $basePath = rtrim(dirname($scriptName), '/\\');
-} else {
-    $basePath = dirname(dirname(dirname($scriptName)));
-}
+        if (basename($scriptName) === 'index.php') {
+            $basePath = rtrim(dirname($scriptName), '/\\');
+        } else {
+            $basePath = dirname(dirname(dirname($scriptName)));
+        }
 
-if ($basePath === '/' || $basePath === '.') {
-    $basePath = '';
-}
+        if ($basePath === '/' || $basePath === '.') {
+            $basePath = '';
+        }
 
         $data = $this->ratingModel->untukUser($username);
 
@@ -107,7 +89,6 @@ if ($basePath === '/' || $basePath === '.') {
 
         $modalBuka = false;
 
-        // Isi ulang form jika penyimpanan sebelumnya gagal
         $lama = $_SESSION['rating_old'] ?? null;
         unset($_SESSION['rating_old']);
 
@@ -126,13 +107,10 @@ if ($basePath === '/' || $basePath === '.') {
             }
         }
 
-                // Pilihan bootcamp diambil dari katalog (tabel program)
         $daftarBootcamp = $this->ratingModel->daftarBootcamp();
-                // Datang dari tombol "Done" di katalog: isi bootcamp otomatis
         $pilihan = trim((string) ($_GET['bootcamp'] ?? ''));
 
         if ($pilihan !== '' && !$modalBuka && in_array($pilihan, $daftarBootcamp, true)) {
-
             $sudahAda = false;
 
             foreach ($daftarUlasan as $u) {
@@ -153,15 +131,11 @@ if ($basePath === '/' || $basePath === '.') {
                 $formBaru['bootcamp'] = $pilihan;
             }
         }
+
         $maxKomentar = Rating::MAX_KOMENTAR;
 
         require __DIR__ . '/../Views/rating.php';
     }
-
-
-    // =========================================
-    // MENYIMPAN ULASAN
-    // =========================================
 
     public function simpan()
     {
@@ -201,13 +175,8 @@ if ($basePath === '/' || $basePath === '.') {
         }
 
         header('Location: /ruang_tumbuh/app/Views/rating.php');
-exit;
+        exit;
     }
-
-
-    // =========================================
-    // MENARIK ULASAN
-    // =========================================
 
     public function tarik()
     {
@@ -232,11 +201,10 @@ exit;
             $_SESSION['rating_error'] = $hasil['error'];
         }
 
-header('Location: /ruang_tumbuh/app/Views/rating.php');
-exit;
+        header('Location: /ruang_tumbuh/app/Views/rating.php');
+        exit;
     }
 
-        // Endpoint pencarian untuk combobox bootcamp (JSON)
     public function cari()
     {
         $this->cekLogin();

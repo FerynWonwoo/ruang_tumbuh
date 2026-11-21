@@ -1,4 +1,3 @@
-
 <?php
 
 class Rating
@@ -13,16 +12,10 @@ class Rating
 
     public const MAX_KOMENTAR = 1000;
 
-
     public function __construct($conn)
     {
         $this->conn = $conn;
     }
-
-
-    // =========================================
-    // MENGAMBIL SEMUA ULASAN
-    // =========================================
 
     public function semua(): array
     {
@@ -46,11 +39,6 @@ class Rating
         return $data;
     }
 
-
-    // =========================================
-    // MENGAMBIL ULASAN BERDASARKAN ID
-    // =========================================
-
     public function cari(string $id): ?array
     {
         $query = "SELECT * FROM ratings WHERE id = ? LIMIT 1";
@@ -71,11 +59,6 @@ class Rating
 
         return $data;
     }
-
-
-    // =========================================
-    // ULASAN UNTUK PESERTA
-    // =========================================
 
     public function untukUser(string $username): array
     {
@@ -105,7 +88,6 @@ class Rating
         $publik = 0;
 
         while ($row = mysqli_fetch_assoc($result)) {
-
             $daftar[] = $row;
 
             if ($row['status'] === 'approved') {
@@ -124,11 +106,6 @@ class Rating
                 : '—'
         ];
     }
-
-
-    // =========================================
-    // MENGAMBIL ULASAN ADMIN
-    // =========================================
 
     public function untukAdmin(string $filter = 'all'): array
     {
@@ -165,16 +142,10 @@ class Rating
         ];
     }
 
-
-    // =========================================
-    // MENAMBAHKAN ULASAN
-    // =========================================
-
     public function simpan(
         array $form,
         string $username
     ): array {
-
         $bootcamp = trim($form['bootcamp'] ?? '');
         $rating = (int) ($form['rating'] ?? 0);
         $komentar = trim($form['komentar'] ?? '');
@@ -182,7 +153,8 @@ class Rating
         if ($bootcamp === '' || strlen($bootcamp) > 150) {
             return $this->gagal('Nama bootcamp wajib diisi (maksimal 150 karakter).');
         }
-                if (!$this->bootcampAda($bootcamp)) {
+
+        if (!$this->bootcampAda($bootcamp)) {
             return $this->gagal('Bootcamp tidak ada di katalog. Pilih dari daftar.');
         }
 
@@ -197,7 +169,6 @@ class Rating
             return $this->gagal('Komentar wajib diisi dan maksimal 1000 karakter.');
         }
 
-        // Cek apakah pengguna sudah mengulas bootcamp ini
         $query = "SELECT id
                   FROM ratings
                   WHERE username = ?
@@ -263,17 +234,11 @@ class Rating
         ];
     }
 
-
-    // =========================================
-    // MENGEDIT ULASAN
-    // =========================================
-
     public function update(
         string $id,
         array $form,
         string $username
     ): array {
-
         $ulasan = $this->cari($id);
 
         if (!$ulasan || $ulasan['username'] !== $username) {
@@ -289,7 +254,8 @@ class Rating
         if ($bootcamp === '' || strlen($bootcamp) > 150) {
             return $this->gagal('Nama bootcamp tidak valid.');
         }
-                if (
+
+        if (
             $bootcamp !== $ulasan['bootcamp'] &&
             !$this->bootcampAda($bootcamp)
         ) {
@@ -307,7 +273,6 @@ class Rating
             return $this->gagal('Komentar wajib diisi dan maksimal 1000 karakter.');
         }
 
-        // Cek duplikasi bootcamp oleh username yang sama
         $query = "SELECT id FROM ratings
                   WHERE username = ?
                   AND bootcamp = ?
@@ -341,8 +306,6 @@ class Rating
             );
         }
 
-        // Ulasan yang diubah kembali menunggu moderasi,
-        // kecuali sebelumnya sudah rejected.
         $status = $ulasan['status'] === 'rejected'
             ? 'rejected'
             : 'pending';
@@ -387,16 +350,10 @@ class Rating
         ];
     }
 
-
-    // =========================================
-    // MENARIK / MENGHAPUS ULASAN PESERTA
-    // =========================================
-
     public function tarik(
         string $id,
         string $username
     ): array {
-
         $query = "DELETE FROM ratings
                   WHERE id = ?
                   AND username = ?";
@@ -427,23 +384,16 @@ class Rating
         ];
     }
 
-
-    // =========================================
-    // MODERASI ADMIN
-    // =========================================
-
     public function moderasi(
         array $ids,
         string $aksi
     ): int {
-
         $status = [
             'publish' => 'approved',
             'hide' => 'rejected'
         ];
 
         if ($aksi === 'hapus') {
-
             $diproses = 0;
 
             foreach ($ids as $id) {
@@ -474,7 +424,6 @@ class Rating
         $diproses = 0;
 
         foreach ($ids as $id) {
-
             $query = "UPDATE ratings SET status = ? WHERE id = ?";
 
             $stmt = mysqli_prepare($this->conn, $query);
@@ -495,11 +444,6 @@ class Rating
         return $diproses;
     }
 
-
-    // =========================================
-    // HELPER ERROR
-    // =========================================
-
     private function gagal(string $pesan): array
     {
         return [
@@ -508,10 +452,6 @@ class Rating
             'error' => $pesan
         ];
     }
-
-        // =========================================
-    // DAFTAR BOOTCAMP DARI KATALOG (tabel program)
-    // =========================================
 
     public function daftarBootcamp(): array
     {
@@ -557,5 +497,4 @@ class Rating
 
         return $ada;
     }
-    
 }

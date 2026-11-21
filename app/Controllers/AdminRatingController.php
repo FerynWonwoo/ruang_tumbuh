@@ -1,4 +1,3 @@
-
 <?php
 
 class AdminRatingController
@@ -10,11 +9,6 @@ class AdminRatingController
         $this->ratingModel = $ratingModel;
     }
 
-
-    // =========================================
-    // VALIDASI ADMIN
-    // =========================================
-
     private function cekAdmin()
     {
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
@@ -25,17 +19,11 @@ class AdminRatingController
             exit;
         }
 
-        // User biasa dikembalikan ke halaman rating miliknya
         if (($_SESSION['role'] ?? '') !== 'admin') {
             header('Location: /ruang_tumbuh/index.php');
             exit;
         }
     }
-
-
-    // =========================================
-    // VALIDASI CSRF
-    // =========================================
 
     private function cekCSRF(): bool
     {
@@ -45,11 +33,6 @@ class AdminRatingController
             && !empty($_SESSION['csrf'])
             && hash_equals($_SESSION['csrf'], $token);
     }
-
-
-    // =========================================
-    // MENAMPILKAN MODERASI RATING
-    // =========================================
 
     public function tampilkan()
     {
@@ -90,28 +73,23 @@ class AdminRatingController
         );
 
         if (empty($_SESSION['csrf'])) {
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
-}
+            $_SESSION['csrf'] = bin2hex(random_bytes(32));
+        }
 
-$scriptName = $_SERVER['SCRIPT_NAME'];
+        $scriptName = $_SERVER['SCRIPT_NAME'];
 
-if (basename($scriptName) === 'index.php') {
-    $basePath = rtrim(dirname($scriptName), '/\\');
-} else {
-    $basePath = dirname(dirname(dirname($scriptName)));
-}
+        if (basename($scriptName) === 'index.php') {
+            $basePath = rtrim(dirname($scriptName), '/\\');
+        } else {
+            $basePath = dirname(dirname(dirname($scriptName)));
+        }
 
-if ($basePath === '/' || $basePath === '.') {
-    $basePath = '';
-}
+        if ($basePath === '/' || $basePath === '.') {
+            $basePath = '';
+        }
 
         require __DIR__ . '/../Views/adminrating.php';
     }
-
-
-    // =========================================
-    // PROSES MODERASI
-    // =========================================
 
     public function moderasi()
     {
@@ -130,23 +108,16 @@ if ($basePath === '/' || $basePath === '.') {
             ? '?page=admin-rating&status=' . $filter
             : '?page=admin-rating';
 
-        // Moderasi satu ulasan
         if (!empty($_POST['satu'])) {
-
             $bagian = explode(':', $_POST['satu'], 2);
 
             if (count($bagian) === 2) {
                 $aksi = $bagian[0];
                 $ids[] = $bagian[1];
             }
-
-        // Moderasi banyak ulasan
         } else {
-
             $aksi = $_POST['massa'] ?? '';
-
             $ids = is_array($_POST['ids'] ?? null) ? $_POST['ids'] : [];
-
         }
 
         $aksiValid = ['publish', 'hide', 'hapus'];
