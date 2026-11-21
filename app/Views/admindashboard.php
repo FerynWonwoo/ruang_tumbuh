@@ -278,7 +278,7 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
                 <div class="nav-title">MENU ADMIN</div>
                 <ul class="nav-menu">
                     <li><a href="admindashboard.php" class="nav-link active"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
-                    <li><a href="adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
+                    <li><a href="adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Program</a></li>
                     <li><a href="../../index.php?page=kategori" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
                     <li><a href="adminrating.php" class="nav-link"><i class="fa-solid fa-star"></i> Rating</a></li>
                 </ul>
@@ -369,7 +369,7 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
             <section class="quick-grid">
                 <a href="adminkatalog.php" class="quick-card">
                     <div class="stat-icon" style="background:#d1fae5;color:#059669;"><i class="fa-solid fa-plus"></i></div>
-                    <div><strong>Kelola Katalog Bootcamp</strong><small>Tambah, ubah, atau hapus program</small></div>
+                    <div><strong>Kelola Katalog Program</strong><small>Tambah, ubah, atau hapus program</small></div>
                 </a>
                 <a href="../../index.php?page=kategori" class="quick-card">
                     <div class="stat-icon" style="background:#dbeafe;color:#2563eb;"><i class="fa-solid fa-layer-group"></i></div>

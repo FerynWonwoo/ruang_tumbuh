@@ -14,6 +14,7 @@ class Catatan
         'Magang',
         'Lomba',
         'Karier',
+        'Beasiswa',
     ];
 
     private mysqli $conn;

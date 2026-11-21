@@ -288,6 +288,7 @@ $totalTersimpan = isset($totalTersimpan) ? (int) $totalTersimpan : 0;
                             <option value="Magang">Magang</option>
                             <option value="Lomba">Lomba</option>
                             <option value="Karier">Karier</option>
+                            <option value="Beasiswa">Beasiswa</option>
                         </select>
                     </label>
                     <label class="fm-label">Penyelenggara

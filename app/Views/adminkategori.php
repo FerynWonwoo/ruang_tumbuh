@@ -46,7 +46,7 @@ $nilaiDeskripsi = $old['deskripsi'] ?? ($editData['deskripsi'] ?? '');
                 <li><a href="<?= aman($base); ?>/app/Views/admindashboard.php" class="nav-link">
                     <i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
                 <li><a href="<?= aman($base); ?>/app/Views/adminkatalog.php" class="nav-link">
-                    <i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
+                    <i class="fa-solid fa-shapes"></i> Katalog Program</a></li>
                 <li><a href="<?= aman($base); ?>/index.php?page=kategori" class="nav-link active">
                     <i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
                 <li><a href="<?= aman($base); ?>/index.php?page=rating" class="nav-link">

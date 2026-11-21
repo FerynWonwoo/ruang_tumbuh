@@ -19,6 +19,8 @@ require_once __DIR__ . '/app/Helpers/rating_helpers.php';
 require_once __DIR__ . '/app/Models/Rating.php';
 require_once __DIR__ . '/app/Controllers/RatingController.php';
 require_once __DIR__ . '/app/Controllers/AdminRatingController.php';
+require_once __DIR__ . '/app/Models/Katalog.php';
+require_once __DIR__ . '/app/Controllers/KatalogController.php';
 
 // 4. BASE PATH
 $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
@@ -40,6 +42,9 @@ $ratingModel = new Rating($conn);
 $ratingController = new RatingController($ratingModel);
 $adminRatingController = new AdminRatingController($ratingModel);
 
+$katalogModel = new Katalog($conn);
+$katalogController = new KatalogController($katalogModel, $basePath);
+
 // 6. ROUTER
 $router = new Router();
 
@@ -49,7 +54,9 @@ $getHandler = function () use (
     $kategoriController,
     $pengingatController,
     $ratingController,
-    $adminRatingController
+    $adminRatingController,
+    $katalogController
+
 ) {
 
     $page = $_GET['page'] ?? 'login';
@@ -68,6 +75,10 @@ $getHandler = function () use (
         } else {
             $pengingatController->index();
         }
+
+    } elseif ($page === 'katalog') {
+    $katalogController->index();
+
     } elseif ($page === 'rating') {
         $ratingController->tampilkan();
     } elseif ($page === 'admin-rating') {
@@ -87,7 +98,8 @@ $postHandler = function () use (
     $kategoriController,
     $pengingatController,
     $ratingController,
-    $adminRatingController
+    $adminRatingController,
+    $katalogController
 ) {
 
     $page = $_GET['page'] ?? 'login';
@@ -121,6 +133,10 @@ $postHandler = function () use (
             http_response_code(404);
             echo "Aksi tidak ditemukan.";
         }
+
+    } elseif ($page === 'katalog') {
+    $katalogController->index();
+
     } elseif ($page === 'rating-simpan') {
         $ratingController->simpan();
     } elseif ($page === 'rating-tarik') {

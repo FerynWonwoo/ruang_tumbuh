@@ -1,9 +1,4 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
-/* =========================================================
-   PENGINGAT TENGGAT - RUANGTUMBUH
-   ========================================================= */
 
 * {
     margin: 0;
@@ -615,5 +610,68 @@ body {
     .reminder-actions form button,
     .reminder-actions > a {
         width: 100%;
+    }
+}
+
+/* FEEDBACK PENGINGAT */
+.pesan-feedback {
+    padding: 13px 16px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pesan-error {
+    color: #b42318;
+    background-color: #fef3f2;
+    border: 1px solid #fecdca;
+}
+
+.pesan-sukses {
+    color: #18794e;
+    background-color: #ecfdf3;
+    border: 1px solid #abefc6;
+}
+
+/* =========================================================
+   RESPONSIVE: SIDEBAR DI LAYAR KECIL (khusus halaman Pengingat)
+   ========================================================= */
+@media (max-width: 760px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        overflow-y: visible;
+        padding: 16px 20px;
+    }
+
+    .sidebar .nav-group,
+    .sidebar .nav-group-spaced {
+        margin-top: 14px;
+        margin-bottom: 8px;
+    }
+
+    .sidebar .nav-menu {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .sidebar .nav-link {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .main-area {
+        width: 100%;
+        height: auto;
+        overflow: visible;
     }
 }

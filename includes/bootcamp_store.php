@@ -6,7 +6,7 @@ define('BOOTCAMP_UPLOAD_DIR', __DIR__ . '/../public/uploads/program/');
 define('BOOTCAMP_UPLOAD_URL', 'public/uploads/program/'); // relatif dari root project
 define('BOOTCAMP_MAX_GAMBAR', 2 * 1024 * 1024);          // 2 MB
 
-const BOOTCAMP_JENIS = ['Lomba', 'Bootcamp', 'Magang', 'Loker'];
+const BOOTCAMP_JENIS = ['Lomba', 'Bootcamp', 'Magang', 'Karier', 'Beasiswa'];
 const BOOTCAMP_MODE = ['Online', 'Offline', 'Hybrid'];
 const BOOTCAMP_URUT = ['mulai-tercepat', 'mulai-terjauh', 'deadline-terdekat', 'nama'];
 const BOOTCAMP_BULAN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -41,7 +41,7 @@ function bootcamp_normalize(array $d): array
     return $hasil;
 }
 
-// Nama jenis baku (Lomba/Bootcamp/Magang/Loker) dari teks bebas, atau null.
+// Nama jenis baku (Lomba/Bootcamp/Magang/Karier) dari teks bebas, atau null.
 function bootcamp_jenis_cocok(string $teks): ?string
 {
     foreach (BOOTCAMP_JENIS as $j) {
