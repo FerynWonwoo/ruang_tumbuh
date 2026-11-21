@@ -1,4 +1,3 @@
-
 <?php
 
 class PengingatController
@@ -6,21 +5,126 @@ class PengingatController
     private $pengingatModel;
     private $basePath;
 
+    // Batas nilai yang wajar
+    const MAKS_JUDUL = 150;   // karakter
+    const MAKS_TAHUN = 5;     // tenggat maksimal 5 tahun ke depan
+
     public function __construct($pengingatModel, $basePath)
     {
+        // Samakan zona waktu dengan aplikasi (WIB) agar cek "hari ini" akurat
+        date_default_timezone_set('Asia/Jakarta');
+
         $this->pengingatModel = $pengingatModel;
         $this->basePath = $basePath;
+    }
+
+    // Wajib login. Mengembalikan id pengguna yang sedang login.
+    private function wajibLogin()
+    {
+        if (empty($_SESSION['user_id'])) {
+            header("Location: {$this->basePath}/");
+            exit;
+        }
+
+        return (int) $_SESSION['user_id'];
+    }
+
+    // Mencegah browser menyimpan halaman (tombol Back setelah logout)
+    private function cegahCache()
+    {
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
+    }
+
+    // Kembali ke halaman daftar pengingat
+    private function kembali()
+    {
+        header("Location: {$this->basePath}/index.php?page=pengingat");
+        exit;
+    }
+
+    // Kesalahan database: catat di log server, tampilkan pesan umum
+    private function galatServer(Throwable $e)
+    {
+        error_log('Pengingat: ' . $e->getMessage());
+
+        http_response_code(500);
+        echo "Data pengingat tidak dapat diproses saat ini. "
+            . "Pastikan migration database sudah dijalankan, lalu coba lagi.";
+        exit;
+    }
+
+    // Memeriksa format dan keabsahan tanggal (yyyy-mm-dd)
+    private function tanggalValid($tanggal)
+    {
+        if (!is_string($tanggal)) {
+            return false;
+        }
+
+        $date = DateTime::createFromFormat('!Y-m-d', $tanggal);
+        $errors = DateTime::getLastErrors();
+
+        return $date !== false
+            && ($errors === false || (
+                $errors['warning_count'] === 0 &&
+                $errors['error_count'] === 0
+            ))
+            && $date->format('Y-m-d') === $tanggal;
+    }
+
+    // Memeriksa judul dan tanggal.
+    // $tanggalLama diisi saat mengubah data: jika tanggal tidak diganti,
+    // tanggal yang sudah lewat tetap boleh (misalnya hanya mengganti judul).
+    private function validasiInput($judul, $tanggal, $tanggalLama = null)
+    {
+        if ($judul === '') {
+            return "Judul pengingat tidak boleh kosong.";
+        }
+
+        if (mb_strlen($judul, 'UTF-8') > self::MAKS_JUDUL) {
+            return "Judul pengingat maksimal " . self::MAKS_JUDUL . " karakter.";
+        }
+
+        if (!$this->tanggalValid($tanggal)) {
+            return "Format atau tanggal yang dimasukkan tidak valid.";
+        }
+
+        // Tanggal tenggat tidak boleh sebelum hari ini (kecuali tidak diubah saat edit)
+        if ($tanggal !== $tanggalLama && $tanggal < date('Y-m-d')) {
+            return "Tanggal tenggat sudah lewat. Pilih hari ini atau tanggal setelahnya.";
+        }
+
+        // Tanggal tidak wajar (terlalu jauh ke depan)
+        $batas = date('Y-m-d', strtotime('+' . self::MAKS_TAHUN . ' years'));
+        if ($tanggal > $batas) {
+            return "Tanggal tenggat terlalu jauh. Maksimal " . self::MAKS_TAHUN . " tahun dari sekarang.";
+        }
+
+        return null;
+    }
+
+    // Mengambil judul dari form dengan aman
+    private function ambilJudul()
+    {
+        return trim(
+            is_string($_POST['judul'] ?? null)
+                ? $_POST['judul']
+                : ''
+        );
     }
 
     // Menampilkan daftar pengingat
     public function index()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: {$this->basePath}/");
-            exit;
-        }
+        $userId = $this->wajibLogin();
+        $this->cegahCache();
 
-        $pengingat = $this->pengingatModel->getAll($_SESSION['user_id']);
+        try {
+            $pengingat = $this->pengingatModel->getAll($userId);
+        } catch (Throwable $e) {
+            $this->galatServer($e);
+        }
 
         require __DIR__ . '/../Views/pengingat.php';
     }
@@ -28,123 +132,150 @@ class PengingatController
     // Menambahkan pengingat
     public function simpan()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: {$this->basePath}/");
-            exit;
-        }
+        $userId = $this->wajibLogin();
 
-        $judul = trim($_POST['judul'] ?? '');
+        $judul = $this->ambilJudul();
         $tanggal = $_POST['tanggal_tenggat'] ?? '';
 
-        if ($judul !== '' && $tanggal !== '') {
-            $this->pengingatModel->tambah(
-                $_SESSION['user_id'],
-                $judul,
-                $tanggal
-            );
+        $error = $this->validasiInput($judul, $tanggal);
+
+        if ($error !== null) {
+            $_SESSION['pengingat_error'] = $error;
+            $this->kembali();
         }
 
-        header("Location: {$this->basePath}/index.php?page=pengingat");
-        exit;
+        try {
+            $berhasil = $this->pengingatModel->tambah($userId, $judul, $tanggal);
+        } catch (Throwable $e) {
+            $this->galatServer($e);
+        }
+
+        if ($berhasil) {
+            $_SESSION['pengingat_sukses'] = "Pengingat berhasil ditambahkan.";
+        } else {
+            $_SESSION['pengingat_error'] = "Pengingat gagal ditambahkan. Silakan coba lagi.";
+        }
+
+        $this->kembali();
     }
 
     // Menampilkan form edit
-    
-public function edit()
-{
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: {$this->basePath}/");
-        exit;
+    public function edit()
+    {
+        $userId = $this->wajibLogin();
+        $this->cegahCache();
+
+        $id = (int) ($_GET['id'] ?? 0);
+
+        if ($id <= 0) {
+            $this->kembali();
+        }
+
+        try {
+            $hasil = $this->pengingatModel->getById($id, $userId);
+            $data = mysqli_fetch_assoc($hasil);
+
+            if (!$data) {
+                $_SESSION['pengingat_error'] = "Pengingat tidak ditemukan.";
+                $this->kembali();
+            }
+
+            $pengingat = $this->pengingatModel->getAll($userId);
+        } catch (Throwable $e) {
+            $this->galatServer($e);
+        }
+
+        require __DIR__ . '/../Views/pengingat.php';
     }
-
-    $id = (int) ($_GET['id'] ?? 0);
-
-    $hasil = $this->pengingatModel->getById(
-        $id,
-        $_SESSION['user_id']
-    );
-
-    $data = mysqli_fetch_assoc($hasil);
-
-    if (!$data) {
-        header("Location: {$this->basePath}/index.php?page=pengingat");
-        exit;
-    }
-
-    // Ambil daftar pengingat untuk halaman yang sama
-    $pengingat = $this->pengingatModel->getAll($_SESSION['user_id']);
-
-    // Gunakan halaman pengingat yang sama
-    require __DIR__ . '/../Views/pengingat.php';
-}
-
 
     // Menyimpan perubahan
     public function ubah()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: {$this->basePath}/");
-            exit;
-        }
+        $userId = $this->wajibLogin();
 
         $id = (int) ($_POST['id'] ?? 0);
-        $judul = trim($_POST['judul'] ?? '');
+        $judul = $this->ambilJudul();
         $tanggal = $_POST['tanggal_tenggat'] ?? '';
 
-        if ($id > 0 && $judul !== '' && $tanggal !== '') {
-            $this->pengingatModel->edit(
-                $id,
-                $_SESSION['user_id'],
-                $judul,
-                $tanggal
-            );
+        if ($id <= 0) {
+            $_SESSION['pengingat_error'] = "Data pengingat tidak valid.";
+            $this->kembali();
         }
 
-        header("Location: {$this->basePath}/index.php?page=pengingat");
-        exit;
+        try {
+            $lama = mysqli_fetch_assoc(
+                $this->pengingatModel->getById($id, $userId)
+            );
+
+            if (!$lama) {
+                $_SESSION['pengingat_error'] = "Pengingat tidak ditemukan.";
+                $this->kembali();
+            }
+
+            $error = $this->validasiInput($judul, $tanggal, $lama['tanggal_tenggat']);
+
+            if ($error !== null) {
+                $_SESSION['pengingat_error'] = $error;
+                $this->kembali();
+            }
+
+            $berhasil = $this->pengingatModel->edit($id, $userId, $judul, $tanggal);
+        } catch (Throwable $e) {
+            $this->galatServer($e);
+        }
+
+        if ($berhasil) {
+            $_SESSION['pengingat_sukses'] = "Pengingat berhasil diperbarui.";
+        } else {
+            $_SESSION['pengingat_error'] = "Pengingat gagal diperbarui.";
+        }
+
+        $this->kembali();
     }
 
     // Menghapus pengingat
     public function hapus()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: {$this->basePath}/");
-            exit;
-        }
+        $userId = $this->wajibLogin();
 
         $id = (int) ($_POST['id'] ?? 0);
 
-        if ($id > 0) {
-            $this->pengingatModel->hapus(
-                $id,
-                $_SESSION['user_id']
-            );
+        if ($id <= 0) {
+            $_SESSION['pengingat_error'] = "ID pengingat tidak valid.";
+            $this->kembali();
         }
 
-        header("Location: {$this->basePath}/index.php?page=pengingat");
-        exit;
+        try {
+            $berhasil = $this->pengingatModel->hapus($id, $userId);
+        } catch (Throwable $e) {
+            $this->galatServer($e);
+        }
+
+        if ($berhasil) {
+            $_SESSION['pengingat_sukses'] = "Pengingat berhasil dihapus.";
+        } else {
+            $_SESSION['pengingat_error'] = "Pengingat gagal dihapus.";
+        }
+
+        $this->kembali();
     }
 
-    // Menandai pengingat selesai
+    // Menandai pengingat selesai / belum selesai
     public function selesai()
     {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: {$this->basePath}/");
-            exit;
-        }
+        $userId = $this->wajibLogin();
 
         $id = (int) ($_POST['id'] ?? 0);
         $status = (int) ($_POST['selesai'] ?? 1);
 
-        if ($id > 0) {
-            $this->pengingatModel->ubahStatus(
-                $id,
-                $_SESSION['user_id'],
-                $status
-            );
+        if ($id > 0 && ($status === 0 || $status === 1)) {
+            try {
+                $this->pengingatModel->ubahStatus($id, $userId, $status);
+            } catch (Throwable $e) {
+                $this->galatServer($e);
+            }
         }
 
-        header("Location: {$this->basePath}/index.php?page=pengingat");
-        exit;
+        $this->kembali();
     }
 }
