@@ -1,24 +1,34 @@
+
 <?php
 
 class ProfileController
 {
     const PILIHAN_BIDANG = [
-        'Teknologi Informasi', 'UI/UX Design', 'Data & Analitik',
-        'Bisnis & Manajemen', 'Pemasaran Digital', 'Pendidikan',
+        'Teknologi Informasi',
+        'UI/UX Design',
+        'Data & Analitik',
+        'Bisnis & Manajemen',
+        'Pemasaran Digital',
+        'Pendidikan',
         'Desain & Kreatif'
     ];
 
     const PILIHAN_KATEGORI = [
-        'Lowongan Kerja', 'Magang', 'Bootcamp', 'Lomba', 'Beasiswa'
+        'Lowongan Kerja',
+        'Magang',
+        'Bootcamp',
+        'Lomba',
+        'Beasiswa'
     ];
 
     const PILIHAN_STATUS = [
-        'Mahasiswa', 'Pelajar', 'Fresh Graduate',
-        'Pencari Kerja', 'Profesional'
+        'Mahasiswa',
+        'Pelajar',
+        'Fresh Graduate',
+        'Pencari Kerja',
+        'Profesional'
     ];
 
-    // Kolom yang dihitung untuk "Kelengkapan profil"
-    // (nama dan email selalu ada dari pendaftaran, jadi tidak dihitung)
     const ITEM_KELENGKAPAN = [
         'foto'      => 'Foto profil',
         'telepon'   => 'Nomor handphone',
@@ -36,20 +46,23 @@ class ProfileController
         $this->model = $model;
     }
 
-    // PROTEKSI HALAMAN (dipanggil sebelum menyentuh database)
+    // PROTEKSI HALAMAN
     public static function pastikanLogin()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Cegah browser menyimpan halaman (tombol Back setelah logout)
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
         if (empty($_SESSION['user_id'])) {
-            $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'], 3)), '/');
+            $base = rtrim(
+                str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'], 3)),
+                '/'
+            );
+
             header('Location: ' . $base . '/');
             exit;
         }
@@ -57,7 +70,7 @@ class ProfileController
         return (int) $_SESSION['user_id'];
     }
 
-    // ALUR UTAMA: mengembalikan data untuk ditampilkan view
+    // ALUR UTAMA
     public function handle($userId)
     {
         if (empty($_SESSION['csrf_profil'])) {
@@ -81,7 +94,10 @@ class ProfileController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $token = $_POST['csrf'] ?? '';
 
-            if (!is_string($token) || !hash_equals($_SESSION['csrf_profil'], $token)) {
+            if (
+                !is_string($token) ||
+                !hash_equals($_SESSION['csrf_profil'], $token)
+            ) {
                 $errors[] = 'Sesi formulir tidak valid. Muat ulang halaman lalu coba kembali.';
             } elseif (($_POST['aksi'] ?? '') === 'hapus_profil') {
                 $this->hapus($userId);
@@ -92,6 +108,7 @@ class ProfileController
         }
 
         $tersimpan = $profil;
+
         if ($errors) {
             try {
                 $tersimpan = $this->muat($userId);
@@ -102,6 +119,7 @@ class ProfileController
 
         $belum = [];
         $terisi = 0;
+
         foreach (self::ITEM_KELENGKAPAN as $kolom => $label) {
             if (!empty($tersimpan[$kolom])) {
                 $terisi++;
@@ -109,9 +127,16 @@ class ProfileController
                 $belum[] = $label;
             }
         }
-        $kelengkapan = (int) round($terisi / count(self::ITEM_KELENGKAPAN) * 100);
 
+        $kelengkapan = (int) round(
+            $terisi / count(self::ITEM_KELENGKAPAN) * 100
+        );
+
+        // Membuat URL foto profil
         $fotoUrl = $this->urlFoto($profil['foto']);
+
+        // Menyimpan nama file foto ke session untuk digunakan header
+        $_SESSION['foto_profil'] = $profil['foto'];
 
         return [
             'profil'          => $profil,
@@ -127,16 +152,20 @@ class ProfileController
         ];
     }
 
-    // MEMUAT DATA
+    // MEMUAT DATA PROFIL
     private function muat($userId)
     {
         $baris = $this->model->ambil($userId);
 
         if (!$baris) {
-            // Akun sudah tidak ada: akhiri sesi dan kembali ke login
             $_SESSION = [];
             session_destroy();
-            $base = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'], 3)), '/');
+
+            $base = rtrim(
+                str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'], 3)),
+                '/'
+            );
+
             header('Location: ' . $base . '/');
             exit;
         }
@@ -147,15 +176,23 @@ class ProfileController
             'telepon'   => (string) ($baris['telepon'] ?? ''),
             'domisili'  => (string) ($baris['domisili'] ?? ''),
             'institusi' => (string) ($baris['institusi'] ?? ''),
-            'status'    => ($baris['status'] ?? '') !== '' ? $baris['status'] : 'Mahasiswa',
+            'status'    => ($baris['status'] ?? '') !== ''
+                ? $baris['status']
+                : 'Mahasiswa',
             'bio'       => (string) ($baris['bio'] ?? ''),
             'foto'      => (string) ($baris['foto'] ?? ''),
-            'bidang'    => $this->daftar($baris['bidang'] ?? '', self::PILIHAN_BIDANG),
-            'kategori'  => $this->daftar($baris['kategori'] ?? '', self::PILIHAN_KATEGORI),
+            'bidang'    => $this->daftar(
+                $baris['bidang'] ?? '',
+                self::PILIHAN_BIDANG
+            ),
+            'kategori'  => $this->daftar(
+                $baris['kategori'] ?? '',
+                self::PILIHAN_KATEGORI
+            ),
         ];
     }
 
-    // Mengubah JSON dari database menjadi array pilihan yang valid
+    // MENGUBAH JSON MENJADI ARRAY PILIHAN
     private function daftar($json, array $pilihan)
     {
         $data = json_decode((string) $json, true);
@@ -172,19 +209,28 @@ class ProfileController
         ));
     }
 
-    // SIMPAN (create + update) DENGAN VALIDASI
+    // SIMPAN DAN UPDATE PROFIL
     private function simpan($userId, array $profil, array &$errors)
     {
         $fotoLama = $profil['foto'];
 
-        // 1. Ambil isian dari form
-        foreach (['nama', 'email', 'telepon', 'domisili', 'institusi', 'status', 'bio'] as $kolom) {
+        // 1. Mengambil isian formulir
+        foreach (
+            ['nama', 'email', 'telepon', 'domisili', 'institusi', 'status', 'bio']
+            as $kolom
+        ) {
             $profil[$kolom] = is_string($_POST[$kolom] ?? null)
                 ? trim($_POST[$kolom])
                 : '';
         }
 
-        foreach (['bidang' => self::PILIHAN_BIDANG, 'kategori' => self::PILIHAN_KATEGORI] as $kolom => $pilihan) {
+        foreach (
+            [
+                'bidang' => self::PILIHAN_BIDANG,
+                'kategori' => self::PILIHAN_KATEGORI
+            ]
+            as $kolom => $pilihan
+        ) {
             $nilai = $_POST[$kolom] ?? [];
             $profil[$kolom] = [];
 
@@ -202,7 +248,7 @@ class ProfileController
             }
         }
 
-        // 2. Validasi
+        // 2. Validasi data
         if ($profil['nama'] === '') {
             $errors[] = 'Nama lengkap wajib diisi.';
         } elseif (mb_strlen($profil['nama'], 'UTF-8') > 100) {
@@ -241,7 +287,7 @@ class ProfileController
             $errors[] = 'Tentang saya maksimal 500 karakter.';
         }
 
-        // 3. Email tidak boleh sama dengan akun lain
+        // 3. Memeriksa email
         if (!$errors) {
             try {
                 if ($this->model->emailDipakaiLain($profil['email'], $userId)) {
@@ -252,8 +298,9 @@ class ProfileController
             }
         }
 
-        // 4. Foto (hanya diproses jika isian lain sudah valid)
+        // 4. Memproses foto
         $fotoBaru = '';
+
         if (!$errors && isset($_FILES['foto'])) {
             $fotoBaru = $this->unggahFoto($_FILES['foto'], $errors);
 
@@ -262,22 +309,30 @@ class ProfileController
             }
         }
 
-        // 5. Simpan ke database
+        // 5. Menyimpan ke database
         if (!$errors) {
             try {
-                $this->model->simpan($userId, $profil['nama'], $profil['email'], $profil);
+                $this->model->simpan(
+                    $userId,
+                    $profil['nama'],
+                    $profil['email'],
+                    $profil
+                );
 
-                // Foto lama dihapus hanya jika ada foto baru
+                // Menghapus foto lama jika ada foto baru
                 if ($fotoBaru !== '' && $fotoLama !== '') {
                     $this->hapusFileFoto($fotoLama);
                 }
 
-                // Dashboard dan menu membaca nama dari sesi
+                // Memperbarui session
                 $_SESSION['nama'] = $profil['nama'];
+                $_SESSION['foto_profil'] = $profil['foto'];
 
                 $_SESSION['pesan_profil'] = 'Profil dan minat kamu berhasil disimpan.';
+
                 header('Location: profile.php');
                 exit;
+
             } catch (mysqli_sql_exception $e) {
                 $this->hapusFileFoto($fotoBaru);
                 $profil['foto'] = $fotoLama;
@@ -288,6 +343,7 @@ class ProfileController
                     error_log('Profil: ' . $e->getMessage());
                     $errors[] = 'Profil gagal disimpan karena kesalahan server. Silakan coba lagi.';
                 }
+
             } catch (Throwable $e) {
                 $this->hapusFileFoto($fotoBaru);
                 $profil['foto'] = $fotoLama;
@@ -295,15 +351,15 @@ class ProfileController
                 error_log('Profil: ' . $e->getMessage());
                 $errors[] = 'Profil gagal disimpan karena kesalahan server. Silakan coba lagi.';
             }
+
         } else {
-            // Gagal validasi: foto lama tetap dipakai
             $profil['foto'] = $fotoLama;
         }
 
         return $profil;
     }
 
-    // HAPUS DATA PROFIL (akun dan login tetap ada)
+    // HAPUS DATA PROFIL
     private function hapus($userId)
     {
         try {
@@ -314,12 +370,16 @@ class ProfileController
 
         $this->hapusFileFoto($foto);
 
-        $_SESSION['pesan_profil'] = 'Data profil berhasil dihapus. Akun dan login kamu tetap aktif.';
+        $_SESSION['foto_profil'] = '';
+
+        $_SESSION['pesan_profil'] =
+            'Data profil berhasil dihapus. Akun dan login kamu tetap aktif.';
+
         header('Location: profile.php');
         exit;
     }
 
-    // FOTO
+    // UPLOAD FOTO
     private function unggahFoto(array $foto, array &$errors)
     {
         if (!isset($foto['error']) || !is_int($foto['error'])) {
@@ -331,7 +391,10 @@ class ProfileController
             return '';
         }
 
-        if ($foto['error'] === UPLOAD_ERR_INI_SIZE || $foto['error'] === UPLOAD_ERR_FORM_SIZE) {
+        if (
+            $foto['error'] === UPLOAD_ERR_INI_SIZE ||
+            $foto['error'] === UPLOAD_ERR_FORM_SIZE
+        ) {
             $errors[] = 'Ukuran foto terlalu besar. Maksimal 2 MB.';
             return '';
         }
@@ -341,13 +404,21 @@ class ProfileController
             return '';
         }
 
-        if (!is_uploaded_file($foto['tmp_name']) || filesize($foto['tmp_name']) > 2 * 1024 * 1024) {
+        if (
+            !is_uploaded_file($foto['tmp_name']) ||
+            filesize($foto['tmp_name']) > 2 * 1024 * 1024
+        ) {
             $errors[] = 'Ukuran foto maksimal 2 MB.';
             return '';
         }
 
         $info = @getimagesize($foto['tmp_name']);
-        $format = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+
+        $format = [
+            'image/jpeg' => 'jpg',
+            'image/png'  => 'png',
+            'image/webp' => 'webp'
+        ];
 
         if (!$info || !isset($format[$info['mime']])) {
             $errors[] = 'Gunakan foto berformat JPG, PNG, atau WEBP.';
@@ -361,7 +432,11 @@ class ProfileController
 
         $folder = __DIR__ . '/../uploads/profile/';
 
-        if (!is_dir($folder) && !mkdir($folder, 0755, true) && !is_dir($folder)) {
+        if (
+            !is_dir($folder) &&
+            !mkdir($folder, 0755, true) &&
+            !is_dir($folder)
+        ) {
             $errors[] = 'Folder penyimpanan foto tidak dapat dibuat.';
             return '';
         }
@@ -376,6 +451,7 @@ class ProfileController
         return $namaFile;
     }
 
+    // MENGHAPUS FILE FOTO
     private function hapusFileFoto($namaFile)
     {
         $namaFile = basename((string) $namaFile);
@@ -391,6 +467,7 @@ class ProfileController
         }
     }
 
+    // MEMBUAT URL FOTO
     private function urlFoto($namaFile)
     {
         $namaFile = basename((string) $namaFile);
@@ -399,16 +476,19 @@ class ProfileController
             return '';
         }
 
-        return '../uploads/profile/' . $namaFile;
+        return '/ruang_tumbuh/app/uploads/profile/' . $namaFile;
     }
 
+    // PENANGANAN ERROR SERVER
     private function galatServer(Throwable $e)
     {
         error_log('Profil: ' . $e->getMessage());
 
         http_response_code(500);
+
         echo 'Data profil tidak dapat diproses saat ini. '
             . 'Pastikan migration database sudah dijalankan (php database/migrate.php), lalu muat ulang halaman.';
+
         exit;
     }
 }

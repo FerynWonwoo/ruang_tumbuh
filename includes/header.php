@@ -27,8 +27,27 @@ $headerAdmin = ($_SESSION['role'] ?? 'user') === 'admin';
             </div>
         </div>
 
-        <div class="avatar">
-            <?= aman(strtoupper(mb_substr($headerUsername, 0, 2))) ?>
-        </div>
+        <?php
+$headerFoto = $_SESSION['foto_profil'] ?? '';
+$headerNamaFile = basename($headerFoto);
+
+$lokasiFoto = __DIR__ . '/../app/uploads/profile/' . $headerNamaFile;
+
+$fotoTersedia = (
+    $headerNamaFile !== '' &&
+    is_file($lokasiFoto)
+);
+?>
+
+<div class="avatar">
+    <?php if ($fotoTersedia): ?>
+        <img
+            src="/ruang_tumbuh/app/uploads/profile/<?= aman($headerNamaFile) ?>"
+            alt="Foto profil"
+        >
+    <?php else: ?>
+        <?= aman(strtoupper(mb_substr($headerUsername, 0, 2))) ?>
+    <?php endif; ?>
+</div>
     </a>
 </header>
