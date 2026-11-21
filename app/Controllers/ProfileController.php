@@ -36,9 +36,7 @@ class ProfileController
         $this->model = $model;
     }
 
-    // ---------------------------------------------------------
     // PROTEKSI HALAMAN (dipanggil sebelum menyentuh database)
-    // ---------------------------------------------------------
     public static function pastikanLogin()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -59,16 +57,13 @@ class ProfileController
         return (int) $_SESSION['user_id'];
     }
 
-    // ---------------------------------------------------------
     // ALUR UTAMA: mengembalikan data untuk ditampilkan view
-    // ---------------------------------------------------------
     public function handle($userId)
     {
         if (empty($_SESSION['csrf_profil'])) {
             $_SESSION['csrf_profil'] = bin2hex(random_bytes(32));
         }
 
-        // Sisa versi lama (profil disimpan di sesi) tidak dipakai lagi
         unset($_SESSION['profil']);
 
         $errors = [];
@@ -96,7 +91,6 @@ class ProfileController
             }
         }
 
-        // Kelengkapan dihitung dari data yang tersimpan (bukan dari isian form)
         $tersimpan = $profil;
         if ($errors) {
             try {
@@ -133,9 +127,7 @@ class ProfileController
         ];
     }
 
-    // ---------------------------------------------------------
     // MEMUAT DATA
-    // ---------------------------------------------------------
     private function muat($userId)
     {
         $baris = $this->model->ambil($userId);
@@ -180,9 +172,7 @@ class ProfileController
         ));
     }
 
-    // ---------------------------------------------------------
     // SIMPAN (create + update) DENGAN VALIDASI
-    // ---------------------------------------------------------
     private function simpan($userId, array $profil, array &$errors)
     {
         $fotoLama = $profil['foto'];
@@ -313,9 +303,7 @@ class ProfileController
         return $profil;
     }
 
-    // ---------------------------------------------------------
     // HAPUS DATA PROFIL (akun dan login tetap ada)
-    // ---------------------------------------------------------
     private function hapus($userId)
     {
         try {
@@ -331,9 +319,7 @@ class ProfileController
         exit;
     }
 
-    // ---------------------------------------------------------
     // FOTO
-    // ---------------------------------------------------------
     private function unggahFoto(array $foto, array &$errors)
     {
         if (!isset($foto['error']) || !is_int($foto['error'])) {
@@ -390,7 +376,6 @@ class ProfileController
         return $namaFile;
     }
 
-    // Hanya file berpola nama buatan sistem yang boleh dihapus
     private function hapusFileFoto($namaFile)
     {
         $namaFile = basename((string) $namaFile);

@@ -636,9 +636,7 @@ body {
     border: 1px solid #abefc6;
 }
 
-/* =========================================================
-   RESPONSIVE: SIDEBAR DI LAYAR KECIL (khusus halaman Pengingat)
-   ========================================================= */
+/* RESPONSIVE: SIDEBAR DI LAYAR KECIL (khusus halaman Pengingat) */
 @media (max-width: 760px) {
     body {
         flex-direction: column;
@@ -673,5 +671,109 @@ body {
         width: 100%;
         height: auto;
         overflow: visible;
+    }
+}
+/* MODAL EDIT PENGINGAT */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #FFFFFF;
+    width: 100%;
+    max-width: 480px;
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+    animation: modalMasuk 0.25s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    color: #1E3A2B;
+    margin: 0;
+}
+
+.modal-description {
+    color: #64748B;
+    font-size: 13px;
+    margin-bottom: 24px;
+}
+
+.modal-close {
+    border: none;
+    background: transparent;
+    color: #64748B;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.modal-content .form-group {
+    margin-bottom: 18px;
+}
+
+.modal-content .form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #DCE5E0;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.modal-content .form-group input:focus {
+    border-color: #2D6A4F;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.modal-actions button {
+    cursor: pointer;
+}
+
+@keyframes modalMasuk {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        padding: 22px;
+    }
+
+    .modal-actions {
+        flex-wrap: wrap;
     }
 }

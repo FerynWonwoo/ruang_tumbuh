@@ -1,9 +1,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    // ==========================================
     // 1. FORMAT INPUT TANGGAL (DD/MM/YYYY)
-    // ==========================================
     function formatTanggal(input) {
         if (!input) return;
 
@@ -23,9 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ==========================================
     // 2. VALIDASI DAN KONVERSI TANGGAL
-    // ==========================================
     function validasiTanggal(input) {
         const nilai = input.value.trim();
 
@@ -56,9 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
     }
 
-    // ==========================================
     // 3. FORM TAMBAH PENGINGAT
-    // ==========================================
     const tanggalTambah = document.getElementById("tanggal");
     const formTambah = document.getElementById("formPengingat");
 
@@ -74,18 +68,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ==========================================
     // 4. MENGAMBIL ELEMEN MODAL EDIT
-    // ==========================================
     const modal = document.getElementById("modalEditPengingat");
     const editId = document.getElementById("editId");
     const editJudul = document.getElementById("editJudul");
     const editTanggal = document.getElementById("editTanggal");
     const formEdit = document.getElementById("formEditPengingat");
 
-    // ==========================================
     // 5. MEMBUKA MODAL DAN MENGISI DATA
-    // ==========================================
     window.bukaModalEdit = function (id, judul, tanggal) {
 
         if (!modal || !editId || !editJudul || !editTanggal) {
@@ -102,9 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
         editJudul.focus();
     };
 
-    // ==========================================
     // 6. MENGHUBUNGKAN TOMBOL EDIT KE MODAL
-    // ==========================================
     const tombolEdit = document.querySelectorAll(".btn-edit");
 
     tombolEdit.forEach(function (tombol) {
@@ -118,16 +106,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ==========================================
     // 7. FORMAT TANGGAL PADA FORM EDIT
-    // ==========================================
     if (editTanggal) {
         formatTanggal(editTanggal);
     }
 
-    // ==========================================
     // 8. FORM SIMPAN PERUBAHAN
-    // ==========================================
     if (formEdit && editTanggal) {
         formEdit.addEventListener("submit", function (event) {
             if (!validasiTanggal(editTanggal)) {
@@ -136,9 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ==========================================
     // 9. MENUTUP MODAL
-    // ==========================================
     window.tutupModalEdit = function () {
         if (modal) {
             modal.classList.remove("active");

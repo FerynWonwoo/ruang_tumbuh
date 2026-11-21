@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* =========================================
-   RUANG TUMBUH - PROFILE
-   ========================================= */
+/* RUANG TUMBUH - PROFILE */
 
 * {
     margin: 0;
@@ -36,9 +34,7 @@ button,
     cursor: pointer;
 }
 
-/* =========================================
-   HEADER
-   ========================================= */
+/* HEADER */
 
 .header {
     position: sticky;
@@ -72,9 +68,7 @@ button,
     color: #2D6A4F;
 }
 
-/* =========================================
-   MAIN CONTENT
-   ========================================= */
+/*  MAIN CONTENT */
 
 main {
     width: 100%;
@@ -107,9 +101,7 @@ main {
     font-weight: 600;
 }
 
-/* =========================================
-   PAGE HEADING
-   ========================================= */
+/* PAGE HEADING */
 
 .page-heading {
     display: flex;
@@ -156,9 +148,7 @@ main {
     font-weight: 600;
 }
 
-/* =========================================
-   NOTIFICATION
-   ========================================= */
+/* NOTIFICATION */
 
 .notice {
     margin-bottom: 20px;
@@ -185,9 +175,7 @@ main {
     padding-left: 20px;
 }
 
-/* =========================================
-   PROFILE BANNER
-   ========================================= */
+/* PROFILE BANNER */
 
 .profile-banner,
 .card {
@@ -287,9 +275,7 @@ main {
     flex-shrink: 0;
 }
 
-/* =========================================
-   BUTTONS
-   ========================================= */
+/* BUTTONS*/
 
 .button {
     display: inline-flex;
@@ -349,9 +335,7 @@ main {
     font-weight: 600;
 }
 
-/* =========================================
-   PROFILE GRID
-   ========================================= */
+/* PROFILE GRID */
 
 .profile-grid {
     display: grid;
@@ -372,9 +356,7 @@ main {
     padding: 27px;
 }
 
-/* =========================================
-   SECTION HEADING
-   ========================================= */
+/* SECTION HEADING */
 
 .section-heading {
     display: flex;
@@ -413,9 +395,7 @@ main {
     white-space: nowrap;
 }
 
-/* =========================================
-   PERSONAL INFORMATION
-   ========================================= */
+/* PERSONAL INFORMATION */
 
 .contact-list {
     display: flex;
@@ -453,9 +433,7 @@ main {
     font-weight: 400;
 }
 
-/* =========================================
-   BIO
-   ========================================= */
+/* BIO */
 
 .bio {
     margin: 0;
@@ -465,9 +443,7 @@ main {
     overflow-wrap: anywhere;
 }
 
-/* =========================================
-   GROWTH CARD
-   ========================================= */
+/* GROWTH CARD */
 
 .growth-card {
     padding: 24px;
@@ -542,9 +518,7 @@ main {
     color: #1E3A2B;
 }
 
-/* =========================================
-   INTEREST AND OPPORTUNITIES
-   ========================================= */
+/* INTEREST AND OPPORTUNITIES */
 
 .small-link {
     flex-shrink: 0;
@@ -624,9 +598,7 @@ main {
     background: #EDF2EE;
 }
 
-/* =========================================
-   QUOTE
-   ========================================= */
+/* QUOTE */
 
 .quote {
     display: flex;
@@ -654,9 +626,7 @@ main {
     font-weight: 700;
 }
 
-/* =========================================
-   EDIT PROFILE FORM
-   ========================================= */
+/* EDIT PROFILE FORM */
 
 .edit-card {
     padding: 32px;
@@ -809,9 +779,7 @@ legend {
     outline-offset: 3px;
 }
 
-/* =========================================
-   FORM FOOTER
-   ========================================= */
+/* FORM FOOTER */
 
 .form-footer {
     display: flex;
@@ -833,9 +801,7 @@ legend {
     gap: 10px;
 }
 
-/* =========================================
-   FOOTER
-   ========================================= */
+/* FOOTER*/
 
 .footer {
     display: flex;
@@ -853,9 +819,7 @@ legend {
     text-align: right;
 }
 
-/* =========================================
-   RESPONSIVE TABLET
-   ========================================= */
+/* RESPONSIVE TABLET */
 
 @media (max-width: 1023px) {
     main {
@@ -872,9 +836,7 @@ legend {
     }
 }
 
-/* =========================================
-   RESPONSIVE MOBILE
-   ========================================= */
+/* RESPONSIVE MOBILE*/
 
 @media (max-width: 640px) {
     .header-inner {

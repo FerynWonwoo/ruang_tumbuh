@@ -294,16 +294,16 @@ echo str_replace(
                                             : 'Selesai'; ?>
                                     </button>
                                 </form>
-
                                 <!-- TOMBOL EDIT -->
-                                <a
-                                    href="index.php?page=pengingat&aksi=edit&id=<?= (int) $item['id']; ?>"
-                                    class="btn-edit"
-                                >
-                                    <i class="fa-solid fa-pen"></i>
-                                    Edit
-                                </a>
-
+                                 <button
+                                 type="button"
+                                 class="btn-edit"
+                                 data-id="<?= (int) $item['id']; ?>"
+                                 data-judul="<?= htmlspecialchars($item['judul'], ENT_QUOTES, 'UTF-8'); ?>"
+                                 data-tanggal="<?= date('d/m/Y', strtotime($item['tanggal_tenggat'])); ?>" >
+                                 <i class="fa-solid fa-pen"></i>
+                                 Edit
+                                </button>
                                 <!-- TOMBOL HAPUS -->
                                 <form
                                     method="POST"
@@ -349,7 +349,76 @@ echo str_replace(
         </section>
 
     </div>
+<!-- MODAL EDIT PENGINGAT -->
+<div class="modal-overlay" id="modalEditPengingat">
 
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2>Edit Pengingat</h2>
+
+            <button type="button" class="modal-close" onclick="tutupModalEdit()">
+                &times;
+            </button>
+        </div>
+
+        <p class="modal-description">
+            Perbarui aktivitas dan tanggal tenggatmu.
+        </p>
+
+        <form
+            id="formEditPengingat"
+            action="index.php?page=pengingat&aksi=ubah"
+            method="POST"
+        >
+
+            <input type="hidden" name="id" id="editId">
+
+            <div class="form-group">
+                <label for="editJudul">Nama Aktivitas</label>
+
+                <input
+                    type="text"
+                    name="judul"
+                    id="editJudul"
+                    maxlength="150"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="editTanggal">Tanggal Tenggat</label>
+
+                <input
+                    type="text"
+                    name="tanggal_tenggat"
+                    id="editTanggal"
+                    placeholder="dd/mm/yyyy"
+                    maxlength="10"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+
+            <div class="modal-actions">
+                <button
+                    type="button"
+                    class="btn-batal"
+                    onclick="tutupModalEdit()"
+                >
+                    Batal
+                </button>
+
+                <button type="submit" class="btn-tambah">
+                    <i class="fa-solid fa-save"></i>
+                    Simpan Perubahan
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
 </main>
 
 <script src="/ruang_tumbuh/public/js/pengingat.js"></script>
