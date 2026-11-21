@@ -2,11 +2,7 @@
 if (!defined('CATATAN_MVC_RENDER')) {
     ob_start();
 
-    if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-$username = $_SESSION['username'] ?? 'Pengguna';
+    
 
     header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
     header('Cache-Control: post-check=0, pre-check=0', false);
@@ -69,7 +65,7 @@ if (!function_exists('aman')) {
 
 $menuUtama = [
     'dashboard.php' => ['fa-solid fa-table-cells-large', 'Dashboard'],
-    'katalog.php'   => ['fa-solid fa-shapes',            'Katalog Program'],
+    'katalog.php'   => ['fa-solid fa-shapes',            'Katalog Bootcamp'],
     'kategori.php'  => ['fa-solid fa-layer-group',       'Kategori Program'],
     'bookmark.php'  => ['fa-regular fa-bookmark',        'Bookmark'],
     'pengingat.php' => ['fa-regular fa-clock',           'Pengingat Tenggat'],
@@ -177,7 +173,7 @@ $buatUrlFilter = static function (string $kategoriBaru, string $keywordAktif) us
             </div>
 <a href="<?= aman($profileUrl) ?>" class="profile-section" title="Lihat profil">
     <div class="profile-info">
-        <div class="profile-name"><?= aman($username) ?></div>
+        <div class="profile-name"><?= aman($_SESSION['username'] ?? 'Pengguna') ?></div>
         <div class="profile-role"><?= aman($displayRole) ?></div>
     </div>
     <div class="avatar"><?= aman($avatarInitials) ?></div>
