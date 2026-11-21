@@ -1,223 +1,561 @@
-<?php
-/**
- * Model Ulasan: seluruh akses data (data/ulasan.json) dan aturan data.
- * Tidak ada HTML / session di sini.
- */
-class Ulasan
-{
-    public const STATUS = ['pending', 'approved', 'rejected'];
 
-    public static function idValid(string $id): bool
+<?php
+
+class Rating
+{
+    private $conn;
+
+    public const STATUS = [
+        'pending',
+        'approved',
+        'rejected'
+    ];
+
+    public const MAX_KOMENTAR = 1000;
+
+
+    public function __construct($conn)
     {
-        return (bool) preg_match('/^[a-f0-9]{16}$/', $id);
+        $this->conn = $conn;
     }
 
-    // ---------- Baca ----------
+
+    // =========================================
+    // MENGAMBIL SEMUA ULASAN
+    // =========================================
+
     public function semua(): array
     {
-        if (!is_file(DATA_FILE)) {
+        $query = "SELECT * FROM ratings ORDER BY tanggal DESC, id DESC";
+
+        $result = mysqli_query($this->conn, $query);
+
+        if (!$result) {
+            error_log(mysqli_error($this->conn));
             return [];
         }
-        $data = json_decode((string) file_get_contents(DATA_FILE), true);
-        return is_array($data) ? $data : [];
+
+        $data = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+
+        mysqli_free_result($result);
+
+        return $data;
     }
+
+
+    // =========================================
+    // MENGAMBIL ULASAN BERDASARKAN ID
+    // =========================================
 
     public function cari(string $id): ?array
     {
-        return $this->semua()[$id] ?? null;
+        $query = "SELECT * FROM ratings WHERE id = ? LIMIT 1";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return null;
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $id);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+        $data = mysqli_fetch_assoc($result) ?: null;
+
+        mysqli_stmt_close($stmt);
+
+        return $data;
     }
 
-    // Data lama tanpa status dianggap tayang
-    private function normalisasi(array $u): array
-    {
-        $u['status'] = in_array($u['status'] ?? '', self::STATUS, true) ? $u['status'] : 'approved';
-        return $u;
-    }
 
-    /** Untuk halaman peserta: ulasan tayang + ulasan milik sendiri. */
+    // =========================================
+    // ULASAN UNTUK PESERTA
+    // =========================================
+
     public function untukUser(string $username): array
     {
+        $query = "SELECT *
+                  FROM ratings
+                  WHERE status = 'approved'
+                     OR username = ?
+                  ORDER BY tanggal DESC, id DESC";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return [
+                'daftar' => [],
+                'publik' => 0,
+                'rata' => '—'
+            ];
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+
         $daftar = [];
-        $total  = 0;
+        $total = 0;
         $publik = 0;
 
-        foreach (array_reverse($this->semua(), true) as $u) {
-            $u = $this->normalisasi($u);
+        while ($row = mysqli_fetch_assoc($result)) {
 
-            if ($u['status'] === 'approved') {
-                $total += (int) $u['rating'];
+            $daftar[] = $row;
+
+            if ($row['status'] === 'approved') {
+                $total += (int) $row['rating'];
                 $publik++;
             }
-            if ($u['status'] === 'approved' || $u['username'] === $username) {
+        }
+
+        mysqli_stmt_close($stmt);
+
+        return [
+            'daftar' => $daftar,
+            'publik' => $publik,
+            'rata' => $publik > 0
+                ? number_format($total / $publik, 1)
+                : '—'
+        ];
+    }
+
+
+    // =========================================
+    // MENGAMBIL ULASAN ADMIN
+    // =========================================
+
+    public function untukAdmin(string $filter = 'all'): array
+    {
+        $jumlah = [
+            'all' => 0,
+            'pending' => 0,
+            'approved' => 0,
+            'rejected' => 0
+        ];
+
+        $semua = $this->semua();
+
+        foreach ($semua as $u) {
+            $status = $u['status'];
+
+            if (isset($jumlah[$status])) {
+                $jumlah[$status]++;
+            }
+
+            $jumlah['all']++;
+        }
+
+        $daftar = [];
+
+        foreach ($semua as $u) {
+            if ($filter === 'all' || $u['status'] === $filter) {
                 $daftar[] = $u;
             }
         }
 
         return [
             'daftar' => $daftar,
-            'publik' => $publik,
-            'rata'   => $publik > 0 ? number_format($total / $publik, 1) : '—',
+            'jumlah' => $jumlah
         ];
     }
 
-    /** Untuk halaman admin: daftar sesuai filter + jumlah per status. */
-    public function untukAdmin(string $filter): array
-    {
-        $jumlah = ['all' => 0, 'pending' => 0, 'approved' => 0, 'rejected' => 0];
-        $daftar = [];
 
-        foreach (array_reverse($this->semua(), true) as $u) {
-            $u = $this->normalisasi($u);
-            $jumlah['all']++;
-            $jumlah[$u['status']]++;
+    // =========================================
+    // MENAMBAHKAN ULASAN
+    // =========================================
 
-            if ($filter === 'all' || $u['status'] === $filter) {
-                $daftar[] = $u;
-            }
+    public function simpan(
+        array $form,
+        string $username
+    ): array {
+
+        $bootcamp = trim($form['bootcamp'] ?? '');
+        $rating = (int) ($form['rating'] ?? 0);
+        $komentar = trim($form['komentar'] ?? '');
+
+        if ($bootcamp === '' || strlen($bootcamp) > 150) {
+            return $this->gagal('Nama bootcamp wajib diisi (maksimal 150 karakter).');
+        }
+                if (!$this->bootcampAda($bootcamp)) {
+            return $this->gagal('Bootcamp tidak ada di katalog. Pilih dari daftar.');
         }
 
-        return ['daftar' => $daftar, 'jumlah' => $jumlah];
-    }
-
-    // ---------- Tulis (peserta) ----------
-    /** @return array{ok:bool,error:string,pesan:string} */
-    public function simpan(array $form, string $id, string $username): array
-    {
-        $hasil = ['ok' => true, 'error' => '', 'pesan' => ''];
-
-        $tersimpan = $this->ubah(function ($data) use (&$hasil, $form, $id, $username) {
-            $lama = $data[$id] ?? null;
-
-            if ($id !== '' && (!$lama || $lama['username'] !== $username)) {
-                $hasil = ['ok' => false, 'error' => 'Ulasan tidak ditemukan atau bukan milikmu.', 'pesan' => ''];
-                return $data;
-            }
-
-            // Satu ulasan per user per bootcamp (berlaku juga saat edit)
-            foreach ($data as $kunci => $u) {
-                if ($kunci !== $id
-                    && ($u['username'] ?? '') === $username
-                    && ($u['bootcamp'] ?? '') === $form['bootcamp']) {
-                    $hasil = ['ok' => false, 'error' => 'Kamu sudah mengulas bootcamp ini. Edit ulasan yang sudah ada.', 'pesan' => ''];
-                    return $data;
-                }
-            }
-
-            $idBaru = $id !== '' ? $id : bin2hex(random_bytes(8));
-
-            // Baru / hasil edit menunggu persetujuan admin; yang disembunyikan tetap tersembunyi.
-            $status = ($lama['status'] ?? '') === 'rejected' ? 'rejected' : 'pending';
-
-            $data[$idBaru] = [
-                'id'       => $idBaru,
-                'username' => $username,
-                'bootcamp' => $form['bootcamp'],
-                'rating'   => $form['rating'],
-                'komentar' => $form['komentar'],
-                'status'   => $status,
-                'tanggal'  => $lama['tanggal'] ?? date('d/m/Y'),
-            ];
-
-            $hasil['pesan'] = $status === 'rejected'
-                ? 'Ulasan diperbarui, tetapi sedang disembunyikan admin.'
-                : ($id !== ''
-                    ? 'Ulasan diperbarui dan menunggu persetujuan admin.'
-                    : 'Ulasan terkirim dan menunggu persetujuan admin.');
-            return $data;
-        });
-
-        return $tersimpan ? $hasil : $this->gagalSimpan('Data tidak bisa disimpan. Hubungi admin.');
-    }
-
-    /** @return array{ok:bool,error:string,pesan:string} */
-    public function tarik(string $id, string $username): array
-    {
-        $hasil = ['ok' => true, 'error' => '', 'pesan' => 'Ulasan berhasil ditarik.'];
-
-        $tersimpan = $this->ubah(function ($data) use (&$hasil, $id, $username) {
-            if (!isset($data[$id]) || $data[$id]['username'] !== $username) {
-                $hasil = ['ok' => false, 'error' => 'Ulasan tidak ditemukan atau bukan milikmu.', 'pesan' => ''];
-                return $data;
-            }
-            unset($data[$id]);
-            return $data;
-        });
-
-        return $tersimpan ? $hasil : $this->gagalSimpan('Data tidak bisa disimpan. Hubungi admin.');
-    }
-
-    // ---------- Tulis (admin) ----------
-    /**
-     * @param string[] $ids
-     * @param string   $aksi publish|hide|hapus
-     * @return int|null jumlah ulasan diproses, null jika gagal menyimpan
-     */
-    public function moderasi(array $ids, string $aksi): ?int
-    {
-        $diproses = 0;
-
-        $tersimpan = $this->ubah(function ($data) use ($ids, $aksi, &$diproses) {
-            foreach ($ids as $id) {
-                if (!isset($data[$id])) {
-                    continue;
-                }
-                if ($aksi === 'hapus') {
-                    unset($data[$id]);
-                } else {
-                    $data[$id]['status'] = $aksi === 'publish' ? 'approved' : 'rejected';
-                }
-                $diproses++;
-            }
-            return $data;
-        });
-
-        return $tersimpan ? $diproses : null;
-    }
-
-    // ---------- Internal ----------
-    private function gagalSimpan(string $error): array
-    {
-        return ['ok' => false, 'error' => $error, 'pesan' => ''];
-    }
-
-    // Baca-ubah-tulis dengan file lock supaya aman dari tabrakan.
-    private function ubah(callable $fn): bool
-    {
-        $dir = dirname(DATA_FILE);
-
-        if (!is_dir($dir) && !mkdir($dir, 0775, true) && !is_dir($dir)) {
-            return false;
+        if ($rating < 1 || $rating > 5) {
+            return $this->gagal('Rating harus antara 1 sampai 5.');
         }
 
-        // Blokir akses langsung ke folder data lewat browser (Apache)
-        $htaccess = $dir . '/.htaccess';
-        if (!is_file($htaccess)) {
-            @file_put_contents(
-                $htaccess,
-                "<IfModule mod_authz_core.c>\n    Require all denied\n</IfModule>\n" .
-                "<IfModule !mod_authz_core.c>\n    Deny from all\n</IfModule>\n"
+        if (
+            $komentar === '' ||
+            mb_strlen($komentar) > self::MAX_KOMENTAR
+        ) {
+            return $this->gagal('Komentar wajib diisi dan maksimal 1000 karakter.');
+        }
+
+        // Cek apakah pengguna sudah mengulas bootcamp ini
+        $query = "SELECT id
+                  FROM ratings
+                  WHERE username = ?
+                  AND bootcamp = ?
+                  LIMIT 1";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return $this->gagal('Gagal memeriksa data ulasan.');
+        }
+
+        mysqli_stmt_bind_param($stmt, "ss", $username, $bootcamp);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+        $ada = mysqli_fetch_assoc($result);
+
+        mysqli_stmt_close($stmt);
+
+        if ($ada) {
+            return $this->gagal(
+                'Kamu sudah mengulas bootcamp ini. Silakan edit ulasan yang sudah ada.'
             );
         }
 
-        $fp = fopen(DATA_FILE, 'c+');
-        if (!$fp) {
-            return false;
+        $id = bin2hex(random_bytes(8));
+        $status = 'pending';
+
+        $query = "INSERT INTO ratings
+                  (id, username, bootcamp, rating, komentar, status)
+                  VALUES (?, ?, ?, ?, ?, ?)";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return $this->gagal('Gagal menyiapkan penyimpanan ulasan.');
         }
-        if (!flock($fp, LOCK_EX)) {
-            fclose($fp);
-            return false;
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sssiss",
+            $id,
+            $username,
+            $bootcamp,
+            $rating,
+            $komentar,
+            $status
+        );
+
+        $berhasil = mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+
+        if (!$berhasil) {
+            return $this->gagal('Ulasan gagal disimpan.');
         }
 
-        $data = json_decode((string) stream_get_contents($fp), true);
-        $data = $fn(is_array($data) ? $data : []);
-
-        ftruncate($fp, 0);
-        rewind($fp);
-        fwrite($fp, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
-        fflush($fp);
-        flock($fp, LOCK_UN);
-        fclose($fp);
-
-        return true;
+        return [
+            'ok' => true,
+            'pesan' => 'Ulasan berhasil dikirim dan menunggu persetujuan admin.',
+            'error' => ''
+        ];
     }
+
+
+    // =========================================
+    // MENGEDIT ULASAN
+    // =========================================
+
+    public function update(
+        string $id,
+        array $form,
+        string $username
+    ): array {
+
+        $ulasan = $this->cari($id);
+
+        if (!$ulasan || $ulasan['username'] !== $username) {
+            return $this->gagal(
+                'Ulasan tidak ditemukan atau bukan milikmu.'
+            );
+        }
+
+        $bootcamp = trim($form['bootcamp'] ?? '');
+        $rating = (int) ($form['rating'] ?? 0);
+        $komentar = trim($form['komentar'] ?? '');
+
+        if ($bootcamp === '' || strlen($bootcamp) > 150) {
+            return $this->gagal('Nama bootcamp tidak valid.');
+        }
+                if (
+            $bootcamp !== $ulasan['bootcamp'] &&
+            !$this->bootcampAda($bootcamp)
+        ) {
+            return $this->gagal('Bootcamp tidak ada di katalog. Pilih dari daftar.');
+        }
+
+        if ($rating < 1 || $rating > 5) {
+            return $this->gagal('Rating harus antara 1 sampai 5.');
+        }
+
+        if (
+            $komentar === '' ||
+            mb_strlen($komentar) > self::MAX_KOMENTAR
+        ) {
+            return $this->gagal('Komentar wajib diisi dan maksimal 1000 karakter.');
+        }
+
+        // Cek duplikasi bootcamp oleh username yang sama
+        $query = "SELECT id FROM ratings
+                  WHERE username = ?
+                  AND bootcamp = ?
+                  AND id != ?
+                  LIMIT 1";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return $this->gagal('Gagal memeriksa ulasan.');
+        }
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sss",
+            $username,
+            $bootcamp,
+            $id
+        );
+
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+        $duplikat = mysqli_fetch_assoc($result);
+
+        mysqli_stmt_close($stmt);
+
+        if ($duplikat) {
+            return $this->gagal(
+                'Kamu sudah mengulas bootcamp tersebut.'
+            );
+        }
+
+        // Ulasan yang diubah kembali menunggu moderasi,
+        // kecuali sebelumnya sudah rejected.
+        $status = $ulasan['status'] === 'rejected'
+            ? 'rejected'
+            : 'pending';
+
+        $query = "UPDATE ratings
+                  SET bootcamp = ?,
+                      rating = ?,
+                      komentar = ?,
+                      status = ?
+                  WHERE id = ?
+                  AND username = ?";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return $this->gagal('Gagal menyiapkan perubahan ulasan.');
+        }
+
+        mysqli_stmt_bind_param(
+            $stmt,
+            "sissss",
+            $bootcamp,
+            $rating,
+            $komentar,
+            $status,
+            $id,
+            $username
+        );
+
+        $berhasil = mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+
+        if (!$berhasil) {
+            return $this->gagal('Ulasan gagal diperbarui.');
+        }
+
+        return [
+            'ok' => true,
+            'pesan' => 'Ulasan berhasil diperbarui dan menunggu moderasi.',
+            'error' => ''
+        ];
+    }
+
+
+    // =========================================
+    // MENARIK / MENGHAPUS ULASAN PESERTA
+    // =========================================
+
+    public function tarik(
+        string $id,
+        string $username
+    ): array {
+
+        $query = "DELETE FROM ratings
+                  WHERE id = ?
+                  AND username = ?";
+
+        $stmt = mysqli_prepare($this->conn, $query);
+
+        if (!$stmt) {
+            return $this->gagal('Gagal menyiapkan penghapusan ulasan.');
+        }
+
+        mysqli_stmt_bind_param($stmt, "ss", $id, $username);
+
+        $berhasil = mysqli_stmt_execute($stmt);
+        $terhapus = mysqli_stmt_affected_rows($stmt);
+
+        mysqli_stmt_close($stmt);
+
+        if (!$berhasil || $terhapus === 0) {
+            return $this->gagal(
+                'Ulasan tidak ditemukan atau bukan milikmu.'
+            );
+        }
+
+        return [
+            'ok' => true,
+            'pesan' => 'Ulasan berhasil ditarik.',
+            'error' => ''
+        ];
+    }
+
+
+    // =========================================
+    // MODERASI ADMIN
+    // =========================================
+
+    public function moderasi(
+        array $ids,
+        string $aksi
+    ): int {
+
+        $status = [
+            'publish' => 'approved',
+            'hide' => 'rejected'
+        ];
+
+        if ($aksi === 'hapus') {
+
+            $diproses = 0;
+
+            foreach ($ids as $id) {
+                $query = "DELETE FROM ratings WHERE id = ?";
+
+                $stmt = mysqli_prepare($this->conn, $query);
+
+                if (!$stmt) {
+                    continue;
+                }
+
+                mysqli_stmt_bind_param($stmt, "s", $id);
+                mysqli_stmt_execute($stmt);
+
+                $diproses += mysqli_stmt_affected_rows($stmt);
+
+                mysqli_stmt_close($stmt);
+            }
+
+            return $diproses;
+        }
+
+        if (!isset($status[$aksi])) {
+            return 0;
+        }
+
+        $statusBaru = $status[$aksi];
+        $diproses = 0;
+
+        foreach ($ids as $id) {
+
+            $query = "UPDATE ratings SET status = ? WHERE id = ?";
+
+            $stmt = mysqli_prepare($this->conn, $query);
+
+            if (!$stmt) {
+                continue;
+            }
+
+            mysqli_stmt_bind_param($stmt, "ss", $statusBaru, $id);
+
+            mysqli_stmt_execute($stmt);
+
+            $diproses += mysqli_stmt_affected_rows($stmt);
+
+            mysqli_stmt_close($stmt);
+        }
+
+        return $diproses;
+    }
+
+
+    // =========================================
+    // HELPER ERROR
+    // =========================================
+
+    private function gagal(string $pesan): array
+    {
+        return [
+            'ok' => false,
+            'pesan' => '',
+            'error' => $pesan
+        ];
+    }
+
+        // =========================================
+    // DAFTAR BOOTCAMP DARI KATALOG (tabel program)
+    // =========================================
+
+    public function daftarBootcamp(): array
+    {
+        $result = mysqli_query(
+            $this->conn,
+            "SELECT DISTINCT judul FROM program ORDER BY judul ASC"
+        );
+
+        if (!$result) {
+            error_log(mysqli_error($this->conn));
+            return [];
+        }
+
+        $daftar = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $daftar[] = $row['judul'];
+        }
+
+        mysqli_free_result($result);
+
+        return $daftar;
+    }
+
+    public function bootcampAda(string $judul): bool
+    {
+        $stmt = mysqli_prepare(
+            $this->conn,
+            "SELECT 1 FROM program WHERE judul = ? LIMIT 1"
+        );
+
+        if (!$stmt) {
+            return false;
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $judul);
+        mysqli_stmt_execute($stmt);
+
+        $result = mysqli_stmt_get_result($stmt);
+        $ada = (bool) mysqli_fetch_assoc($result);
+
+        mysqli_stmt_close($stmt);
+
+        return $ada;
+    }
+    
 }

@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="../../public/css/header.css">
 <link rel="stylesheet" href="../../public/css/rating.css">
+<link rel="stylesheet" href="/ruang_tumbuh/public/css/header.css">
+<link rel="stylesheet" href="/ruang_tumbuh/public/css/rating.css">
 
 <?php
 // Session harus sudah dimulai oleh halaman pemanggil.

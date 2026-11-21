@@ -267,7 +267,7 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
                     <i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
                 <li><a href="../../index.php?page=kategori" class="nav-link">
                     <i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
-                <li><a href="admin/adminrating.php" class="nav-link">
+                <li><a href="../../index.php?page=rating" class="nav-link">
                     <i class="fa-solid fa-star"></i> Rating</a></li>
             </ul>
         </div>

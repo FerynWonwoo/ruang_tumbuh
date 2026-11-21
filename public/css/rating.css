@@ -681,3 +681,32 @@ a.chip { display: inline-flex; align-items: center; gap: 8px; }
     .bulk-bar { top: 64px; }
     .bulk-actions { margin-left: 0; width: 100%; }
 }
+
+
+/* Header admin mengikuti layout Dashboard Admin. */
+.header {
+    justify-content: space-between;
+}
+
+.header h3 {
+    margin: 0;
+    color: #111827;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #E5E7EB;
+    object-fit: cover;
+}
+
+

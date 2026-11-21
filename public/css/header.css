@@ -43,3 +43,12 @@
 @media (max-width: 700px) {
     .header { padding: 12px 16px; }
 }
+
+.main-area > .header {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.main-area > .header .profile-section {
+    margin-left: auto;
+}

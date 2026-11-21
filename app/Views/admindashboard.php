@@ -280,7 +280,7 @@ $sapaan = $jam < 11 ? 'Selamat pagi' : ($jam < 15 ? 'Selamat siang' : ($jam < 18
                     <li><a href="admindashboard.php" class="nav-link active"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
                     <li><a href="adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
                     <li><a href="../../index.php?page=kategori" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
-                    <li><a href="adminrating.php" class="nav-link"><i class="fa-solid fa-users"></i> Rating</a></li>
+                    <li><a href="adminrating.php" class="nav-link"><i class="fa-solid fa-star"></i> Rating</a></li>
                 </ul>
             </div>
         </div>

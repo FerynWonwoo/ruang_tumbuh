@@ -1,202 +1,269 @@
 <?php
-/** View admin. Variabel dari AdminRatingController::tampilkan() */
+if (!isset($daftarUlasan)) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    require_once __DIR__ . '/../../config/koneksimvc.php';
+    require_once __DIR__ . '/../Helpers/rating_helpers.php';
+    require_once __DIR__ . '/../Models/Rating.php';
+    require_once __DIR__ . '/../Controllers/RatingController.php';
+
+    $ratingModel = new Rating($conn);
+    $ratingController = new RatingController($ratingModel);
+    $ratingController->tampilkan();
+    exit;
+}
+
+$appBase = $basePath;
+$e = 'rating_e';
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moderasi Ulasan | Ruang Tumbuh</title>
+    <title>RuangTumbuh - Ulasan &amp; Rating</title>
+    
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="assets/css/rating.css?v=<?= filemtime(ROOT_PATH . '/assets/css/rating.css') ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="<?= $e($basePath) ?>/public/css/rating.css?v=<?= @filemtime(__DIR__ . '/../../public/css/rating.css') ?>">
 </head>
 <body>
 
-<!-- SIDEBAR ADMIN -->
-<aside class="sidebar">
-    <div>
-        <div class="logo-text">Ruang<span>Tumbuh</span></div>
-
-        <div class="nav-group first">
-            <div class="nav-title">MENU ADMIN</div>
-
-            <ul class="nav-menu">
-                <li>
-                    <a href="page/admindashboard.php" class="nav-link">
-                        <i class="fa-solid fa-table-cells-large"></i> Dashboard
-                    </a>
-                </li>
-                <li>
-                    <a href="page/adminkatalog.php" class="nav-link">
-                        <i class="fa-solid fa-shapes"></i> Katalog Bootcamp
-                    </a>
-                </li>
-                <li>
-                    <a href="page/adminkategori.php" class="nav-link">
-                        <i class="fa-solid fa-layer-group"></i> Kategori Program
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= url('admin/rating') ?>" class="nav-link active">
-                        <i class="fa-solid fa-star"></i> Ulasan &amp; Rating
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="sidebar-bottom">
-        <a href="page/logout.php" class="logout-link">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </a>
-    </div>
-</aside>
+<?php include __DIR__ . '/../../includes/sidebar.php'; ?>
 
 <div class="main-area">
-
-    <header class="header">
-        <div class="profile-section">
-            <div class="profile-info">
-                <div class="profile-name"><?= aman($nama_user) ?></div>
-                <div class="profile-role">Administrator</div>
-            </div>
-            <div class="avatar"><?= aman(strtoupper(mb_substr($nama_user, 0, 2))) ?></div>
-        </div>
-    </header>
+    <?php include __DIR__ . '/../../includes/header.php'; ?>
 
     <main class="page">
 
         <!-- BANNER -->
         <section class="banner">
-            <div class="banner-text">
-                <span class="badge-tag">Admin</span>
-                <h1>Moderasi Ulasan</h1>
-                <p>Pilih ulasan mana yang dipublikasikan. Hanya ulasan yang dipublikasikan yang tampil di halaman peserta dan masuk hitungan rating.</p>
+            <div>
+                <span class="badge-tag">Komunitas</span>
+                <h1>Ulasan &amp; Rating</h1>
+                <p>Bagikan pengalamanmu mengikuti bootcamp dan lihat ulasan peserta lain sebelum memutuskan mendaftar.</p>
             </div>
 
             <div class="banner-stats">
                 <div class="stat-pill">
-                    <span class="stat-icon amber"><i class="fa-regular fa-clock"></i></span>
-                    <span class="stat-text"><?= $jumlah['pending'] ?> <small>menunggu</small></span>
+                    <span class="stat-icon amber"><i class="fa-solid fa-star"></i></span>
+                    <span class="stat-text"><?= $e($rataRating) ?> <small>/ 5.0</small></span>
                 </div>
                 <div class="stat-pill">
-                    <span class="stat-icon"><i class="fa-regular fa-eye"></i></span>
-                    <span class="stat-text"><?= $jumlah['approved'] ?> <small>tayang</small></span>
+                    <span class="stat-icon"><i class="fa-regular fa-comments"></i></span>
+                    <span class="stat-text"><?= (int) $totalPublik ?> <small>ulasan tayang</small></span>
                 </div>
             </div>
         </section>
 
         <?php if ($pesan): ?>
-            <p class="notice success" role="status"><?= aman($pesan) ?></p>
+            <p class="notice success" role="status"><?= $e($pesan) ?></p>
         <?php endif; ?>
-        <?php if ($error): ?>
-            <p class="notice error" role="alert"><?= aman($error) ?></p>
+        <?php if ($error && !$modalBuka): ?>
+            <p class="notice error" role="alert"><?= $e($error) ?></p>
         <?php endif; ?>
 
-        <!-- FILTER STATUS -->
-        <nav class="chips" aria-label="Filter status">
-            <?php foreach ($tab as $kunci => $nama): ?>
-                <a class="chip<?= $filter === $kunci ? ' active' : '' ?>"
-                   href="<?= url('admin/rating', ['status' => $kunci]) ?>">
-                    <?= $nama ?> <span class="chip-count"><?= $jumlah[$kunci] ?></span>
-                </a>
-            <?php endforeach; ?>
-        </nav>
+        <!-- FORM ULASAN BARU -->
+        <section class="card form-card">
+            <div class="form-head">
+                <h2>Tulis Ulasan</h2>
+                <p class="muted">Ulasanmu akan ditinjau admin sebelum tampil untuk peserta lain.</p>
+            </div>
 
-        <?php if (!$daftar): ?>
-            <section class="card empty">
-                <div class="empty-icon"><i class="fa-regular fa-circle-check"></i></div>
-                <h3>Tidak ada ulasan di kategori ini</h3>
-                <p class="muted">Coba pilih filter lain.</p>
-            </section>
-        <?php else: ?>
+            <form method="post" action="<?= $e($basePath) ?>/index.php?page=rating-simpan">
+                <input type="hidden" name="csrf" value="<?= $e($_SESSION['csrf']) ?>">
 
-        <form method="post" action="<?= url('admin/rating/aksi') ?>" id="formModerasi">
-            <input type="hidden" name="csrf" value="<?= aman($_SESSION['csrf']) ?>">
-            <input type="hidden" name="filter" value="<?= aman($filter) ?>">
+                <label for="bootcampBaru">Bootcamp</label>
+                <select id="bootcampBaru" name="bootcamp" required>
+                    <option value="">— Pilih bootcamp —</option>
+                    <?php foreach ($daftarBootcamp as $judul): ?>
+                        <option value="<?= $e($judul) ?>" <?= $formBaru['bootcamp'] === $judul ? 'selected' : '' ?>>
+                            <?= $e($judul) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
 
-            <!-- BULK BAR -->
-            <div class="bulk-bar">
-                <label class="cek">
-                    <input type="checkbox" id="pilihSemua">
-                    <span>Pilih semua</span>
-                </label>
-                <span class="bulk-info"><b id="jumlahDipilih">0</b> dipilih</span>
+                <fieldset class="rating-field">
+                    <legend>Rating</legend>
+                    <div class="rating-options">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <label class="rating-option">
+                                <input type="radio" name="rating" value="<?= $i ?>" required
+                                    <?= (int) $formBaru['rating'] === $i ? 'checked' : '' ?>>
+                                <span><?= $i ?> ★</span>
+                            </label>
+                        <?php endfor; ?>
+                    </div>
+                </fieldset>
 
-                <div class="bulk-actions">
-                    <button type="submit" class="mini green" name="massa" value="publish" data-bulk>
-                        <i class="fa-regular fa-eye"></i> Publikasikan
-                    </button>
-                    <button type="submit" class="mini amber" name="massa" value="hide" data-bulk>
-                        <i class="fa-regular fa-eye-slash"></i> Sembunyikan
-                    </button>
-                    <button type="submit" class="mini red" name="massa" value="hapus" data-bulk
-                            data-confirm="Hapus semua ulasan yang dipilih? Tindakan ini tidak bisa dibatalkan.">
-                        <i class="fa-regular fa-trash-can"></i> Hapus
+                <label for="komentarBaru">Komentar</label>
+                <textarea id="komentarBaru" name="komentar" rows="4" required
+                    maxlength="<?= (int) $maxKomentar ?>"
+                    placeholder="Ceritakan pengalamanmu..."><?= $e($formBaru['komentar']) ?></textarea>
+                <p class="hint">Maksimal <?= (int) $maxKomentar ?> karakter.</p>
+
+                <div class="actions">
+                    <button type="submit" class="button">
+                        <i class="fa-regular fa-paper-plane"></i> Kirim Ulasan
                     </button>
                 </div>
+            </form>
+        </section>
+
+        <!-- DAFTAR ULASAN -->
+        <section>
+            <div class="list-heading">
+                <div>
+                    <h2>Ulasan Peserta</h2>
+                    <p class="muted sub">Ulasan yang sudah dipublikasikan dan ulasan milikmu.</p>
+                </div>
+                <span class="count-pill"><b id="jumlahUlasan"><?= count($daftarUlasan) ?></b> ulasan</span>
             </div>
 
-            <div class="review-grid">
-                <?php foreach ($daftar as $u): ?>
-                    <?php
-                        $r      = max(1, min(5, (int) $u['rating']));
+            <?php if (!$daftarUlasan): ?>
+                <div class="card empty" style="margin-top:16px;">
+                    <div class="empty-icon"><i class="fa-regular fa-star"></i></div>
+                    <h3>Belum ada ulasan</h3>
+                    <p class="muted">Jadilah yang pertama membagikan pengalamanmu.</p>
+                </div>
+            <?php else: ?>
+
+                <nav class="chips" aria-label="Filter bintang" style="margin:16px 0;">
+                    <button type="button" class="chip active" data-filter="all">Semua</button>
+                    <?php for ($i = 5; $i >= 1; $i--): ?>
+                        <button type="button" class="chip" data-filter="<?= $i ?>"><?= $i ?> ★</button>
+                    <?php endfor; ?>
+                </nav>
+
+                <div class="review-grid">
+                    <?php foreach ($daftarUlasan as $u): ?>
+                        <?php
+                        $r = max(1, min(5, (int) $u['rating']));
+                        $milikku = $u['username'] === ($_SESSION['username'] ?? '');
                         $avatar = 'av-' . (abs(crc32($u['username'])) % 6);
-                    ?>
-                    <article class="review-card r<?= $r ?>" data-rating="<?= $r ?>">
-                        <div class="rc-head">
-                            <label class="cek cek-kartu" aria-label="Pilih ulasan <?= aman($u['username']) ?>">
-                                <input type="checkbox" name="ids[]" value="<?= aman($u['id']) ?>" data-item>
-                            </label>
-                            <div class="rc-avatar <?= $avatar ?>"><?= aman(strtoupper(mb_substr($u['username'], 0, 2))) ?></div>
-                            <div class="rc-who">
-                                <strong><?= aman($u['username']) ?></strong>
-                                <span class="rc-date"><i class="fa-regular fa-calendar"></i> <?= aman($u['tanggal'] ?? '') ?></span>
+                        ?>
+                        <article class="review-card r<?= $r ?>" data-rating="<?= $r ?>">
+                            <div class="rc-head">
+                                <div class="rc-avatar <?= $avatar ?>"><?= $e(strtoupper(mb_substr($u['username'], 0, 2))) ?></div>
+                                <div class="rc-who">
+                                    <strong>
+                                        <?= $e($u['username']) ?>
+                                        <?php if ($milikku): ?><span class="me-tag">Kamu</span><?php endif; ?>
+                                    </strong>
+                                    <span class="rc-date"><i class="fa-regular fa-calendar"></i><?= $e(rating_tanggal($u['tanggal'] ?? '')) ?></span>
+                                </div>
+                                <span class="chip-rating"><i class="fa-solid fa-star"></i> <?= $r ?>.0</span>
                             </div>
-                            <span class="chip-rating"><i class="fa-solid fa-star"></i> <?= $r ?>.0</span>
-                        </div>
 
-                        <h3 class="rc-bootcamp">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                            <span><?= aman($u['bootcamp']) ?></span>
-                        </h3>
+                            <h3 class="rc-bootcamp">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <span><?= $e($u['bootcamp']) ?></span>
+                            </h3>
 
-                        <div class="stars" aria-label="<?= $r ?> dari 5 bintang"><?= bintang($r) ?></div>
+                            <div class="stars" aria-label="<?= $r ?> dari 5 bintang"><?= bintang($r) ?></div>
 
-                        <p class="review-text"><?= aman($u['komentar']) ?></p>
-                        <button type="button" class="read-more" hidden>Baca selengkapnya</button>
+                            <p class="review-text"><?= $e($u['komentar']) ?></p>
+                            <button type="button" class="read-more" hidden>Baca selengkapnya</button>
 
-                        <div class="rc-footer">
-                            <span class="badge <?= aman($u['status']) ?>"><?= aman($statusLabel[$u['status']]) ?></span>
+                            <?php if ($milikku): ?>
+                                <div class="rc-footer">
+                                    <span class="badge <?= $e($u['status']) ?>"><?= $e($statusLabel[$u['status']] ?? $u['status']) ?></span>
 
-                            <div class="rc-actions">
-                                <?php if ($u['status'] !== 'approved'): ?>
-                                    <button type="submit" class="mini green" name="satu" value="publish:<?= aman($u['id']) ?>">
-                                        <i class="fa-regular fa-eye"></i> Publikasikan
-                                    </button>
-                                <?php endif; ?>
-                                <?php if ($u['status'] !== 'rejected'): ?>
-                                    <button type="submit" class="mini amber" name="satu" value="hide:<?= aman($u['id']) ?>">
-                                        <i class="fa-regular fa-eye-slash"></i> Sembunyikan
-                                    </button>
-                                <?php endif; ?>
-                                <button type="submit" class="mini red" name="satu" value="hapus:<?= aman($u['id']) ?>"
-                                        data-confirm="Hapus ulasan ini?" aria-label="Hapus ulasan">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </form>
+                                    <div class="rc-actions">
+                                        <button type="button" class="mini blue" data-edit
+                                            data-id="<?= $e($u['id']) ?>"
+                                            data-bootcamp="<?= $e($u['bootcamp']) ?>"
+                                            data-rating="<?= $r ?>"
+                                            data-komentar="<?= $e($u['komentar']) ?>">
+                                            <i class="fa-regular fa-pen-to-square"></i> Edit
+                                        </button>
 
-        <?php endif; ?>
+                                        <form method="post" action="<?= $e($basePath) ?>/index.php?page=rating-tarik">
+                                            <input type="hidden" name="csrf" value="<?= $e($_SESSION['csrf']) ?>">
+                                            <input type="hidden" name="id" value="<?= $e($u['id']) ?>">
+                                            <button type="submit" class="mini red" data-confirm="Tarik ulasan ini? Ulasan akan dihapus.">
+                                                <i class="fa-regular fa-trash-can"></i> Tarik
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="card empty" id="emptyFilter" hidden style="margin-top:16px;">
+                    <div class="empty-icon"><i class="fa-regular fa-star"></i></div>
+                    <h3>Tidak ada ulasan dengan bintang ini</h3>
+                </div>
+
+            <?php endif; ?>
+        </section>
     </main>
 </div>
 
-<script src="assets/js/rating.js"></script>
+<!-- MODAL EDIT -->
+<div class="modal-overlay<?= $modalBuka ? ' open' : '' ?>" id="modalEdit" aria-hidden="<?= $modalBuka ? 'false' : 'true' ?>">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="judulModal">
+        <div class="modal-head">
+            <span class="modal-icon"><i class="fa-regular fa-pen-to-square"></i></span>
+            <div>
+                <h2 id="judulModal">Edit Ulasan</h2>
+                <p class="muted">Setelah diubah, ulasan kembali menunggu persetujuan admin.</p>
+            </div>
+            <button type="button" class="modal-close" data-tutup aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <?php if ($error && $modalBuka): ?>
+            <p class="notice error" role="alert"><?= $e($error) ?></p>
+        <?php endif; ?>
+
+        <form method="post" action="<?= $e($basePath) ?>/index.php?page=rating-simpan">
+            <input type="hidden" name="csrf" value="<?= $e($_SESSION['csrf']) ?>">
+            <input type="hidden" name="id" id="editId" value="<?= $e($formEdit['id']) ?>">
+
+            <label for="editBootcamp">Bootcamp</label>
+            <select id="editBootcamp" name="bootcamp" required>
+                <option value="">— Pilih bootcamp —</option>
+                <?php
+                $adaDiDaftar = in_array($formEdit['bootcamp'], $daftarBootcamp, true);
+                if ($formEdit['bootcamp'] !== '' && !$adaDiDaftar): ?>
+                    <option value="<?= $e($formEdit['bootcamp']) ?>" selected><?= $e($formEdit['bootcamp']) ?></option>
+                <?php endif; ?>
+                <?php foreach ($daftarBootcamp as $judul): ?>
+                    <option value="<?= $e($judul) ?>" <?= $formEdit['bootcamp'] === $judul ? 'selected' : '' ?>>
+                        <?= $e($judul) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <fieldset class="rating-field">
+                <legend>Rating</legend>
+                <div class="rating-options">
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <label class="rating-option">
+                            <input type="radio" name="rating" value="<?= $i ?>" required
+                                <?= (int) $formEdit['rating'] === $i ? 'checked' : '' ?>>
+                            <span><?= $i ?> ★</span>
+                        </label>
+                    <?php endfor; ?>
+                </div>
+            </fieldset>
+
+            <label for="editKomentar">Komentar</label>
+            <textarea id="editKomentar" name="komentar" rows="4" required
+                maxlength="<?= (int) $maxKomentar ?>"><?= $e($formEdit['komentar']) ?></textarea>
+
+            <div class="actions">
+                <button type="button" class="button secondary" data-tutup>Batal</button>
+                <button type="submit" class="button">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 </body>
 </html>
