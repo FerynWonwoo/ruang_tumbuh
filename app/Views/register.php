@@ -494,8 +494,11 @@ $email = $email ?? '';
             <div class="badge">● &nbsp; Portal Peluang Mahasiswa &amp; Karir Muda</div>
             <h1>Bergabung Bersama<br><span>Ruang Tumbuh</span></h1>
             <p>Buat akun sekarang untuk mengakses ribuan informasi karir, magang, dan beasiswa.</p>
-            <img class="illustration" src="../assets/illustration.png"
-                alt="Ilustrasi seseorang menaiki tangga menuju bintang" width="340" height="280">
+            <img
+                class="illustration"
+                src="<?= $basePath ?>/public/assets/illustration.png"
+                alt="Ilustrasi Ruang Tumbuh"
+            >
             <div class="benefits"><span>✓ Akses Informasi</span><span>✓ Peluang Terbuka</span><span>✓ Ruang
                     Bertumbuh</span></div>
         </aside>
