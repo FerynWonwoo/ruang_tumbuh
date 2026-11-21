@@ -51,9 +51,9 @@ $menu = [
     </div>
 
     <div class="sidebar-bottom">
-        <a href="logout.php" class="logout-link">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </a>
-    </div>
+    <a href="/ruang_tumbuh/app/Views/logout.php" class="logout-link">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Logout
+    </a>
+</div>
 </aside>

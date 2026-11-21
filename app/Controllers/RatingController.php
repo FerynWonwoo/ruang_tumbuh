@@ -16,23 +16,22 @@ class RatingController
     // =========================================
 
     private function cekLogin(): string
-    {
-        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-        header('Pragma: no-cache');
+{
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
 
-        if (empty($_SESSION['username'])) {
-            header('Location: ./');
-            exit;
-        }
-
-        // Admin tidak menulis ulasan; arahkan ke halaman moderasi
-        if (($_SESSION['role'] ?? '') === 'admin') {
-            header('Location: ?page=admin-rating');
-            exit;
-        }
-
-        return $_SESSION['username'];
+    if (empty($_SESSION['username'])) {
+        header('Location: /ruang_tumbuh/index.php');
+        exit;
     }
+
+    if (($_SESSION['role'] ?? '') === 'admin') {
+        header('Location: /ruang_tumbuh/app/Views/adminrating.php');
+        exit;
+    }
+
+    return $_SESSION['username'];
+}
 
 
     // =========================================
@@ -64,7 +63,6 @@ if (empty($_SESSION['csrf'])) {
 
 // Menentukan base path untuk CSS dan JS
 $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
-
 $scriptName = $_SERVER['SCRIPT_NAME'];
 
 if (basename($scriptName) === 'index.php') {
@@ -202,8 +200,8 @@ if ($basePath === '/' || $basePath === '.') {
             ];
         }
 
-        header('Location: ?page=rating');
-        exit;
+        header('Location: /ruang_tumbuh/app/Views/rating.php');
+exit;
     }
 
 
@@ -234,8 +232,8 @@ if ($basePath === '/' || $basePath === '.') {
             $_SESSION['rating_error'] = $hasil['error'];
         }
 
-        header('Location: ?page=rating');
-        exit;
+header('Location: /ruang_tumbuh/app/Views/rating.php');
+exit;
     }
 
         // Endpoint pencarian untuk combobox bootcamp (JSON)

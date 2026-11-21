@@ -27,7 +27,7 @@ class AdminRatingController
 
         // User biasa dikembalikan ke halaman rating miliknya
         if (($_SESSION['role'] ?? '') !== 'admin') {
-            header('Location: ?page=rating');
+            header('Location: /ruang_tumbuh/index.php');
             exit;
         }
     }
@@ -119,7 +119,7 @@ if ($basePath === '/' || $basePath === '.') {
 
         if (!$this->cekCSRF()) {
             $_SESSION['admin_rating_error'] = 'Sesi tidak valid.';
-            header('Location: ?page=admin-rating');
+            header('Location: /ruang_tumbuh/app/Views/rating.php');
             exit;
         }
 

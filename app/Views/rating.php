@@ -24,9 +24,8 @@ $e = 'rating_e';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Ulasan &amp; Rating</title>
-    
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="<?= $e($basePath) ?>/public/css/dashboard.css">
     <link rel="stylesheet" href="<?= $e($basePath) ?>/public/css/rating.css?v=<?= @filemtime(__DIR__ . '/../../public/css/rating.css') ?>">
 </head>
 <body>
