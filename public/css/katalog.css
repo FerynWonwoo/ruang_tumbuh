@@ -213,29 +213,65 @@
     cursor:pointer
 }
 
-.modal{
-    position:fixed!important;
-    inset:0!important;
-    width:100%;
-    height:100%;
-    background:#0f172a8c!important;
-    display:none!important;
-    justify-content:center!important;
-    align-items:center!important;
-    z-index:9999!important;
-    padding:20px!important
+#modalDetail {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 20px !important;
+    box-sizing: border-box !important;
+
+    background: rgba(15, 23, 42, 0.25) !important;
+    z-index: 999999 !important;
+
+    transform: none !important;
 }
-.modal.active{display:flex!important}
-.modal-box,.detail-box{
-    background:#fff!important;
-    width:100%!important;
-    max-width:720px!important;
-    max-height:90vh!important;
-    overflow-y:auto!important;
-    border-radius:19px!important;
-    padding:25px!important;
-    box-shadow:0 20px 60px #0f172a33
+
+#modalDetail.active {
+    display: flex !important;
 }
+
+#modalDetail .detail-box {
+    position: relative !important;
+
+    width: 100% !important;
+    max-width: 550px !important;
+    max-height: 90vh !important;
+
+    margin: auto !important;
+    overflow-y: auto;
+
+    background: #fff;
+    border-radius: 24px;
+}
+/* Tombol tutup */
+#modalDetail .close-detail {
+    position: absolute !important;
+    top: 18px !important;
+    right: 18px !important;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #64748b;
+
+    cursor: pointer;
+}
+
+
 .modal-header{
     display:flex;
     justify-content:space-between;
@@ -449,3 +485,586 @@
 
 
 
+
+
+/* Katalog sederhana: pencarian, pengurutan, dan daftar program */
+.katalog-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 17px;
+    margin-bottom: 26px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+.katalog-toolbar .katalog-search-box {
+    display: block;
+    width: min(620px, 100%);
+    max-width: none;
+}
+.katalog-toolbar .katalog-search-box input {
+    width: 100%;
+    height: 44px;
+    padding: 10px 16px 10px 44px;
+    border: 1px solid #e5e7eb;
+    border-radius: 999px;
+    background: #f9fafb;
+    color: #334155;
+    outline: none;
+}
+.katalog-toolbar .katalog-search-box input:focus {
+    border-color: #10b981;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(16,185,129,.1);
+}
+.katalog-sort {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #64748b;
+    font-size: 12px;
+    white-space: nowrap;
+}
+.katalog-sort select {
+    min-width: 175px;
+    padding: 11px 34px 11px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: #334155;
+    font-size: 12px;
+}
+.card-image-wrap {
+    position: relative;
+    height: 150px;
+    margin: 12px 14px 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ecfdf5, #fef9c3);
+}
+.program-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.program-image-placeholder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: #059669;
+    font-size: 42px;
+    background: linear-gradient(135deg, #ecfdf5, #fef9c3);
+}
+.card-image-wrap .mode {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+}
+.btn-bookmark {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,.95);
+    color: #64748b;
+    cursor: pointer;
+}
+.btn-bookmark.active { color: #059669; }
+.btn-bookmark:disabled { opacity: .6; cursor: wait; }
+.btn-detail-program {
+    border: 0;
+    background: transparent;
+    color: #059669;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.katalog-empty {
+    padding: 42px 20px;
+    text-align: center;
+    color: #64748b;
+    background: #fff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+}
+.katalog-empty[hidden] { display: none !important; }
+.katalog-empty > i { color: #10b981; font-size: 28px; }
+.katalog-empty h3 { margin: 12px 0 5px; color: #0f172a; }
+.katalog-empty p { margin: 0; font-size: 13px; }
+.bootcamp-card[hidden] { display: none !important; }
+@media (max-width: 700px) {
+    .katalog-toolbar { align-items: stretch; flex-direction: column; }
+    .katalog-toolbar .katalog-search-box { width: 100%; }
+    .katalog-sort { justify-content: space-between; }
+    .katalog-sort select { flex: 1; min-width: 0; }
+    .card-image-wrap { height: 175px; }
+}
+
+
+/* PERBAIKAN ISI MODAL DETAIL */
+#modalDetail .detail-box {
+    width: min(550px, calc(100vw - 40px)) !important;
+    box-sizing: border-box !important;
+    padding: 30px !important;
+    margin: auto !important;
+}
+
+/* Judul dan teks */
+#modalDetail .detail-box h2 {
+    margin: 12px 0 6px;
+    line-height: 1.35;
+    overflow-wrap: break-word;
+}
+
+#modalDetail .detail-box p {
+    line-height: 1.6;
+    overflow-wrap: break-word;
+}
+
+/* Kotak informasi */
+#modalDetail .detail-info {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+    width: 100%;
+    margin: 20px 0;
+}
+
+#modalDetail .detail-info > div {
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 14px;
+    border-radius: 12px;
+}
+
+/* Tulisan dalam informasi */
+#modalDetail .detail-info span,
+#modalDetail .detail-info strong {
+    display: block;
+    overflow-wrap: break-word;
+}
+
+/* Deskripsi */
+#modalDetail .detail-box h4 {
+    margin: 20px 0 4px;
+}
+
+#modalDetail .detail-deskripsi {
+    margin: 0 0 12px;
+}
+
+/* Tombol daftar */
+#modalDetail .btn-daftar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* Tampilan HP */
+@media (max-width: 600px) {
+    #modalDetail .detail-box {
+        padding: 22px !important;
+    }
+
+    #modalDetail .detail-info {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+/* =====================================
+   ADMIN BOOTCAMP FORM - REDESIGN
+===================================== */
+
+/* Background modal */
+#modalForm.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+    background: rgba(30, 41, 59, 0.28) !important;
+    z-index: 9999 !important;
+    overflow-y: auto !important;
+}
+
+/* Saat modal dibuka */
+#modalForm.modal.show,
+#modalForm.modal.active {
+    display: flex !important;
+}
+
+/* Kotak form */
+#modalForm .modal-box {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 720px !important;
+    max-height: 88vh !important;
+    margin: auto !important;
+    padding: 30px !important;
+    background: #ffffff !important;
+    border-radius: 22px !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,.13);
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Header */
+#modalForm .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+#modalForm .modal-header span {
+    color: #059669;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#modalForm .modal-header h2 {
+    margin: 7px 0 0;
+    font-size: 23px;
+    color: #172033;
+}
+
+#modalForm .modal-header button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 10px;
+    background: #f3f6fa;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Form grid */
+#modalForm .form-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 19px 18px !important;
+}
+
+#modalForm .form-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 8px;
+}
+
+#modalForm .form-group.full {
+    grid-column: 1 / -1;
+}
+
+/* Label */
+#modalForm .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #344256;
+}
+
+/* Input dan select */
+#modalForm .form-group input,
+#modalForm .form-group select,
+#modalForm .form-group textarea {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #dce3ec;
+    border-radius: 10px;
+    background: #f9fafc;
+    color: #334155;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: .2s ease;
+}
+
+#modalForm .form-group input,
+#modalForm .form-group select {
+    height: 46px;
+}
+
+#modalForm .form-group textarea {
+    min-height: 105px;
+    resize: vertical;
+}
+
+#modalForm .form-group input:focus,
+#modalForm .form-group select:focus,
+#modalForm .form-group textarea:focus {
+    border-color: #10b981;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(16,185,129,.10);
+}
+
+/* Footer */
+#modalForm .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid #edf0f4;
+}
+
+#modalForm .modal-footer button {
+    min-width: 105px;
+    height: 43px;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#modalForm .btn-batal {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+}
+
+#modalForm .btn-simpan {
+    background: #059669;
+    color: white;
+    border: none;
+}
+
+#modalForm .btn-simpan:hover {
+    background: #047857;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    #modalForm.modal {
+        padding: 12px !important;
+    }
+
+    #modalForm .modal-box {
+        padding: 20px !important;
+        max-height: 94vh !important;
+    }
+
+    #modalForm .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #modalForm .form-group.full {
+        grid-column: auto;
+    }
+}
+
+
+/* MODAL ADMIN - CENTERED */
+#modalForm.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: none;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 24px !important;
+    background: rgba(30, 41, 59, 0.28) !important;
+    z-index: 99999 !important;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+#modalForm.modal.active {
+    display: flex !important;
+}
+
+#modalForm .modal-box {
+    position: relative !important;
+    width: min(100%, 720px) !important;
+    max-height: 88vh !important;
+    margin: auto !important;
+    overflow-y: auto !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0;
+}
+
+
+/* =====================================
+   KATALOG v6: kategori, jadwal, poster, upload
+   ===================================== */
+[hidden] { display: none !important; }
+
+/* Chip kategori ala marketplace */
+.kategori-chips {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.kategori-chips .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: .15s;
+}
+.kategori-chips .chip span {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: var(--muted);
+    font-size: 11px;
+}
+.kategori-chips .chip:hover { border-color: #a7f3d0; color: var(--green); }
+.kategori-chips .chip.active {
+    border-color: var(--green);
+    background: var(--green);
+    color: #fff;
+}
+.kategori-chips .chip.active span { background: rgba(255,255,255,.22); color: #fff; }
+
+/* Info jadwal & pendaftaran di kartu */
+.info-daftar {
+    margin-top: 8px;
+    color: #b45309;
+    font-size: 11px;
+    font-weight: 600;
+}
+.info-daftar i { margin-right: 4px; }
+.info-daftar.tutup { color: #dc2626; }
+
+/* Tombol di kondisi kosong */
+.btn-lihat-semua {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: var(--green);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+}
+.btn-lihat-semua:hover { background: #047857; }
+
+/* Poster di modal detail */
+.detail-poster {
+    margin: -6px -6px 18px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f1f5f9;
+}
+.detail-poster img {
+    display: block;
+    width: 100%;
+    max-height: 260px;
+    object-fit: cover;
+}
+.btn-daftar[hidden] { display: none !important; }
+
+/* Admin: filter & menu kartu di atas poster */
+.filter-section { flex-wrap: wrap; }
+.filter-section .katalog-search-box { display: block; flex: 1 1 260px; }
+.card-image-wrap .card-menu {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    margin: 0;
+}
+.card-image-wrap .card-menu form { margin: 0; display: inline-flex; }
+.card-image-wrap .card-menu button { background: rgba(255,255,255,.95); }
+.card-image-wrap .card-menu button:hover { color: var(--green); }
+.card-image-wrap .card-menu .form-hapus button:hover { color: #dc2626; }
+
+/* Pesan berhasil / gagal */
+.flash {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 13px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.flash-sukses { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; }
+.flash-error  { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+.flash i { margin-top: 3px; }
+.form-error {
+    margin: 0 0 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 12px;
+}
+
+/* Upload poster */
+.upload-box {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 14px;
+    background: #f8fafc;
+}
+.upload-preview {
+    flex: 0 0 150px;
+    height: 90px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e2e8f0;
+}
+.upload-preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.upload-body { flex: 1; min-width: 0; }
+.upload-body input[type="file"] {
+    width: 100%;
+    padding: 8px !important;
+    background: #fff !important;
+    font-size: 12px !important;
+}
+.upload-body small { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; }
+.cek-hapus {
+    display: flex !important;
+    align-items: center;
+    gap: 7px;
+    margin-top: 8px;
+    color: #b91c1c !important;
+    font-size: 12px !important;
+    font-weight: 600;
+    cursor: pointer;
+}
+.cek-hapus input { width: auto !important; margin: 0; }
+@media (max-width: 600px) {
+    .upload-box { flex-direction: column; align-items: stretch; }
+    .upload-preview { flex-basis: auto; height: 150px; }
+}

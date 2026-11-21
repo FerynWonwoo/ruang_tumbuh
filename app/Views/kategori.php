@@ -41,6 +41,22 @@ if ($result) {
     }
 }
 
+// Hitung jumlah program per kategori dari tabel program
+$jumlahPerKategori = [];
+
+try {
+    $hitung = $conn->query(
+        "SELECT kategori_id, COUNT(*) AS total FROM program GROUP BY kategori_id"
+    );
+    if ($hitung) {
+        while ($baris = $hitung->fetch_assoc()) {
+            $jumlahPerKategori[(int) $baris['kategori_id']] = (int) $baris['total'];
+        }
+    }
+} catch (Throwable $e) {
+    error_log($e->getMessage());
+}
+
 // Warna dan ikon default untuk tampilan
 $warnaDefault = '#10B981';
 $ikonDefault = 'fa-layer-group';
@@ -169,7 +185,7 @@ $ikonDefault = 'fa-layer-group';
                             <div class="kategori-footer">
 
                                 <span class="badge-count">
-                                    0 Program
+                                    <?= (int) ($jumlahPerKategori[(int) $kat['id']] ?? 0); ?> Program
                                 </span>
 
                                 <span class="kategori-link">
