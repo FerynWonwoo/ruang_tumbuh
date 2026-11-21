@@ -5,7 +5,7 @@ $halaman_pengajuan = $_GET['page'] ?? '';
 
 $menu = [
     'dashboard.php' => ['fa-solid fa-table-cells-large', 'Dashboard'],
-    'katalog.php'   => ['fa-solid fa-shapes', 'Katalog Bootcamp'],
+    'katalog.php'   => ['fa-solid fa-shapes', 'Katalog Program'],
     'kategori.php'  => ['fa-solid fa-layer-group', 'Kategori Program'],
     'bookmark.php'  => ['fa-regular fa-bookmark', 'Bookmark'],
     'pengingat.php' => ['fa-regular fa-clock', 'Pengingat Tenggat'],

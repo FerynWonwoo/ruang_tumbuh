@@ -51,7 +51,7 @@ function katalog_baca_input(array $post, array $namaKategori): array
         $err[] = 'Pilih bidang yang tersedia.';
     }
     if (!in_array($d['jenis'], BOOTCAMP_JENIS, true)) {
-        $err[] = 'Pilih jenis program (Lomba, Bootcamp, Magang, atau Loker).';
+        $err[] = 'Pilih jenis program (Lomba, Bootcamp, Magang, Karier, Beasiswa).';
     }
     if (!in_array($d['mode'], BOOTCAMP_MODE, true)) {
         $err[] = 'Pilih mode program.';
@@ -264,7 +264,7 @@ $nama_user = $_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Admin');
                 <li><a href="admindashboard.php" class="nav-link">
                     <i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
                 <li><a href="adminkatalog.php" class="nav-link active">
-                    <i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
+                    <i class="fa-solid fa-shapes"></i> Katalog Program</a></li>
                 <li><a href="../../index.php?page=kategori" class="nav-link">
                     <i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
                 <li><a href="../../index.php?page=rating" class="nav-link">

@@ -106,7 +106,7 @@ class KatalogController
         }
         $paramBidangUrl = $kategoriAktif ? bootcamp_kategori_param($kategoriAktif) : '';
 
-        // 2) filter jenis (chip Lomba / Bootcamp / Magang / Loker)
+        // 2) filter jenis (chip Lomba / Bootcamp / Magang / Karier / Beasiswa)
         $jumlahPerJenis = bootcamp_hitung_jenis($programBidang);
         $jenisAktif = bootcamp_jenis_cocok((string) ($_GET['jenis'] ?? ''));
         $program = $jenisAktif === null
@@ -212,8 +212,7 @@ class KatalogController
         }
 
         if (!in_array($d['jenis'], BOOTCAMP_JENIS, true)) {
-            $err[] = 'Pilih jenis program (Lomba, Bootcamp, Magang, atau Loker).';
-        }
+            $err[] = 'Pilih jenis program (Lomba, Bootcamp, Magang, Karier, atau Beasiswa).';        }
         if (!in_array($d['mode'], BOOTCAMP_MODE, true)) {
             $err[] = 'Pilih mode program.';
         }

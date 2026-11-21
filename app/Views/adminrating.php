@@ -37,7 +37,7 @@ $e = 'rating_e';
                 <div class="nav-title">MENU ADMIN</div>
                 <ul class="nav-menu">
                     <li><a href="<?= $e($basePath) ?>/app/Views/admindashboard.php" class="nav-link"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a></li>
-                    <li><a href="<?= $e($basePath) ?>/app/Views/adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Bootcamp</a></li>
+                    <li><a href="<?= $e($basePath) ?>/app/Views/adminkatalog.php" class="nav-link"><i class="fa-solid fa-shapes"></i> Katalog Program</a></li>
                     <li><a href="<?= $e($basePath) ?>/index.php?page=kategori" class="nav-link"><i class="fa-solid fa-layer-group"></i> Kategori Program</a></li>
                     <li><a href="<?= $e($basePath) ?>/index.php?page=admin-rating" class="nav-link active" aria-current="page"><i class="fa-solid fa-star"></i> Rating</a></li>
                 </ul>

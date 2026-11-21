@@ -103,11 +103,11 @@ INSERT INTO program (
     harga, link, deskripsi, gambar
 )
 SELECT
-    'seed-loker-data',
+    'seed-Karier-data',
     'Junior Data Analyst',
     'RuangTumbuh Career',
     k.id,
-    'Loker',
+    'Karier',
     'Onsite',
     'Full Time',
     DATE_ADD(CURDATE(), INTERVAL 45 DAY),
@@ -120,6 +120,6 @@ FROM kategori k
 WHERE k.nama_kategori = 'Data'
 AND NOT EXISTS (
     SELECT 1 FROM program
-    WHERE id = 'seed-loker-data'
+    WHERE id = 'seed-Karier-data'
 )
 LIMIT 1;
