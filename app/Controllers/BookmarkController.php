@@ -48,11 +48,11 @@ class BookmarkController
         }
 
         return [
-            'baseUrl'  => $baseUrl,
+            'baseUrl' => $baseUrl,
             'loginUrl' => $baseUrl . '/',
             'assetUrl' => $baseUrl . '/public',
             'viewsUrl' => $baseUrl . '/app/Views',
-            'selfUrl'  => $baseUrl . '/app/Views/bookmark.php',
+            'selfUrl' => $baseUrl . '/app/Views/bookmark.php',
         ];
     }
 
@@ -98,22 +98,22 @@ class BookmarkController
         }
 
         return [
-            'id'       => $userId,
+            'id' => $userId,
             'username' => $username,
-            'nama'     => (string) ($_SESSION['nama'] ?? $username),
-            'role'     => (string) ($_SESSION['role'] ?? 'user'),
+            'nama' => (string) ($_SESSION['nama'] ?? $username),
+            'role' => (string) ($_SESSION['role'] ?? 'user'),
         ];
     }
 
     private function validasiInput(array $in): array
     {
         $data = [
-            'judul'         => trim((string) ($in['judul'] ?? '')),
-            'kategori'      => trim((string) ($in['kategori'] ?? '')),
+            'judul' => trim((string) ($in['judul'] ?? '')),
+            'kategori' => trim((string) ($in['kategori'] ?? '')),
             'penyelenggara' => trim((string) ($in['penyelenggara'] ?? '')),
-            'deadline'      => trim((string) ($in['deadline'] ?? '')),
-            'deskripsi'     => trim((string) ($in['deskripsi'] ?? '')),
-            'link'          => trim((string) ($in['link'] ?? '')),
+            'deadline' => trim((string) ($in['deadline'] ?? '')),
+            'deskripsi' => trim((string) ($in['deskripsi'] ?? '')),
+            'link' => trim((string) ($in['link'] ?? '')),
         ];
 
         if ($data['judul'] === '') {
@@ -143,7 +143,7 @@ class BookmarkController
             }
             $tahun = (int) $m[1];
             $bulan = (int) $m[2];
-            $hari  = (int) $m[3];
+            $hari = (int) $m[3];
             if (!checkdate($bulan, $hari, $tahun)) {
                 return ['Tanggal tenggat tidak ditemukan dalam kalender.', $data];
             }
@@ -186,9 +186,18 @@ class BookmarkController
         }
 
         $bulan = [
-            1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr',
-            5 => 'Mei', 6 => 'Jun', 7 => 'Jul', 8 => 'Agu',
-            9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des',
+            1 => 'Jan',
+            2 => 'Feb',
+            3 => 'Mar',
+            4 => 'Apr',
+            5 => 'Mei',
+            6 => 'Jun',
+            7 => 'Jul',
+            8 => 'Agu',
+            9 => 'Sep',
+            10 => 'Okt',
+            11 => 'Nov',
+            12 => 'Des',
         ];
 
         $deadlineTampil = '-';
@@ -200,18 +209,18 @@ class BookmarkController
         $safeLink = ($rawLink !== '' && preg_match('#^https?://#i', $rawLink)) ? $rawLink : '';
 
         return [
-            'id'            => (int) $row['id'],
-            'program_id'    => $row['program_id'] ?? null,
-            'judul'         => (string) ($row['judul'] ?? ''),
-            'kategori'      => (string) ($row['kategori'] ?? ''),
+            'id' => (int) $row['id'],
+            'program_id' => $row['program_id'] ?? null,
+            'judul' => (string) ($row['judul'] ?? ''),
+            'kategori' => (string) ($row['kategori'] ?? ''),
             'penyelenggara' => (string) ($row['penyelenggara'] ?? ''),
-            'deadline'      => $deadlineTampil,
-            'deadline_raw'  => $ts !== false ? date('Y-m-d', $ts) : '',
-            'status'        => $status,
-            'status_class'  => $statusClass,
-            'deskripsi'     => (string) ($row['deskripsi'] ?? ''),
-            'link'          => $safeLink,
-            'sumber'        => !empty($row['program_id']) ? 'Katalog' : 'Manual',
+            'deadline' => $deadlineTampil,
+            'deadline_raw' => $ts !== false ? date('Y-m-d', $ts) : '',
+            'status' => $status,
+            'status_class' => $statusClass,
+            'deskripsi' => (string) ($row['deskripsi'] ?? ''),
+            'link' => $safeLink,
+            'sumber' => !empty($row['program_id']) ? 'Katalog' : 'Manual',
         ];
     }
 
@@ -236,7 +245,7 @@ class BookmarkController
 
         $pesan = $_SESSION['pesan_bookmark'] ?? '';
         $error = $_SESSION['error_bookmark'] ?? '';
-        $old   = $_SESSION['old_bookmark'] ?? null;
+        $old = $_SESSION['old_bookmark'] ?? null;
         unset($_SESSION['pesan_bookmark'], $_SESSION['error_bookmark'], $_SESSION['old_bookmark']);
 
         $keyword = trim((string) ($_GET['q'] ?? ''));
@@ -271,7 +280,6 @@ class BookmarkController
                 }
             }
         } catch (Throwable $e) {
-            // Abaikan jika katalog belum tersedia
         }
         $kategoriSaran = array_values(array_unique(array_merge($kategoriSaran, ['Pribadi', 'Beasiswa', 'Bootcamp', 'Magang', 'Lomba', 'Karier'])));
 
@@ -285,8 +293,8 @@ class BookmarkController
     private function handlePost(int $userId, string $redirectUrl): void
     {
         $token = $_POST['csrf'] ?? '';
-        $aksi  = trim((string) ($_POST['aksi'] ?? ''));
-        $id    = (int) ($_POST['id'] ?? 0);
+        $aksi = trim((string) ($_POST['aksi'] ?? ''));
+        $id = (int) ($_POST['id'] ?? 0);
 
         if (!is_string($token) || empty($_SESSION['csrf']) || !hash_equals($_SESSION['csrf'], $token)) {
             $_SESSION['error_bookmark'] = 'Sesi formulir tidak valid atau telah kedaluwarsa. Silakan coba lagi.';

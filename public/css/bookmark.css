@@ -30,9 +30,7 @@ body {
     gap: 20px;
 }
 
-/* =========================================================
-   BANNER UTAMA (GAYA SEPERTI HALAMAN CATATAN)
-   ========================================================= */
+/* BANNER UTAMA */
 .welcome-banner {
     position: relative;
     overflow: hidden;
@@ -95,7 +93,7 @@ body {
     line-height: 1.5;
 }
 
-/* Area kanan banner: pill jumlah + tombol hijau + ikon miring di samping */
+/* Area kanan banner*/
 .banner-actions {
     display: flex;
     align-items: center;
@@ -164,9 +162,7 @@ body {
     flex-shrink: 0;
 }
 
-/* =========================================================
-   TOOLBAR PENCARIAN & FILTER
-   ========================================================= */
+/* TOOLBAR PENCARIAN & FILTER */
 .filter-toolbar {
     display: flex;
     flex-direction: column;
@@ -237,9 +233,7 @@ body {
     font-weight: 600;
 }
 
-/* =========================================================
-   ALERT PESAN SUKSES & ERROR
-   ========================================================= */
+/* ALERT PESAN SUKSES & ERROR */
 .alert-message {
     padding: 12px 16px;
     border-radius: 12px;
@@ -262,9 +256,7 @@ body {
     border: 1px solid #FECACA;
 }
 
-/* =========================================================
-   GRID KARTU BOOKMARK
-   ========================================================= */
+/* GRID KARTU BOOKMARK */
 .bookmark-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -442,9 +434,7 @@ body {
     font-size: 14px;
 }
 
-/* =========================================================
-   MODAL OVERLAY, FORM & MODAL KONFIRMASI HAPUS
-   ========================================================= */
+/* MODAL OVERLAY, FORM & MODAL KONFIRMASI HAPUS */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -641,7 +631,7 @@ body {
     background-color: #0F2F29;
 }
 
-/* Modal Konfirmasi Hapus */
+/* Modal konfirmasi hapus */
 .modal-confirm-card {
     max-width: 420px;
     border-radius: 24px;
@@ -724,9 +714,7 @@ body {
     background-color: #B91C1C;
 }
 
-/* =========================================================
-   RESPONSIF MOBILE & TABLET
-   ========================================================= */
+/* RESPONSIF MOBILE & TABLET */
 @media (max-width: 900px) {
     .bookmark-grid {
         grid-template-columns: 1fr;

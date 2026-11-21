@@ -274,9 +274,17 @@ body {
     gap: 4px;
 }
 
-.text-warning { color: #D97706; }
-.text-success { color: #059669; }
-.text-muted   { color: #6B7280; }
+.text-warning {
+    color: #D97706;
+}
+
+.text-success {
+    color: #059669;
+}
+
+.text-muted {
+    color: #6B7280;
+}
 
 /* KALENDER */
 .calendar-card {
@@ -320,15 +328,12 @@ body {
     border: 1px solid #FEF08A;
 }
 
-/* =========================================================
-   TAMBAHAN WARNA UNTUK KALENDER (TANPA MENGUBAH STRUKTUR)
-   ========================================================= */
-
-/* Highlight Latar Tanggal Spesifik */
+/* Highlight latar tanggal spesifik */
 .calendar-day-cell.highlight-red {
     background-color: #FDF2F2 !important;
 }
-.calendar-day-cell.highlight-red > span {
+
+.calendar-day-cell.highlight-red>span {
     color: #991B1B !important;
     font-weight: 700;
 }
@@ -336,18 +341,21 @@ body {
 .calendar-day-cell.highlight-green {
     background-color: #ECFDF5 !important;
 }
-.calendar-day-cell.highlight-green > span {
+
+.calendar-day-cell.highlight-green>span {
     color: #065F46 !important;
     font-weight: 700;
 }
 
-/* Kustomisasi Warna Titik Indikator */
+/* Kustomisasi warna titik indikator */
 .calendar-day-cell .dot-indicator.green {
     background-color: #065F46;
 }
+
 .calendar-day-cell .dot-indicator.yellow {
     background-color: #854D0E;
 }
+
 .calendar-day-cell .dot-indicator.red {
     background-color: #991B1B;
 }
@@ -407,7 +415,7 @@ body {
     color: #D1D5DB;
 }
 
-/* Highlight Khusus untuk Hari Ini */
+/* Highlight khusus untuk hari ini */
 .calendar-day-cell.today-cell {
     background-color: #F0FDF4;
     border: 2px solid #10B981;
@@ -424,10 +432,25 @@ body {
     text-overflow: ellipsis;
 }
 
-.event-red { background-color: #EF4444; color: #FFFFFF; }
-.event-green { background-color: #059669; color: #FFFFFF; }
-.event-yellow { background-color: #FDE047; color: #713F12; }
-.event-gray { background-color: #E5E7EB; color: #374151; }
+.event-red {
+    background-color: #EF4444;
+    color: #FFFFFF;
+}
+
+.event-green {
+    background-color: #059669;
+    color: #FFFFFF;
+}
+
+.event-yellow {
+    background-color: #FDE047;
+    color: #713F12;
+}
+
+.event-gray {
+    background-color: #E5E7EB;
+    color: #374151;
+}
 
 /* LOGOUT & SIDEBAR BOTTOM */
 .sidebar-bottom {
@@ -462,20 +485,20 @@ body {
     color: #b91c1c;
 }
 
-/* Kalender: ukuran kolom & sel dikunci supaya rapi */
+/* Kalender */
 .calendar-grid {
     grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
-    .calendar-card .calendar-grid {
-        grid-auto-rows: 72px;
-    }
+.calendar-card .calendar-grid {
+    grid-auto-rows: 72px;
+}
 
-    .calendar-card .calendar-day-cell {
-        height: 72px;
-        padding: 6px;
-        font-size: 11px;
-    }
+.calendar-card .calendar-day-cell {
+    height: 72px;
+    padding: 6px;
+    font-size: 11px;
+}
 
 .calendar-day-cell .event-tag {
     display: block;
@@ -492,11 +515,11 @@ body {
     color: #6B7280;
 }
 
-/* Kalender: kolom & baris dikunci supaya ukuran tidak berubah */
+/* Kalender kolom & baris dikunci supaya ukuran tidak berubah */
 .calendar-card .calendar-grid {
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    grid-template-rows: auto;      /* baris header hari (SEN-MIN) */
-    grid-auto-rows: 110px;         /* semua baris tanggal sama tinggi */
+    grid-template-rows: auto;
+    grid-auto-rows: 110px;
     align-content: start;
 }
 
@@ -505,7 +528,7 @@ body {
     min-height: 0;
     min-width: 0;
     overflow: hidden;
-    justify-content: flex-start;   /* event tepat di bawah angka tanggal */
+    justify-content: flex-start;
     gap: 3px;
 }
 
@@ -524,9 +547,7 @@ body {
     color: #6B7280;
 }
 
-/* =========================================================
-   RESPONSIF MOBILE & TABLET
-   ========================================================= */
+/* RESPONSIF MOBILE & TABLET */
 @media (max-width: 1024px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);

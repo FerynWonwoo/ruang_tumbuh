@@ -3,7 +3,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Proteksi halaman: wajib login
+// Proteksi halaman
 if (empty($_SESSION['user_id'])) {
     header('Location: ../../', true, 302);
     exit;
@@ -26,16 +26,16 @@ $nama_user = isset($_SESSION['nama'])
         ? htmlspecialchars($_SESSION['user']['nama'])
         : 'Pengguna');
 
-// ---------- Data kartu statistik (dihitung dari halaman masing-masing) ----------
+// Data kartu statistik (dihitung dari halaman masing-masing)
 $usernameLogin = $_SESSION['username'] ?? '';
 $userIdLogin = (int) ($_SESSION['user_id'] ?? 0);
 
-// 1) Peluang Tersimpan -> halaman Bookmark
+// 1 Peluang Tersimpan -> halaman Bookmark
 $ringkasBookmark = bookmark_ringkasan($usernameLogin);
 $totalBookmark = $ringkasBookmark['total'];
 $bookmarkMepet = $ringkasBookmark['mendekati'];
 
-// 2) Bootcamp Aktif -> halaman Katalog (deadline belum lewat)
+// 2 Bootcamp Aktif -> halaman Katalog (deadline belum lewat)
 $semuaKatalog = bootcamp_load();
 $katalogAktif = 0;
 foreach ($semuaKatalog as $bc) {
@@ -46,7 +46,7 @@ foreach ($semuaKatalog as $bc) {
 }
 $totalKatalog = count($semuaKatalog);
 
-// 3) Catatan Strategi -> halaman Catatan (database)
+// 3 Catatan Strategi -> halaman Catatan (database)
 $totalCatatan = 0;
 $catatanTerakhir = null;
 if ($userIdLogin > 0) {
@@ -77,7 +77,7 @@ function waktu_lalu(?string $waktu): string
     return floor($selisih / 86400) . ' hari lalu';
 }
 
-// 4) Rating Komunitas -> data/ulasan.json (hanya yang disetujui)
+// 4 Rating Komunitas -> data/ulasan.json (hanya yang disetujui)
 $totalUlasan = 0;
 $jumlahRating = 0;
 $fileUlasan = __DIR__ . '/../../data/ulasan.json';
@@ -91,7 +91,7 @@ if (is_file($fileUlasan)) {
     }
 }
 
-// 5) Tenggat untuk kalender: bookmark + pengingat milik user
+// 5 Tenggat untuk kalender: bookmark + pengingat milik user
 require_once __DIR__ . '/../Models/Pengingat.php';
 
 $eventsKalender = [];
@@ -124,10 +124,8 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RuangTumbuh - Dashboard</title>
 
-    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CSS relatif -->
     <link rel="stylesheet" href="../../public/css/dashboard.css">
 
 </head>
@@ -273,7 +271,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
                 monthLabel.textContent = `${months[month]} ${year}`;
                 calendarGrid.innerHTML = '';
 
-                // 1. Header Hari (SEN - MIN)
+                // 1. Header hari (SEN - MIN)
                 daysHeader.forEach(day => {
                     const headerCell = document.createElement('div');
                     headerCell.className = 'calendar-day-header';
@@ -281,7 +279,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
                     calendarGrid.appendChild(headerCell);
                 });
 
-                // 2. Hitung Sisa Hari Bulan Lalu
+                // 2. Hitung sisa hari bulan lalu
                 let firstDayIndex = new Date(year, month, 1).getDay();
                 firstDayIndex = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
 
@@ -295,7 +293,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
                     calendarGrid.appendChild(cell);
                 }
 
-                // 3. Tanggal Bulan Ini (Realtime)
+                // 3. Tanggal bulan ini (Realtime)
                 for (let day = 1; day <= totalDaysInMonth; day++) {
                     const cell = document.createElement('div');
                     cell.className = 'calendar-day-cell';
@@ -318,7 +316,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
                         const tag = document.createElement('div');
                         tag.className = 'event-tag ' + ev.kelas;
                         tag.textContent = ev.judul;
-                        tag.title = ev.judul;          // judul lengkap muncul saat kursor diarahkan
+                        tag.title = ev.judul;
                         cell.appendChild(tag);
                     });
                     if (list.length > 2) {
@@ -330,7 +328,7 @@ $rataRating = $totalUlasan > 0 ? number_format($jumlahRating / $totalUlasan, 1) 
                     calendarGrid.appendChild(cell);
                 }
 
-                // 4. Tanggal Bulan Depan
+                // 4. Tanggal bulan depan
                 const totalCells = calendarGrid.children.length - 7;
                 const remainingCells = (totalCells <= 35) ? (35 - totalCells) : (42 - totalCells);
 

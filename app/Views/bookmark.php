@@ -19,7 +19,7 @@ if (!defined('BOOKMARK_MVC_RENDER')) {
 
     $paths = BookmarkController::resolvePaths();
 
-    // Proteksi halaman: tolak akses langsung lewat URL tanpa login sebelum menyentuh DB
+    // Proteksi halaman
     if (empty($_SESSION['user_id']) && empty($_SESSION['username'])) {
         while (ob_get_level() > 0) {
             ob_end_clean();

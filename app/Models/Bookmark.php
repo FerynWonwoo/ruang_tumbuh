@@ -16,9 +16,7 @@ class Bookmark
         $this->ensureTable();
     }
 
-    /**
-     * Otomatis membuat tabel bookmarks di database kelompok (ruangtumbuh) jika belum ada.
-     */
+    /* Otomatis membuat tabel bookmarks di database kelompok (ruangtumbuh) jika belum ada. */
     public function ensureTable(): bool
     {
         $sql = "CREATE TABLE IF NOT EXISTS bookmarks (
@@ -41,9 +39,7 @@ class Bookmark
         return (bool) mysqli_query($this->conn, $sql);
     }
 
-    /**
-     * Fallback pencarian user_id berdasarkan username pada tabel users kelompok.
-     */
+    /* Fallback pencarian user_id berdasarkan username pada tabel users kelompok. */
     public function findUserByUsername(string $username): ?array
     {
         $sql = 'SELECT id, nama, username, role FROM users WHERE username = ? LIMIT 1';
@@ -59,9 +55,7 @@ class Bookmark
         return $row ?: null;
     }
 
-    /**
-     * READ: Ambil seluruh bookmark milik user tertentu (prepared statement).
-     */
+    /* READ: Ambil seluruh bookmark milik user tertentu (prepared statement). */
     public function getAllByUser(int $userId, string $keyword = '', string $kategori = ''): array
     {
         $sql = 'SELECT id, user_id, program_id, judul, kategori, penyelenggara, deadline, deskripsi, link, created_at, updated_at
@@ -109,9 +103,7 @@ class Bookmark
         return $rows;
     }
 
-    /**
-     * READ ONE: Ambil satu bookmark milik user tertentu berdasarkan ID.
-     */
+    /* READ ONE: Ambil satu bookmark milik user tertentu berdasarkan ID. */
     public function findById(int $id, int $userId): ?array
     {
         $sql = 'SELECT id, user_id, program_id, judul, kategori, penyelenggara, deadline, deskripsi, link, created_at, updated_at
@@ -131,9 +123,7 @@ class Bookmark
         return $row ?: null;
     }
 
-    /**
-     * Daftar program_id yang sudah di-bookmark user (sinkronisasi ikon di Katalog).
-     */
+    /* Daftar program_id yang sudah di bookmark user (sinkronisasi ikon di Katalog). */
     public function getSavedProgramIds(int $userId): array
     {
         $sql = 'SELECT program_id FROM bookmarks WHERE user_id = ? AND program_id IS NOT NULL';
@@ -156,9 +146,7 @@ class Bookmark
         return $ids;
     }
 
-    /**
-     * CREATE: Simpan bookmark baru dengan prepared statement.
-     */
+    /* CREATE: Simpan bookmark baru dengan prepared statement. */
     public function create(int $userId, array $data): bool
     {
         $sql = 'INSERT INTO bookmarks (user_id, program_id, judul, kategori, penyelenggara, deadline, deskripsi, link)
@@ -194,9 +182,7 @@ class Bookmark
         return $ok;
     }
 
-    /**
-     * UPDATE: Perbarui bookmark milik user tertentu.
-     */
+    /* UPDATE: Perbarui bookmark milik user tertentu. */
     public function update(int $id, int $userId, array $data): bool
     {
         $sql = 'UPDATE bookmarks
@@ -232,9 +218,7 @@ class Bookmark
         return $ok;
     }
 
-    /**
-     * DELETE: Hapus bookmark milik user tertentu.
-     */
+    /* DELETE: Hapus bookmark milik user tertentu. */
     public function delete(int $id, int $userId): bool
     {
         $sql = 'DELETE FROM bookmarks WHERE id = ? AND user_id = ?';
@@ -251,9 +235,7 @@ class Bookmark
         return $ok && $affected > 0;
     }
 
-    /**
-     * TOGGLE dari Katalog: Jika sudah ada -> hapus; jika belum -> simpan dari tabel program.
-     */
+    /* TOGGLE dari Katalog: Jika sudah ada -> hapus; jika belum -> simpan dari tabel program. */
     public function toggleFromKatalog(int $userId, string $programId, array $fallbackData = []): bool
     {
         $checkSql = 'SELECT id FROM bookmarks WHERE user_id = ? AND program_id = ? LIMIT 1';
@@ -294,21 +276,19 @@ class Bookmark
         $deadline = preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawDeadline) ? $rawDeadline : null;
 
         $this->create($userId, [
-            'program_id'    => $programId,
-            'judul'         => mb_substr($judul, 0, 150),
-            'kategori'      => mb_substr($kategori !== '' ? $kategori : 'Umum', 0, 50),
+            'program_id' => $programId,
+            'judul' => mb_substr($judul, 0, 150),
+            'kategori' => mb_substr($kategori !== '' ? $kategori : 'Umum', 0, 50),
             'penyelenggara' => mb_substr($penyelenggara, 0, 100),
-            'deadline'      => $deadline,
-            'deskripsi'     => mb_substr($deskripsi, 0, 1000),
-            'link'          => $link,
+            'deadline' => $deadline,
+            'deskripsi' => mb_substr($deskripsi, 0, 1000),
+            'link' => $link,
         ]);
 
         return true;
     }
 
-    /**
-     * Ringkasan untuk kartu statistik Dashboard (total bookmark & mendekati tenggat <= 7 hari).
-     */
+    /* Ringkasan untuk kartu statistik Dashboard (total bookmark & mendekati tenggat <= 7 hari). */
     public function getSummaryByUser(int $userId): array
     {
         $sql = "SELECT
@@ -327,7 +307,7 @@ class Bookmark
         mysqli_stmt_close($stmt);
 
         return [
-            'total'     => (int) ($row['total'] ?? 0),
+            'total' => (int) ($row['total'] ?? 0),
             'mendekati' => (int) ($row['mendekati'] ?? 0),
         ];
     }

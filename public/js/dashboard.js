@@ -2,13 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigasi aktif di sidebar
     const navLinks = document.querySelectorAll('.nav-link');
     navLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
             navLinks.forEach(item => item.classList.remove('active'));
             this.classList.add('active');
         });
     });
 
-    // Integrated Realtime Calendar Logic
+    // Kalender realtime
     const monthLabel = document.getElementById('monthLabel');
     const prevBtn = document.getElementById('prevMonth');
     const nextBtn = document.getElementById('nextMonth');
@@ -21,26 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    // Sampel Event Dummy untuk tanggal tertentu
-    const sampleEvents = {
-        "14": { type: "event-red", label: "Batas LPDP" },
-        "15": { type: "event-green", label: "Kick-off Cohort" },
-        "17": { type: "event-yellow", label: "Mentoring" }
-    };
-
     function renderCalendar() {
         if (!calendarGrid || !monthLabel) return;
 
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
 
-        // Tampilkan Bulan dan Tahun di Header Kalender
+        // Tampilkan bulan dan tahun di header kalender
         monthLabel.textContent = `${months[month]} ${year}`;
 
         // Kosongkan grid sebelum render ulang
         calendarGrid.innerHTML = '';
 
-        // Render Day Headers (SEN - MIN)
+        // Render day headers (SEN - MIN)
         daysHeader.forEach(day => {
             const headerCell = document.createElement('div');
             headerCell.className = 'calendar-day-header';
@@ -57,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
         const prevMonthLastDay = new Date(year, month, 0).getDate();
 
-        // 1. Render Tanggal Bulan Sebelumnya (Other Month)
+        // 1. Render tanggal bulan sebelumnya
         for (let i = firstDayIndex; i > 0; i--) {
             const cell = document.createElement('div');
             cell.className = 'calendar-day-cell other-month';
@@ -65,12 +58,12 @@ document.addEventListener('DOMContentLoaded', () => {
             calendarGrid.appendChild(cell);
         }
 
-        // 2. Render Tanggal Bulan Ini (Realtime)
+        // 2. Render tanggal bulan ini (Realtime)
         for (let day = 1; day <= totalDaysInMonth; day++) {
             const cell = document.createElement('div');
             cell.className = 'calendar-day-cell';
 
-            // Tandai hari ini (Today Highlight)
+            // highlight hari ini
             if (
                 day === today.getDate() &&
                 month === today.getMonth() &&
@@ -91,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
             calendarGrid.appendChild(cell);
         }
 
-        // 3. Render Tanggal Bulan Berikutnya (Sisa Grid)
-        const totalCells = calendarGrid.children.length - 7; // Kurangi header
+        // 3. Render tanggal bulan berikutnya
+        const totalCells = calendarGrid.children.length - 7;
         const remainingCells = 35 - totalCells > 0 ? 35 - totalCells : 42 - totalCells;
 
         for (let day = 1; day <= remainingCells; day++) {

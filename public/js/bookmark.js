@@ -118,7 +118,7 @@
             });
         }
 
-        // 2. Modal Konfirmasi Hapus Custom (sesuai screenshot)
+        // 2. Modal konfirmasi hapus custom
         const namaTarget = document.getElementById('hapusNamaBookmark');
         const btnKonfirmasiHapus = document.getElementById('btnKonfirmasiHapusBookmark');
 
@@ -146,7 +146,7 @@
             });
         }
 
-        // 3. Live Search & Filter Kategori
+        // 3. Live search & filter kategori
         const searchInput = document.getElementById('searchBookmark');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const cards = document.querySelectorAll('.bookmark-card');
@@ -227,7 +227,6 @@
                     document.getElementById('fDeskripsi').value = o.deskripsi || '';
                 }
             } catch (err) {
-                // abaikan
             }
         }
     });
