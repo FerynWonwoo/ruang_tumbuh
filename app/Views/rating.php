@@ -262,7 +262,7 @@ $e = 'rating_e';
         </form>
     </div>
 </div>
-
+<script src="<?= $e($basePath) ?>/public/js/rating.js?v=<?= @filemtime(__DIR__ . '/../../public/js/rating.js') ?>"></script>
 
 </body>
 </html>
