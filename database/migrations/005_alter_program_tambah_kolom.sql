@@ -1,7 +1,4 @@
 
--- Melengkapi struktur tabel program.
--- Kolom hanya ditambahkan jika belum tersedia.
-
 SET @sql = IF(
     (SELECT COUNT(*) FROM information_schema.COLUMNS
      WHERE TABLE_SCHEMA = DATABASE()

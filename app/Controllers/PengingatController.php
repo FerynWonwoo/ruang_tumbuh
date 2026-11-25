@@ -5,20 +5,16 @@ class PengingatController
     private $pengingatModel;
     private $basePath;
 
-    // Batas nilai yang wajar
-    const MAKS_JUDUL = 150;   // karakter
-    const MAKS_TAHUN = 5;     // tenggat maksimal 5 tahun ke depan
+    const MAKS_JUDUL = 150;   
+    const MAKS_TAHUN = 5;    
 
     public function __construct($pengingatModel, $basePath)
     {
-        // Samakan zona waktu dengan aplikasi (WIB) agar cek "hari ini" akurat
         date_default_timezone_set('Asia/Jakarta');
 
         $this->pengingatModel = $pengingatModel;
         $this->basePath = $basePath;
     }
-
-    // Wajib login. Mengembalikan id pengguna yang sedang login.
     private function wajibLogin()
     {
         if (empty($_SESSION['user_id'])) {
@@ -28,23 +24,17 @@ class PengingatController
 
         return (int) $_SESSION['user_id'];
     }
-
-    // Mencegah browser menyimpan halaman (tombol Back setelah logout)
     private function cegahCache()
     {
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Pragma: no-cache');
         header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
     }
-
-    // Kembali ke halaman daftar pengingat
     private function kembali()
     {
         header("Location: {$this->basePath}/index.php?page=pengingat");
         exit;
     }
-
-    // Kesalahan database: catat di log server, tampilkan pesan umum
     private function galatServer(Throwable $e)
     {
         error_log('Pengingat: ' . $e->getMessage());
@@ -54,8 +44,6 @@ class PengingatController
             . "Pastikan migration database sudah dijalankan, lalu coba lagi.";
         exit;
     }
-
-    // Memeriksa format dan keabsahan tanggal (yyyy-mm-dd)
     private function tanggalValid($tanggal)
     {
         if (!is_string($tanggal)) {
@@ -72,10 +60,6 @@ class PengingatController
             ))
             && $date->format('Y-m-d') === $tanggal;
     }
-
-    // Memeriksa judul dan tanggal.
-    // $tanggalLama diisi saat mengubah data: jika tanggal tidak diganti,
-    // tanggal yang sudah lewat tetap boleh (misalnya hanya mengganti judul).
     private function validasiInput($judul, $tanggal, $tanggalLama = null)
     {
         if ($judul === '') {
@@ -89,13 +73,9 @@ class PengingatController
         if (!$this->tanggalValid($tanggal)) {
             return "Format atau tanggal yang dimasukkan tidak valid.";
         }
-
-        // Tanggal tenggat tidak boleh sebelum hari ini (kecuali tidak diubah saat edit)
         if ($tanggal !== $tanggalLama && $tanggal < date('Y-m-d')) {
             return "Tanggal tenggat sudah lewat. Pilih hari ini atau tanggal setelahnya.";
         }
-
-        // Tanggal tidak wajar (terlalu jauh ke depan)
         $batas = date('Y-m-d', strtotime('+' . self::MAKS_TAHUN . ' years'));
         if ($tanggal > $batas) {
             return "Tanggal tenggat terlalu jauh. Maksimal " . self::MAKS_TAHUN . " tahun dari sekarang.";
@@ -103,8 +83,6 @@ class PengingatController
 
         return null;
     }
-
-    // Mengambil judul dari form dengan aman
     private function ambilJudul()
     {
         return trim(
@@ -113,8 +91,6 @@ class PengingatController
                 : ''
         );
     }
-
-    // Menampilkan daftar pengingat
     public function index()
     {
         $userId = $this->wajibLogin();
@@ -128,8 +104,6 @@ class PengingatController
 
         require __DIR__ . '/../Views/pengingat.php';
     }
-
-    // Menambahkan pengingat
     public function simpan()
     {
         $userId = $this->wajibLogin();
@@ -158,8 +132,6 @@ class PengingatController
 
         $this->kembali();
     }
-
-    // Menampilkan form edit
     public function edit()
     {
         $userId = $this->wajibLogin();
@@ -188,7 +160,6 @@ class PengingatController
         require __DIR__ . '/../Views/pengingat.php';
     }
 
-    // Menyimpan perubahan
     public function ubah()
     {
         $userId = $this->wajibLogin();
@@ -232,8 +203,6 @@ class PengingatController
 
         $this->kembali();
     }
-
-    // Menghapus pengingat
     public function hapus()
     {
         $userId = $this->wajibLogin();
@@ -259,8 +228,6 @@ class PengingatController
 
         $this->kembali();
     }
-
-    // Menandai pengingat selesai / belum selesai
     public function selesai()
     {
         $userId = $this->wajibLogin();

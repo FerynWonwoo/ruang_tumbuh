@@ -11,8 +11,6 @@ class Pengingat
         global $conn;
         $this->conn = $conn;
     }
-
-    // Mengambil semua pengingat milik pengguna
     public function getAll($user_id)
     {
         $query = "SELECT * FROM pengingat WHERE user_id = ? ORDER BY tanggal_tenggat ASC";
@@ -23,7 +21,6 @@ class Pengingat
         return mysqli_stmt_get_result($stmt);
     }
 
-    // Menambahkan pengingat
     public function tambah($user_id, $judul, $tanggal_tenggat)
     {
         $query = "INSERT INTO pengingat (user_id, judul, tanggal_tenggat) VALUES (?, ?, ?)";
@@ -32,8 +29,6 @@ class Pengingat
 
         return mysqli_stmt_execute($stmt);
     }
-
-    // Mengambil satu pengingat berdasarkan ID
     public function getById($id, $user_id)
     {
         $query = "SELECT * FROM pengingat WHERE id = ? AND user_id = ?";
@@ -43,8 +38,6 @@ class Pengingat
 
         return mysqli_stmt_get_result($stmt);
     }
-
-    // Mengubah pengingat
     public function edit($id, $user_id, $judul, $tanggal_tenggat)
     {
         $query = "UPDATE pengingat SET judul = ?, tanggal_tenggat = ? WHERE id = ? AND user_id = ?";
@@ -53,8 +46,6 @@ class Pengingat
 
         return mysqli_stmt_execute($stmt);
     }
-
-    // Menghapus pengingat
     public function hapus($id, $user_id)
     {
         $query = "DELETE FROM pengingat WHERE id = ? AND user_id = ?";
@@ -63,8 +54,6 @@ class Pengingat
 
         return mysqli_stmt_execute($stmt);
     }
-
-    // Mengubah status pengingat
     public function ubahStatus($id, $user_id, $selesai)
     {
         $query = "UPDATE pengingat SET selesai = ? WHERE id = ? AND user_id = ?";

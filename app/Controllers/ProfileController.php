@@ -70,7 +70,6 @@ class ProfileController
         return (int) $_SESSION['user_id'];
     }
 
-    // ALUR UTAMA
     public function handle($userId)
     {
         if (empty($_SESSION['csrf_profil'])) {
@@ -132,10 +131,8 @@ class ProfileController
             $terisi / count(self::ITEM_KELENGKAPAN) * 100
         );
 
-        // Membuat URL foto profil
         $fotoUrl = $this->urlFoto($profil['foto']);
 
-        // Menyimpan nama file foto ke session untuk digunakan header
         $_SESSION['foto_profil'] = $profil['foto'];
 
         return [
@@ -152,7 +149,6 @@ class ProfileController
         ];
     }
 
-    // MEMUAT DATA PROFIL
     private function muat($userId)
     {
         $baris = $this->model->ambil($userId);
@@ -192,7 +188,6 @@ class ProfileController
         ];
     }
 
-    // MENGUBAH JSON MENJADI ARRAY PILIHAN
     private function daftar($json, array $pilihan)
     {
         $data = json_decode((string) $json, true);
@@ -209,12 +204,10 @@ class ProfileController
         ));
     }
 
-    // SIMPAN DAN UPDATE PROFIL
     private function simpan($userId, array $profil, array &$errors)
     {
         $fotoLama = $profil['foto'];
 
-        // 1. Mengambil isian formulir
         foreach (
             ['nama', 'email', 'telepon', 'domisili', 'institusi', 'status', 'bio']
             as $kolom
@@ -247,8 +240,6 @@ class ProfileController
                 }
             }
         }
-
-        // 2. Validasi data
         if ($profil['nama'] === '') {
             $errors[] = 'Nama lengkap wajib diisi.';
         } elseif (mb_strlen($profil['nama'], 'UTF-8') > 100) {
@@ -286,8 +277,6 @@ class ProfileController
         if (mb_strlen($profil['bio'], 'UTF-8') > 500) {
             $errors[] = 'Tentang saya maksimal 500 karakter.';
         }
-
-        // 3. Memeriksa email
         if (!$errors) {
             try {
                 if ($this->model->emailDipakaiLain($profil['email'], $userId)) {
@@ -297,8 +286,6 @@ class ProfileController
                 $this->galatServer($e);
             }
         }
-
-        // 4. Memproses foto
         $fotoBaru = '';
 
         if (!$errors && isset($_FILES['foto'])) {
@@ -308,8 +295,6 @@ class ProfileController
                 $profil['foto'] = $fotoBaru;
             }
         }
-
-        // 5. Menyimpan ke database
         if (!$errors) {
             try {
                 $this->model->simpan(
@@ -318,13 +303,10 @@ class ProfileController
                     $profil['email'],
                     $profil
                 );
-
-                // Menghapus foto lama jika ada foto baru
                 if ($fotoBaru !== '' && $fotoLama !== '') {
                     $this->hapusFileFoto($fotoLama);
                 }
 
-                // Memperbarui session
                 $_SESSION['nama'] = $profil['nama'];
                 $_SESSION['foto_profil'] = $profil['foto'];
 
@@ -358,8 +340,6 @@ class ProfileController
 
         return $profil;
     }
-
-    // HAPUS DATA PROFIL
     private function hapus($userId)
     {
         try {
@@ -378,8 +358,6 @@ class ProfileController
         header('Location: profile.php');
         exit;
     }
-
-    // UPLOAD FOTO
     private function unggahFoto(array $foto, array &$errors)
     {
         if (!isset($foto['error']) || !is_int($foto['error'])) {
@@ -450,8 +428,6 @@ class ProfileController
 
         return $namaFile;
     }
-
-    // MENGHAPUS FILE FOTO
     private function hapusFileFoto($namaFile)
     {
         $namaFile = basename((string) $namaFile);
@@ -466,8 +442,6 @@ class ProfileController
             unlink($lokasi);
         }
     }
-
-    // MEMBUAT URL FOTO
     private function urlFoto($namaFile)
     {
         $namaFile = basename((string) $namaFile);
@@ -478,8 +452,6 @@ class ProfileController
 
         return '/ruang_tumbuh/app/uploads/profile/' . $namaFile;
     }
-
-    // PENANGANAN ERROR SERVER
     private function galatServer(Throwable $e)
     {
         error_log('Profil: ' . $e->getMessage());

@@ -9,7 +9,6 @@ class Profile
         $this->conn = $conn;
     }
 
-    // Mengambil data akun (users) digabung data profil tambahan
     public function ambil($userId)
     {
         $query = "SELECT u.id, u.nama, u.username, u.email,
@@ -32,7 +31,6 @@ class Profile
         return $data ?: null;
     }
 
-    // Apakah email sudah dipakai akun lain?
     public function emailDipakaiLain($email, $userId)
     {
         $query = "SELECT id FROM users WHERE email = ? AND id <> ? LIMIT 1";
@@ -48,9 +46,6 @@ class Profile
 
         return $ada;
     }
-
-    // Menyimpan nama + email (users) dan data profil (profil) sekaligus.
-    // Memakai transaksi: kalau salah satu gagal, keduanya dibatalkan.
     public function simpan($userId, $nama, $email, array $p)
     {
         mysqli_begin_transaction($this->conn);
@@ -105,9 +100,6 @@ class Profile
             throw $e;
         }
     }
-
-    // Menghapus data profil tambahan. Akun (users) TIDAK dihapus.
-    // Mengembalikan nama file foto lama agar file-nya ikut dihapus.
     public function hapusData($userId)
     {
         $stmt = mysqli_prepare($this->conn, "SELECT foto FROM profil WHERE user_id = ?");

@@ -3,8 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Halaman ini hanya boleh dibuka lewat controller (index.php?page=pengingat).
-// Jika dibuka langsung lewat URL file, arahkan ke jalur yang benar.
 if (!isset($pengingat)) {
     header('Location: /ruang_tumbuh/index.php?page=pengingat');
     exit;
@@ -22,14 +20,11 @@ $inisialAsli = function_exists('mb_substr')
 
 $inisial = htmlspecialchars($inisialAsli ?: 'P', ENT_QUOTES, 'UTF-8');
 
-// Mode halaman edit
 $modeEdit = isset($data) && is_array($data);
 
-// Mengambil pesan feedback
 $pesanError = $_SESSION['pengingat_error'] ?? '';
 $pesanSukses = $_SESSION['pengingat_sukses'] ?? '';
 
-// Menghapus pesan setelah ditampilkan
 unset($_SESSION['pengingat_error'], $_SESSION['pengingat_sukses']);
 ?>
 
@@ -63,7 +58,6 @@ echo str_replace(
 
     <div class="pengingat-container">
 
-        <!-- FEEDBACK ERROR -->
         <?php if ($pesanError !== ''): ?>
             <div class="pesan-feedback pesan-error" role="alert">
                 <i class="fa-solid fa-circle-exclamation"></i>
@@ -73,7 +67,6 @@ echo str_replace(
             </div>
         <?php endif; ?>
 
-        <!-- FEEDBACK SUKSES -->
         <?php if ($pesanSukses !== ''): ?>
             <div class="pesan-feedback pesan-sukses" role="status">
                 <i class="fa-solid fa-circle-check"></i>
@@ -83,7 +76,6 @@ echo str_replace(
             </div>
         <?php endif; ?>
 
-        <!-- WELCOME BANNER -->
         <section class="welcome-banner">
 
             <div class="badge-tag">
@@ -101,7 +93,6 @@ echo str_replace(
 
         </section>
 
-        <!-- FORM TAMBAH DAN EDIT -->
         <section class="reminder-card">
 
             <div class="card-header">
@@ -206,7 +197,6 @@ echo str_replace(
 
         </section>
 
-        <!-- DAFTAR PENGINGAT -->
         <section class="reminder-card">
 
             <div class="list-header">
@@ -269,7 +259,6 @@ echo str_replace(
 
                             <div class="reminder-actions">
 
-                                <!-- TOMBOL SELESAI -->
                                 <form
                                     method="POST"
                                     action="index.php?page=pengingat&aksi=selesai"
@@ -294,7 +283,6 @@ echo str_replace(
                                             : 'Selesai'; ?>
                                     </button>
                                 </form>
-                                <!-- TOMBOL EDIT -->
                                  <button
                                  type="button"
                                  class="btn-edit"
@@ -304,7 +292,7 @@ echo str_replace(
                                  <i class="fa-solid fa-pen"></i>
                                  Edit
                                 </button>
-                                <!-- TOMBOL HAPUS -->
+
                                 <form
                                     method="POST"
                                     action="index.php?page=pengingat&aksi=hapus"
@@ -349,7 +337,7 @@ echo str_replace(
         </section>
 
     </div>
-<!-- MODAL EDIT PENGINGAT -->
+
 <div class="modal-overlay" id="modalEditPengingat">
 
     <div class="modal-content">
